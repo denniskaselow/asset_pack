@@ -18,6 +18,14 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-library assetpack;
+part of asset_pack;
 
-import 'package:asset_pack/property_map.dart';
+class AssetImporterText extends AssetImporter {
+  dynamic get fallback => '';
+  dynamic import(dynamic payload, Map<String, dynamic> importSettings) {
+    if (payload is String) {
+      return payload;
+    }
+    return fallback;
+  }
+}
