@@ -24,10 +24,13 @@ class AssetLoaderText extends AssetLoader {
   Future<dynamic> load(String url) {
     var completer = new Completer<dynamic>();
     var httpRequest = new HttpRequest();
-    httpRequest.responseType = 'arraybuffer';
+    httpRequest.responseType = 'text';
     httpRequest.on.load.add((event) {
-    });
-    httpRequest.on.error.add((event) {
+      if (httpRequest.status == 200) {
+        completer.complete(httpRequest.responseText);
+      } else {
+        completer.complete(null);
+      }
     });
     httpRequest.open('GET', url);
     httpRequest.send();

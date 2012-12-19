@@ -18,23 +18,12 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-part of asset_pack;
+library asset_pack_tests;
+import 'dart:html';
+import 'package:unittest/unittest.dart';
+import 'package:asset_pack/asset_pack.dart';
+part 'loader.dart';
 
-class AssetLoaderArrayBuffer extends AssetLoader {
-
-  Future<dynamic> load(String url) {
-    var completer = new Completer<dynamic>();
-    var httpRequest = new HttpRequest();
-    httpRequest.responseType = 'arraybuffer';
-    httpRequest.on.load.add((event) {
-      if (httpRequest.status == 200) {
-        completer.complete(httpRequest.response);
-      } else {
-        completer.complete(null);
-      }
-    });
-    httpRequest.open('GET', url);
-    httpRequest.send();
-    return completer.future;
-  }
+main() {
+  Loader.runTests();
 }

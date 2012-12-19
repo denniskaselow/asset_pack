@@ -25,8 +25,10 @@ class AssetLoaderImage extends AssetLoader {
     var completer = new Completer<dynamic>();
     ImageElement image = new ImageElement();
     image.on.load.add((event) {
+      completer.complete(image);
     });
     image.on.error.add((event) {
+      completer.complete(null);
     });
     image.src = url;
     return completer.future;
