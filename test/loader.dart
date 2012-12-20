@@ -60,12 +60,57 @@ class Loader {
     });
   }
 
+  static void blobTest() {
+    AssetLoaderBlob blobLoader = new AssetLoaderBlob();
+    test('404', () {
+      Future loaded;
+      loaded = blobLoader.load('notthere.bin');
+      loaded.then(expectAsync1((Blob blob) {
+        Expect.equals(null, blob);
+      }));
+    });
+    test('32 bytes', () {
+      Future loaded;
+      loaded = blobLoader.load('binarydata.bin');
+      loaded.then(expectAsync1((Blob blob) {
+        Expect.notEquals(null, blob);
+        Expect.equals(32, blob.size);
+      }));
+    });
+  }
+
+  static void textTest() {
+    AssetLoaderText textLoader = new AssetLoaderText();
+    test('404', () {
+      Future loaded;
+      loaded = textLoader.load('notthere.bin');
+      loaded.then(expectAsync1((String text) {
+        Expect.equals(null, text);
+      }));
+    });
+    test('test.json', () {
+      Future loaded;
+      loaded = textLoader.load('test.json');
+      loaded.then(expectAsync1((String text) {
+        Expect.notEquals(null, text);
+        Expect.equals('{"a":[1,2,3]}\n', text);
+      }));
+    });
+  }
+
+
   static void runTests() {
     group('AssetLoaderImage', () {
       Loader.imageTest();
     });
     group('AssetLoaderArrayBuffer', () {
       Loader.arrayBufferTest();
+    });
+    group('AssetLoaderBlob', () {
+      Loader.blobTest();
+    });
+    group('AssetLoaderText', () {
+      Loader.textTest();
     });
   }
 }
