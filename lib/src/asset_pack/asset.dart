@@ -20,7 +20,7 @@
 
 part of asset_pack;
 
-class Asset {
+class _Asset {
   final String name;
   final AssetLoader loader;
   final AssetImporter importer;
@@ -32,5 +32,5 @@ class Asset {
 
   dynamic imported;
 
-  Asset(this.name, this.loader, this.importer);
+  _Asset(this.name, this.loader, this.importer);
 }
