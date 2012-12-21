@@ -23,7 +23,9 @@ import 'dart:html';
 import 'package:unittest/unittest.dart';
 import 'package:asset_pack/asset_pack.dart';
 part 'loader.dart';
+part 'importer.dart';
 
 main() {
   Loader.runTests();
+  Importer.runTests();
 }

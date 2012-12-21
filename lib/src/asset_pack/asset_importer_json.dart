@@ -22,6 +22,7 @@ part of asset_pack;
 
 class AssetImporterJson extends AssetImporter {
   dynamic get fallback => {};
+
   dynamic import(dynamic payload, Map<String, dynamic> importSettings) {
     if (payload is String) {
       return JSON.parse(payload);

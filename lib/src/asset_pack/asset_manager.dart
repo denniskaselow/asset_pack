@@ -21,9 +21,11 @@
 part of asset_pack;
 
 class AssetManager extends PropertyMap {
+  Future<Asset> _loadAsset(String name, String url, Map loadArguments,
+                           Map importArguments) {
+  }
   Future<AssetPack> loadPack(String name, String url) {
   }
-
   void unloadPack(String name) {
   }
 }
