@@ -22,10 +22,19 @@ part of asset_pack;
 
 class AssetImporterText extends AssetImporter {
   dynamic get fallback => '';
-  dynamic import(dynamic payload, Map<String, dynamic> importSettings) {
+  Future<dynamic> import(dynamic payload, Map<String, dynamic> importArguments) {
+    Completer<dynamic> completer = new Completer<dynamic>();
     if (payload is String) {
-      return payload;
+      try {
+        completer.complete(payload);
+      } catch (_) {
+        completer.complete(fallback);
+      }
     }
-    return fallback;
+    return completer.future;
+  }
+
+  void delete(dynamic imported) {
+
   }
 }

@@ -23,10 +23,20 @@ part of asset_pack;
 class AssetImporterJson extends AssetImporter {
   dynamic get fallback => {};
 
-  dynamic import(dynamic payload, Map<String, dynamic> importSettings) {
+  Future<dynamic> import(dynamic payload, Map<String, dynamic> importArguments) {
+    Completer<dynamic> completer = new Completer<dynamic>();
     if (payload is String) {
-      return JSON.parse(payload);
+      try {
+        var parsed = JSON.parse(payload);
+        completer.complete(parsed);
+      } catch (_) {
+        completer.complete(fallback);
+      }
     }
-    return fallback;
+    return completer.future;
+  }
+
+  void delete(dynamic imported) {
+
   }
 }
