@@ -140,4 +140,11 @@ class AssetPackFile {
 
     return assets;
   }
+
+  AssetPackFile.fromJson(List<Map> json) {
+    json.forEach((map) {
+      AssetPackFileAsset packFileAsset = AssetPackFileAsset.fromJson(map);
+      assets[packFileAsset.name] = packFileAsset;
+    });
+  }
 }
