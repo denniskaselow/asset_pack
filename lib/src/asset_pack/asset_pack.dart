@@ -61,12 +61,13 @@ class AssetPack extends PropertyMap {
         completer.complete(this);
         return;
       }
+      AssetPackFile packFile = new AssetPackFile.fromJson(parsed);
       _loadedSuccessfully = true;
       List<Future<Asset>> futureAssets = new List<Future<Asset>>();
-      parsed.forEach((m) {
-        String assetURL = '$_baseURL${m['url']}';
-        String name = m['name'];
-        String type = m['type'];
+      packFile.assets.forEach((_, packFileAsset) {
+        String assetURL = '$_baseURL${packFileAsset.url}';
+        String name = packFileAsset.name;
+        String type = packFileAsset.type;
         AssetImporter importer = manager.importers[type];
         AssetLoader loader = manager.loaders[type];
         if (importer == null) {
@@ -78,7 +79,8 @@ class AssetPack extends PropertyMap {
           return;
         }
         Asset asset = new Asset(this, name, assetURL, type, loader, importer);
-        var futureAsset = asset._loadAndImport(m['load'], m['import']);
+        var futureAsset = asset._loadAndImport(packFileAsset.loadArguments,
+                                               packFileAsset.importArguments);
         futureAssets.add(futureAsset);
       });
       Futures.wait(futureAssets).then((List<Asset> loadedAssets) {
