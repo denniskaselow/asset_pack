@@ -1,0 +1,1 @@
+[{"name":"list","type":"json","url":"/json/list.json","load":{},"import":{}},{"name":"map","type":"json","url":"/json/map.json","load":{},"import":{}},{"name":"test","type":"json","url":"/json/test.json","load":{},"import":{}},{"name":"tests","type":"text","url":"/text/tests.txt","load":{},"import":{}}]
