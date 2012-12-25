@@ -63,8 +63,8 @@ class PackGenerator {
                         "name": asset.name,
                         "type": asset.type,
                         "url": asset.url,
-                        "load": {},
-                        "import": {},
+                        "loadArguments": {},
+                        "importArguments": {},
       };
       output.add(assetEntry);
       print(assetEntry);
