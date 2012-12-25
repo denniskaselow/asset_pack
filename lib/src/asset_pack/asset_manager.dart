@@ -21,11 +21,43 @@
 part of asset_pack;
 
 class AssetManager extends PropertyMap {
-  Future<_Asset> _loadAsset(String name, Map loadArguments,
-                            Map importArguments) {
+  /** A map from asset type to importers. Add your own importers. */
+  final Map<String, AssetImporter> importers = new Map<String, AssetImporter>();
+  /** A map from asset type to loader. Add your own loaders. */
+  final Map<String, AssetLoader> loaders = new Map<String, AssetLoader>();
+
+  AssetManager() {
+    importers['json'] = new AssetImporterJson();
+    importers['text'] = new AssetImporterText();
+    loaders['json'] = new AssetLoaderText();
+    loaders['text'] = loaders['json'];
   }
+
+  /** Register a pack with [name] and load the contents from [url]. */
   Future<AssetPack> loadPack(String name, String url) {
+    AssetPack assetPack = new AssetPack(this, name);
+    if (containsKey(name)) {
+      throw new ArgumentError('Already have a pack loaded with name: $name');
+    }
+    Completer<AssetPack> completer = new Completer<AssetPack>();
+    assetPack._load(url).then((assetPack) {
+      if (assetPack.loadedSuccessfully == true) {
+        this[name] = assetPack;
+        completer.complete(assetPack);
+      } else {
+        completer.complete(null);
+      }
+    });
+    return completer.future;
   }
+
+  /** Unload pack with [name]. */
   void unloadPack(String name) {
+    AssetPack assetPack = this[name];
+    if (assetPack == null) {
+      return;
+    }
+    remove(name);
+    assetPack._unload();
   }
 }
