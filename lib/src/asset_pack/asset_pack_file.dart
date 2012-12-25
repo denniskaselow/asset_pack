@@ -18,7 +18,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-part of asset_pack;
+part of asset_pack_file;
 
 class AssetPackFileAsset {
   /** The name of the asset. */
@@ -122,6 +122,7 @@ class AssetPackFile {
     assets.forEach((name, asset) {
       json.add(asset.toJson());
     });
+    return json;
   }
 
   /** Parse the packFile string into a list of pack file assets. */
@@ -141,7 +142,12 @@ class AssetPackFile {
     return assets;
   }
 
+  AssetPackFile();
+
   AssetPackFile.fromJson(List<Map> json) {
+    if (json == null) {
+      return;
+    }
     json.forEach((map) {
       AssetPackFileAsset packFileAsset = AssetPackFileAsset.fromJson(map);
       assets[packFileAsset.name] = packFileAsset;
