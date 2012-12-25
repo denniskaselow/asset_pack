@@ -72,16 +72,15 @@ class PropertyMap extends PropertyContainer implements Map<String, dynamic> {
    *  - data.set('propertyName', value);
    */
   noSuchMethod(InvocationMirror mirror) {
-    if (mirror.memberName.startsWith("get:")) {
-      var property = mirror.memberName.replaceFirst("get:", "");
-      if (this.containsKey(property)) {
-        return this[property];
+    if (mirror.isGetter) {
+      dynamic value = this[mirror.memberName];
+      if (value != null) {
+        return value;
       }
-    }
-    else if (mirror.memberName.startsWith("set:")) {
-      var property = mirror.memberName.replaceFirst("set:", "");
-      this[property] = mirror.positionalArguments[0];
-      return this[property];
+    } else if (mirror.isSetter) {
+      dynamic value = mirror.positionalArguments[0];
+      this[mirror.memberName] = value;
+      return value;
     }
 
     //if we get here, then we've not found it - throw.
