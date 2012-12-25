@@ -34,3 +34,4 @@ part 'src/asset_pack/asset_loader_image.dart';
 part 'src/asset_pack/asset_loader_text.dart';
 part 'src/asset_pack/asset_manager.dart';
 part 'src/asset_pack/asset_pack.dart';
+part 'src/asset_pack/asset_pack_file.dart';
