@@ -48,6 +48,13 @@ class Manager {
         Expect.equals(null, pack);
       });
     });
+
+    test('badpack', () {
+      futurePack = assetManager.loadPack('brokenpack', 'brokenpack.pack');
+      futurePack.then((pack) {
+        Expect.equals(null, pack);
+      });
+    });
   }
 
   static void unloadTest() {
