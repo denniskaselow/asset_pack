@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:json';
 
 class PackedAsset {
   final String name;
@@ -8,10 +9,13 @@ class PackedAsset {
 }
 
 class PackGenerator {
-  void generate(String dirPath) {
+  final List<PackedAsset> assets = new List<PackedAsset>();
+  bool _valid = false;
+  Future generate(String dirPath) {
+    assets.clear();
+    _valid = false;
     Directory directory = new Directory(dirPath);
     var list = directory.list(recursive:true);
-    List<PackedAsset> assets = new List<PackedAsset>();
     list.onFile = (file) {
       if (file.startsWith(dirPath) == false) {
         return;
@@ -24,18 +28,67 @@ class PackGenerator {
       PackedAsset asset = new PackedAsset(filename, url, type);
       assets.add(asset);
     };
+    Completer completer = new Completer();
     list.onDone = (_) {
       assets.sort((a, b) {
-        return Comparable.compare(a.type, b.type);
+        return Comparable.compare(a.name, b.name);
       });
-      assets.forEach((asset) {
-        print('${asset.type} ${asset.name} [/${asset.url}]');
-      });
+      completer.complete(true);
     };
+    return completer.future;
+  }
+
+  void lint() {
+    String prevName = null;
+    _valid = true;
+    assets.forEach((asset) {
+      if (prevName == null) {
+        prevName = asset.name;
+        return;
+      }
+      if (prevName == asset.name) {
+        print('Error duplicate name: ${asset.name}');
+        _valid = false;
+      }
+      prevName = asset.name;
+    });
+  }
+
+  bool get isValid => _valid;
+
+  List<Map> prepareOutput() {
+    List<Map> output = new List<Map>();
+    assets.forEach((asset) {
+      Map assetEntry = {
+                        "name": asset.name,
+                        "type": asset.type,
+                        "url": asset.url,
+                        "load": {},
+                        "import": {},
+      };
+      output.add(assetEntry);
+      print(assetEntry);
+    });
+    return output;
+  }
+
+  void output(String path) {
+    File out = new File(path);
+    RandomAccessFile raf = out.openSync(FileMode.WRITE);
+    raf.writeStringSync(JSON.stringify(prepareOutput()));
+    raf.closeSync();
   }
 }
 
 main() {
+  String path = '/Users/johnmccutchan/workspace/assetpack/test/testpack';
   PackGenerator generator = new PackGenerator();
-  generator.generate('/Users/johnmccutchan/workspace/javelin/web/demo_launcher/data/');
+  generator.generate(path).then((_) {
+    generator.lint();
+    if (generator.isValid == false) {
+      print('Cannot generate pack file.');
+      return;
+    }
+    generator.output('$path.pack');
+  });
 }
