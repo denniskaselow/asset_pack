@@ -33,7 +33,8 @@ class AssetManager extends PropertyMap {
     loaders['text'] = loaders['json'];
   }
 
-  /** Register a pack with [name] and load the contents from [url]. */
+  /** Register a pack with [name] and load the contents from [url].
+   * The future will complete to [null] if the asset pack cannot be loaded. */
   Future<AssetPack> loadPack(String name, String url) {
     AssetPack assetPack = new AssetPack(this, name);
     if (containsKey(name)) {

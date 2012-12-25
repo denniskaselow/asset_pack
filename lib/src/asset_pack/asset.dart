@@ -33,7 +33,6 @@ class Asset {
   /** The importer for the asset */
   final AssetImporter importer;
 
-  int _refCount = 1;
   String _status = 'Unloaded';
   String get status => _status;
   bool get _isLoaded => status == 'OK';

@@ -29,7 +29,7 @@ part of asset_pack;
 class AssetPack extends PropertyMap {
   final AssetManager manager;
   final String name;
-  final Map<String, Asset> _assets = new Map<String, Asset>();
+  final Map<String, Asset> assets = new Map<String, Asset>();
   //final Set<String> missingResources = new Set<String>();
   String _baseURL;
 
@@ -53,7 +53,14 @@ class AssetPack extends PropertyMap {
         completer.complete(this);
         return;
       }
-      List<Map> parsed = JSON.parse(text);
+      List<Map> parsed;
+      try {
+        parsed = JSON.parse(text);
+      } catch (_) {
+        _loadedSuccessfully = false;
+        completer.complete(this);
+        return;
+      }
       _loadedSuccessfully = true;
       List<Future<Asset>> futureAssets = new List<Future<Asset>>();
       parsed.forEach((m) {
@@ -70,14 +77,13 @@ class AssetPack extends PropertyMap {
           print('Cannot load $name ($assetURL) because there is no loader for $type');
           return;
         }
-        print('Loading $name from $assetURL');
         Asset asset = new Asset(this, name, assetURL, type, loader, importer);
         var futureAsset = asset._loadAndImport(m['load'], m['import']);
         futureAssets.add(futureAsset);
       });
-      Futures.wait(futureAssets).then((List<Asset> assets) {
-        assets.forEach((asset) {
-          _assets[asset.name] = asset;
+      Futures.wait(futureAssets).then((List<Asset> loadedAssets) {
+        loadedAssets.forEach((asset) {
+          assets[asset.name] = asset;
           this[asset.name] = asset.imported;
         });
         completer.complete(this);
@@ -89,16 +95,16 @@ class AssetPack extends PropertyMap {
   void _unload() {
     //missingResources.clear();
     _loadedSuccessfully = false;
-    _assets.forEach((name, asset) {
+    assets.forEach((name, asset) {
       asset._delete();
     });
-    _assets.clear();
+    assets.clear();
     this.clear();
   }
 
   /** Returns the type of [assetName]. */
   String type(String assetName) {
-    Asset asset = _assets[assetName];
+    Asset asset = assets[assetName];
     if (asset != null) {
       return asset.type;
     }
@@ -107,7 +113,7 @@ class AssetPack extends PropertyMap {
 
   /** Returns the url of [assetName]. */
   String url(String assetName) {
-    Asset asset = _assets[assetName];
+    Asset asset = assets[assetName];
     if (asset != null) {
       return asset.url;
     }
