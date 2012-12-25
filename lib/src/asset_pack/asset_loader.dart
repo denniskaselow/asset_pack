@@ -22,5 +22,7 @@ part of asset_pack;
 
 abstract class AssetLoader {
 
-  Future<dynamic> load(String url);
+  Future<dynamic> load(String url, Map loadArguments);
+
+  void delete(dynamic arg);
 }

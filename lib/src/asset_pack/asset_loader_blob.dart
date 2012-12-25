@@ -21,7 +21,7 @@
 part of asset_pack;
 
 class AssetLoaderBlob extends AssetLoader {
-  Future<dynamic> load(String url) {
+  Future<dynamic> load(String url, Map loadArguments) {
     var completer = new Completer<dynamic>();
     var httpRequest = new HttpRequest();
     httpRequest.responseType = 'blob';
@@ -35,5 +35,9 @@ class AssetLoaderBlob extends AssetLoader {
     httpRequest.open('GET', url);
     httpRequest.send();
     return completer.future;
+  }
+
+  void delete(dynamic arg) {
+
   }
 }
