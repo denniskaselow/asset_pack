@@ -48,7 +48,7 @@ void merge(AssetPackFile packFile, List<String> assetPaths) {
   assetPaths.forEach((assetPath) {
     Path path = new Path(assetPath);
     String name = path.filenameWithoutExtension;
-    String type = path.directoryPath.filename;
+    String type = path.directoryPath.filenameWithoutExtension;
     String url = assetPath;
     if (packFile.assets.containsKey(name)) {
       print('Old asset pack already has $name');
@@ -87,10 +87,15 @@ void output(AssetPackFile packFile, String path) {
   raf.closeSync();
 }
 
-String inPath = '/Users/johnmccutchan/workspace/assetpack/test/testpack';
-String outPath = '$inPath.pack';
-
 main() {
+  Options options = new Options();
+  String inPath;
+  if (options.arguments.length == 0) {
+    inPath = '/Users/johnmccutchan/workspace/assetpack/test/testpack';
+  } else {
+    inPath = options.arguments[0];
+  }
+  String outPath = '$inPath.pack';
   var futureAssetPaths = findAllAssetPaths(inPath);
   futureAssetPaths.then((assetPaths) {
     AssetPackFile packFile = openAssetPackFile(outPath);

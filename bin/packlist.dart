@@ -27,11 +27,17 @@ AssetPackFile openAssetPackFile(String path) {
   return new AssetPackFile.fromJson(json);
 }
 
-String inPath = '/Users/johnmccutchan/workspace/assetpack/test/testpack';
-String outPath = '$inPath.pack';
 
 main() {
   bool verbose = true;
+  Options options = new Options();
+  String inPath;
+  if (options.arguments.length == 0) {
+    inPath = '/Users/johnmccutchan/workspace/assetpack/test/testpack';
+  } else {
+    inPath = options.arguments[0];
+  }
+  String outPath = '$inPath.pack';
   AssetPackFile packFile = openAssetPackFile(outPath);
   List<AssetPackFileAsset> assets = packFile.assets.values;
   assets.sort((a, b) => Comparable.compare(a.name, b.name));
