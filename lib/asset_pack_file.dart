@@ -19,6 +19,7 @@
 */
 
 library asset_pack_file;
+
 import 'dart:json';
 
 part 'src/asset_pack/asset_pack_file.dart';

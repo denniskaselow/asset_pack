@@ -22,7 +22,7 @@ part of asset_pack;
 
 abstract class AssetLoader {
 
-  Future<dynamic> load(String url, Map loadArguments);
+  Future<dynamic> load(String name, String url, String type, Map loadArguments);
 
   void delete(dynamic arg);
 }

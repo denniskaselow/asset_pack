@@ -51,7 +51,7 @@ class Asset {
 
   Future<Asset> _loadAsset(Map loadArguments) {
     Completer<Asset> completer = new Completer<Asset>();
-    Future<dynamic> loadedFuture = loader.load(url, loadArguments);
+    Future<dynamic> loadedFuture = loader.load(name, url, type, loadArguments);
     loadedFuture.then((loaded) {
       _loaded = loaded;
       completer.complete(this);
@@ -61,7 +61,8 @@ class Asset {
 
   Future<Asset> _importAsset(dynamic payload, Map importArguments) {
     Completer<Asset> completer = new Completer<Asset>();
-    Future<dynamic> importedFuture = importer.import(payload, importArguments);
+    Future<dynamic> importedFuture = importer.import(payload, name, url, type,
+                                                     importArguments);
     importedFuture.then((imported) {
       _imported = imported;
       completer.complete(this);

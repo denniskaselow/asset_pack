@@ -22,7 +22,8 @@ part of asset_pack;
 
 class AssetLoaderArrayBuffer extends AssetLoader {
 
-  Future<dynamic> load(String url, Map loadArguments) {
+  Future<dynamic> load(String name, String url, String type,
+                       Map loadArguments) {
     var completer = new Completer<dynamic>();
     var httpRequest = new HttpRequest();
     httpRequest.responseType = 'arraybuffer';

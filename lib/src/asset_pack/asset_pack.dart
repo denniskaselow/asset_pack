@@ -46,7 +46,7 @@ class AssetPack extends PropertyMap {
     _setBaseURL(url);
     _unload();
     AssetLoaderText loader = new AssetLoaderText();
-    Future f = loader.load(url, {});
+    Future f = loader.load(name, url, 'pack', {});
     Completer<AssetPack> completer = new Completer<AssetPack>();
     f.then((text) {
       if (text == null) {

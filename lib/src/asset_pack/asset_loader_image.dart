@@ -21,7 +21,8 @@
 part of asset_pack;
 
 class AssetLoaderImage extends AssetLoader {
-  Future<dynamic> load(String url, Map loadArguments) {
+  Future<dynamic> load(String name, String url, String type,
+                       Map loadArguments) {
     var completer = new Completer<dynamic>();
     ImageElement image = new ImageElement();
     image.on.load.add((event) {

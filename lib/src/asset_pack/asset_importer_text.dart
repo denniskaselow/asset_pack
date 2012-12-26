@@ -22,7 +22,8 @@ part of asset_pack;
 
 class AssetImporterText extends AssetImporter {
   dynamic get fallback => '';
-  Future<dynamic> import(dynamic payload, Map<String, dynamic> importArguments) {
+  Future<dynamic> import(dynamic payload, String name, String url, String type,
+                         Map<String, dynamic> importArguments) {
     Completer<dynamic> completer = new Completer<dynamic>();
     if (payload is String) {
       try {

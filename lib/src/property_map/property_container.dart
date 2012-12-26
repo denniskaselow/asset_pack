@@ -30,6 +30,7 @@ abstract class PropertyContainer implements Serializable {
    * Serializable, it throws an exception.
    */
   static dynamic validate(dynamic value) {
+    /*
     if (value is num ||
         value is bool ||
         value is String ||
@@ -47,9 +48,17 @@ abstract class PropertyContainer implements Serializable {
     var mirror = reflect(value);
     throw 'Value not supported on a PropertyContainer. Trying to save an '
     'instance of ${mirror.type.simpleName}. Only numbers, booleans, Strings, '
-    'classes that implement Serializable and Lists and Maps of those'
+    'classes that implement Serializable and Lists and Maps of those '
     'types are allowed as entries on a PropertyContainer.';
     return null;
+    */
+    if (value is List) {
+      return new PropertyList.from(value);
+    } else if (value is Map) {
+      return new PropertyMap.from(value);
+    } else {
+      return value;
+    }
   }
 
   /**
