@@ -52,6 +52,24 @@ class AssetManager extends PropertyMap {
     return completer.future;
   }
 
+  /** Load many packs at once. Results in a single Future to wait on.:
+   *
+   * [['packName', 'packUrl.pack'], ['packName2', 'packUrl2.pack']]
+   */
+  Future loadPacks(List<List<String>> packs) {
+    if (packs == null) {
+      return new Future.immediate(null);
+    }
+    var futurePacks = new List<Future<AssetPack>>();
+    packs.forEach((pack) {
+      String name = pack[0];
+      String url = pack[1];
+      var futurePack = loadPack(name, url);
+      futurePacks.add(futurePack);
+    });
+    return Futures.wait(futurePacks);
+  }
+
   /** Unload pack with [name]. */
   void unloadPack(String name) {
     AssetPack assetPack = this[name];
