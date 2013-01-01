@@ -54,6 +54,14 @@ void merge(AssetPackFile packFile, List<String> assetPaths) {
       print('Old asset pack already has $name');
       return;
     }
+    if (name == '') {
+      print('Skipping $url because it has no name.');
+      return;
+    }
+    if (type == '') {
+      print('Skipping $url because it has no type.');
+      return;
+    }
     print('Adding new asset $name ($url) (type=$type)');
     packFile.assets[name] = new AssetPackFileAsset(name, url, type);
   });
