@@ -52,6 +52,10 @@ abstract class PropertyContainer implements Serializable {
     'types are allowed as entries on a PropertyContainer.';
     return null;
     */
+    if ((value is PropertyMap) || (value is PropertyList)) {
+      // Already good.
+      return value;
+    }
     if (value is List) {
       return new PropertyList.from(value);
     } else if (value is Map) {

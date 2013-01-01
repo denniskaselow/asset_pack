@@ -24,13 +24,14 @@ class Manager {
   static void loadTest() {
     AssetManager assetManager = new AssetManager();
     Future<AssetPack> futurePack;
-
     test('success.', () {
       futurePack = assetManager.loadPack('testpack', 'testpack.pack');
       futurePack.then((pack) {
+        Expect.notEquals(pack, null);
         Expect.equals(true, pack.loadedSuccessfully);
         Expect.equals(4, pack.length);
         Expect.equals(1, assetManager.length);
+        Expect.equals(4, assetManager.testpack.length);
         Expect.equals(pack, assetManager.testpack);
         Expect.equals('json', pack.type('list'));
         Expect.equals('json', pack.type('map'));
@@ -41,14 +42,12 @@ class Manager {
         });
       });
     });
-
     test('failure', () {
       futurePack = assetManager.loadPack('testpack2', 'testpackbadname.pack');
       futurePack.then((pack) {
         Expect.equals(null, pack);
       });
     });
-
     test('badpack', () {
       futurePack = assetManager.loadPack('brokenpack', 'brokenpack.pack');
       futurePack.then((pack) {
