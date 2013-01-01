@@ -22,7 +22,6 @@ part of asset_pack;
 
 abstract class AssetImporter {
   dynamic get fallback;
-  Future<dynamic> import(dynamic payload, String name, String url, String type,
-                         Map<String, dynamic> importArguments);
+  Future<dynamic> import(dynamic payload, AssetRequest assetRequest);
   void delete(dynamic imported);
 }

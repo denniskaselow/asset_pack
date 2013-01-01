@@ -25,14 +25,18 @@ class Loader {
     AssetLoaderImage imageLoader = new AssetLoaderImage();
     test('404', () {
       Future loaded;
-      loaded = imageLoader.load('notthere', 'notthere.png', 'png', {});
+      var assetRequest = new AssetRequest('notthere', '', 'notthere.png',
+                                          'png', {}, {});
+      loaded = imageLoader.load(assetRequest);
       loaded.then(expectAsync1((ImageElement imageElement) {
         Expect.equals(null, imageElement);
       }));
     });
     test('64x64 png', () {
       Future loaded;
-      loaded = imageLoader.load('test', 'test.png', 'png', {});
+      var assetRequest = new AssetRequest('test', '', 'test.png', 'png', {},
+                                          {});
+      loaded = imageLoader.load(assetRequest);
       loaded.then(expectAsync1((ImageElement imageElement) {
         Expect.notEquals(null, imageElement);
         Expect.equals(64, imageElement.width);
@@ -45,14 +49,18 @@ class Loader {
     AssetLoaderArrayBuffer arrayBufferLoader = new AssetLoaderArrayBuffer();
     test('404', () {
       Future loaded;
-      loaded = arrayBufferLoader.load('notthere', 'notthere.bin', 'bin', {});
+      var assetRequest = new AssetRequest('notthere', '', 'notthere.bin',
+                                          'bin', {}, {});
+      loaded = arrayBufferLoader.load(assetRequest);
       loaded.then(expectAsync1((ArrayBuffer arrayBuffer) {
         Expect.equals(null, arrayBuffer);
       }));
     });
     test('32 bytes', () {
       Future loaded;
-      loaded = arrayBufferLoader.load('binarydata', 'binarydata.bin', 'bin',{});
+      var assetRequest = new AssetRequest('binarydata', '', 'binarydata.bin',
+                                          'bin', {}, {});
+      loaded = arrayBufferLoader.load(assetRequest);
       loaded.then(expectAsync1((ArrayBuffer arrayBuffer) {
         Expect.notEquals(null, arrayBuffer);
         Expect.equals(32, arrayBuffer.byteLength);
@@ -64,14 +72,18 @@ class Loader {
     AssetLoaderBlob blobLoader = new AssetLoaderBlob();
     test('404', () {
       Future loaded;
-      loaded = blobLoader.load('notthere', 'notthere.bin', 'bin', {});
+      var assetRequest = new AssetRequest('notthere', '', 'notthere.bin',
+                                          'bin', {}, {});
+      loaded = blobLoader.load(assetRequest);
       loaded.then(expectAsync1((Blob blob) {
         Expect.equals(null, blob);
       }));
     });
     test('32 bytes', () {
       Future loaded;
-      loaded = blobLoader.load('binarydata.bin', 'binarydata.bin', 'bin', {});
+      var assetRequest = new AssetRequest('binarydata', '', 'binarydata.bin',
+                                          'bin', {}, {});
+      loaded = blobLoader.load(assetRequest);
       loaded.then(expectAsync1((Blob blob) {
         Expect.notEquals(null, blob);
         Expect.equals(32, blob.size);
@@ -83,14 +95,18 @@ class Loader {
     AssetLoaderText textLoader = new AssetLoaderText();
     test('404', () {
       Future loaded;
-      loaded = textLoader.load('notthere', 'notthere.bin', 'bin', {});
+      var assetRequest = new AssetRequest('notthere', '', 'notthere.bin',
+                                          'text', {}, {});
+      loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.equals(null, text);
       }));
     });
     test('test.json', () {
       Future loaded;
-      loaded = textLoader.load('test', 'test.json', 'json', {});
+      var assetRequest = new AssetRequest('test', '', 'test.json',
+                                          'json', {}, {});
+      loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.notEquals(null, text);
         Expect.equals('{"a":[1,2,3]}\n', text);

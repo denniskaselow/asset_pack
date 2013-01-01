@@ -49,9 +49,9 @@ class Asset {
 
   Asset(this.pack, this.name, this.url, this.type, this.loader, this.importer);
 
-  Future<Asset> _loadAsset(Map loadArguments) {
+  Future<Asset> _loadAsset(AssetRequest request) {
     Completer<Asset> completer = new Completer<Asset>();
-    Future<dynamic> loadedFuture = loader.load(name, url, type, loadArguments);
+    Future<dynamic> loadedFuture = loader.load(request);
     loadedFuture.then((loaded) {
       _loaded = loaded;
       completer.complete(this);
@@ -59,10 +59,9 @@ class Asset {
     return completer.future;
   }
 
-  Future<Asset> _importAsset(dynamic payload, Map importArguments) {
+  Future<Asset> _importAsset(dynamic payload, AssetRequest request) {
     Completer<Asset> completer = new Completer<Asset>();
-    Future<dynamic> importedFuture = importer.import(payload, name, url, type,
-                                                     importArguments);
+    Future<dynamic> importedFuture = importer.import(payload, request);
     importedFuture.then((imported) {
       _imported = imported;
       completer.complete(this);
@@ -70,9 +69,9 @@ class Asset {
     return completer.future;
   }
 
-  Future<Asset> _loadAndImport(Map loadArguments, Map importArguments) {
-    return _loadAsset(loadArguments).chain((asset) {
-      return _importAsset(asset._loaded, importArguments);
+  Future<Asset> _loadAndImport(AssetRequest request) {
+    return _loadAsset(request).chain((asset) {
+      return _importAsset(asset._loaded, request);
     });
   }
 

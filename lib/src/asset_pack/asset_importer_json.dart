@@ -23,8 +23,7 @@ part of asset_pack;
 class AssetImporterJson extends AssetImporter {
   dynamic get fallback => {};
 
-  Future<dynamic> import(dynamic payload, String name, String url, String type,
-                         Map<String, dynamic> importArguments) {
+  Future<dynamic> import(dynamic payload, AssetRequest assetRequest) {
     Completer<dynamic> completer = new Completer<dynamic>();
     if (payload is String) {
       try {

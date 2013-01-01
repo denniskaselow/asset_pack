@@ -25,11 +25,13 @@ class Importer {
     AssetLoaderText textLoader = new AssetLoaderText();
     test('404', () {
       Future loaded;
-      loaded = textLoader.load('notthere', 'notthere.json', 'json', {});
+      var assetRequest = new AssetRequest('notthere', '', 'notthere.json',
+                                          'json', {}, {});
+      loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.equals(null, text);
         AssetImporterText importer = new AssetImporterText();
-        importer.import(text, 'notthere', 'notthere.json', 'json', {}).then(
+        importer.import(text, assetRequest).then(
             (imported) {
               Expect.equals(importer.fallback, imported);
             });
@@ -37,11 +39,13 @@ class Importer {
     });
     test('text', () {
       Future loaded;
-      loaded = textLoader.load('test', 'test.json', 'json', {});
+      var assetRequest = new AssetRequest('test', '', 'test.json',
+                                          'json', {}, {});
+      loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.notEquals(null, text);
         AssetImporterText importer = new AssetImporterText();
-        importer.import(text, 'test', 'test.json', 'json', {}).then((imported) {
+        importer.import(text, assetRequest).then((imported) {
           Expect.equals('{"a":[1,2,3]}\n', imported);
         });
       }));
@@ -52,11 +56,13 @@ class Importer {
     AssetLoaderText textLoader = new AssetLoaderText();
     test('404', () {
       Future loaded;
-      loaded = textLoader.load('notthere', 'notthere.json', 'json', {});
+      var assetRequest = new AssetRequest('notthere', '', 'notthere.json',
+                                          'json', {}, {});
+      loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.equals(null, text);
         AssetImporterJson importer = new AssetImporterJson();
-        importer.import(text, 'notthere', 'notthere.json', 'json', {}).then(
+        importer.import(text, assetRequest).then(
             (imported) {
               Expect.equals(importer.fallback.length, imported.length);
             });
@@ -64,22 +70,26 @@ class Importer {
     });
     test('map', () {
       Future loaded;
-      loaded = textLoader.load('map', 'map.json', 'json', {});
+      var assetRequest = new AssetRequest('map', '', 'map.json',
+                                          'json', {}, {});
+      loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.notEquals(null, text);
         AssetImporterJson importer = new AssetImporterJson();
-        importer.import(text, 'map', 'map.json', 'json', {}).then((imported) {
+        importer.import(text, assetRequest).then((imported) {
           Expect.equals("b", imported["a"]);
         });
       }));
     });
     test('list', () {
       Future loaded;
-      loaded = textLoader.load('list', 'list.json', 'json', {});
+      var assetRequest = new AssetRequest('list', '', 'list.json',
+                                          'json', {}, {});
+      loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.notEquals(null, text);
         AssetImporterJson importer = new AssetImporterJson();
-        importer.import(text, 'list', 'list.json', 'json', {}).then((imported) {
+        importer.import(text, assetRequest).then((imported) {
           Expect.equals(5, imported.length);
         });
       }));

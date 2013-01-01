@@ -46,7 +46,8 @@ class AssetPack extends PropertyMap {
     _setBaseURL(url);
     _unload();
     AssetLoaderText loader = new AssetLoaderText();
-    Future f = loader.load(name, url, 'pack', {});
+    AssetRequest request = new AssetRequest(name, url, '', 'pack', {}, {});
+    Future f = loader.load(request);
     Completer<AssetPack> completer = new Completer<AssetPack>();
     f.then((text) {
       if (text == null) {
@@ -79,8 +80,10 @@ class AssetPack extends PropertyMap {
           return;
         }
         Asset asset = new Asset(this, name, assetURL, type, loader, importer);
-        var futureAsset = asset._loadAndImport(packFileAsset.loadArguments,
-                                               packFileAsset.importArguments);
+        AssetRequest request = new AssetRequest(name, _baseURL, assetURL, type,
+                                                packFileAsset.loadArguments,
+                                                packFileAsset.importArguments);
+        var futureAsset = asset._loadAndImport(request);
         futureAssets.add(futureAsset);
       });
       Futures.wait(futureAssets).then((List<Asset> loadedAssets) {

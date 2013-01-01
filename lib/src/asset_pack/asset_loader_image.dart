@@ -21,8 +21,7 @@
 part of asset_pack;
 
 class AssetLoaderImage extends AssetLoader {
-  Future<dynamic> load(String name, String url, String type,
-                       Map loadArguments) {
+  Future<dynamic> load(AssetRequest assetRequest) {
     var completer = new Completer<dynamic>();
     ImageElement image = new ImageElement();
     image.on.load.add((event) {
@@ -31,7 +30,7 @@ class AssetLoaderImage extends AssetLoader {
     image.on.error.add((event) {
       completer.complete(null);
     });
-    image.src = url;
+    image.src = assetRequest.URL;
     return completer.future;
   }
 
