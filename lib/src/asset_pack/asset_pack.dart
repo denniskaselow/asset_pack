@@ -66,7 +66,7 @@ class AssetPack extends PropertyMap {
       _loadedSuccessfully = true;
       List<Future<Asset>> futureAssets = new List<Future<Asset>>();
       packFile.assets.forEach((_, packFileAsset) {
-        String assetURL = '$_baseURL${packFileAsset.url}';
+        String assetURL = packFileAsset.url;
         String name = packFileAsset.name;
         String type = packFileAsset.type;
         AssetImporter importer = manager.importers[type];
