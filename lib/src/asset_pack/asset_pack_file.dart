@@ -26,7 +26,7 @@ class AssetPackFileAsset {
   /** The url of the asset. */
   final String url;
   /** The type of the asset. */
-  final String type;
+  String type;
   /** Arguments passed to the loader */
   final Map<String, dynamic> loadArguments = new Map<String, dynamic>();
   /** Arguments passed to the importer */
@@ -73,13 +73,17 @@ class AssetPackFile {
     assets[asset.name] = asset;
   }
 
-  void _copyArguments(AssetPackFileAsset newAsset, AssetPackFileAsset asset) {
+  void _copyMetadata(AssetPackFileAsset newAsset, AssetPackFileAsset asset) {
+    // Copy load arguments.
     asset.loadArguments.forEach((k,v) {
       newAsset.loadArguments[k] = v;
     });
+    // Copy import arguments.
     asset.importArguments.forEach((k,v) {
       newAsset.importArguments[k] = v;
     });
+    // Copy type.
+    newAsset.type = asset.type;
   }
 
   /** Each pack file asset is added to the pack file. If an asset with the
@@ -89,7 +93,7 @@ class AssetPackFile {
     parsed.forEach((asset) {
       AssetPackFileAsset existingAsset = assets[asset.name];
       if (existingAsset != null) {
-        _copyArguments(asset, existingAsset);
+        _copyMetadata(asset, existingAsset);
         assets.remove(existingAsset.name);
         _add(asset);
       } else {
@@ -117,11 +121,22 @@ class AssetPackFile {
   }
 
   /** Convert the pack file to JSON. */
-  List<Map> toJson() {
-    List<Map> json = new List<Map>();
+  Map<String, Map> toJson() {
+    Map<String, Map> json = new Map<String, Map>();
     assets.forEach((name, asset) {
-      json.add(asset.toJson());
+      json[asset.name] = asset.toJson();
     });
+    /*
+     * Output sorted keys.
+    List<String> sortedKeys = json.keys;
+    sortedKeys.sort((a,b) => a.compareTo(b));
+    Map<String, Map> sortedJson = new Map<String, Map>();
+    sortedKeys.forEach((k) {
+      print(k);
+      sortedJson[k] = json[k];
+    });
+    return sortedJson;
+    */
     return json;
   }
 
@@ -144,13 +159,13 @@ class AssetPackFile {
 
   AssetPackFile();
 
-  AssetPackFile.fromJson(List<Map> json) {
+  AssetPackFile.fromJson(Map<String, Map> json) {
     if (json == null) {
       return;
     }
-    json.forEach((map) {
-      AssetPackFileAsset packFileAsset = AssetPackFileAsset.fromJson(map);
-      assets[packFileAsset.name] = packFileAsset;
+    json.forEach((k, v) {
+      AssetPackFileAsset packFileAsset = AssetPackFileAsset.fromJson(v);
+      assets[k] = packFileAsset;
     });
   }
 }

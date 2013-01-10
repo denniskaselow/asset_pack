@@ -48,7 +48,7 @@ void merge(AssetPackFile packFile, List<String> assetPaths) {
   assetPaths.forEach((assetPath) {
     Path path = new Path(assetPath);
     String name = path.filenameWithoutExtension;
-    String type = path.directoryPath.filenameWithoutExtension;
+    String type = 'fill_me_in';
     String url = assetPath;
     if (packFile.assets.containsKey(name)) {
       print('Old asset pack already has $name');
