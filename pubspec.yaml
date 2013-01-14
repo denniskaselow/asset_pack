@@ -7,3 +7,4 @@ authors:
 homepage: https://github.com/johnmccutchan/assetpack
 dependencies:
   unittest: any
+  property_map: any

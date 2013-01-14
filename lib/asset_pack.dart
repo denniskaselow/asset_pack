@@ -21,7 +21,7 @@
 library asset_pack;
 import 'dart:html';
 import 'dart:json';
-import 'package:asset_pack/property_map.dart';
+import 'package:property_map/property_map.dart';
 import 'asset_pack_file.dart';
 part 'src/asset_pack/asset.dart';
 part 'src/asset_pack/asset_importer.dart';
