@@ -31,7 +31,7 @@ AssetPackFile openAssetPackFile(String path) {
     // Return empty asset pack file.
     return new AssetPackFile();
   }
-  List<Map> json;
+  var json;
   try {
     json = JSON.parse(contents);
   } catch (_) {
