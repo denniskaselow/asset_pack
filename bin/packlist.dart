@@ -13,7 +13,7 @@ AssetPackFile openAssetPackFile(String path) {
     // Return empty asset pack file.
     return new AssetPackFile();
   }
-  List<Map> json;
+  var json;
   try {
     json = JSON.parse(contents);
   } catch (e) {
@@ -37,7 +37,7 @@ main() {
   } else {
     inPath = options.arguments[0];
   }
-  String outPath = '$inPath.pack';
+  String outPath = '$inPath';
   AssetPackFile packFile = openAssetPackFile(outPath);
   List<AssetPackFileAsset> assets = packFile.assets.values;
   assets.sort((a, b) => Comparable.compare(a.name, b.name));
