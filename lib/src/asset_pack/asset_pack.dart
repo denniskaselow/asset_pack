@@ -54,7 +54,7 @@ class AssetPack extends PropertyMap {
         completer.complete(this);
         return;
       }
-      Map<String,Map> parsed;
+      var parsed;
       try {
         parsed = JSON.parse(text);
       } catch (_) {
