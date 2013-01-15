@@ -26,7 +26,7 @@ class Manager {
     Future<AssetPack> futurePack;
     test('success.', () {
       futurePack = assetManager.loadPack('testpack', 'testpack.pack');
-      futurePack.then((pack) {
+      futurePack.then(expectAsync1((pack) {
         Expect.notEquals(pack, null);
         Expect.equals(true, pack.loadedSuccessfully);
         Expect.equals(4, pack.length);
@@ -40,19 +40,19 @@ class Manager {
         test('duplicate pack', () {
           Expect.throws(() => assetManager.loadPack('testpack', 'testpack.pack'));
         });
-      });
+      }));
     });
     test('failure', () {
       futurePack = assetManager.loadPack('testpack2', 'testpackbadname.pack');
-      futurePack.then((pack) {
+      futurePack.then(expectAsync1((pack) {
         Expect.equals(null, pack);
-      });
+      }));
     });
     test('badpack', () {
       futurePack = assetManager.loadPack('brokenpack', 'brokenpack.pack');
-      futurePack.then((pack) {
+      futurePack.then(expectAsync1((pack) {
         Expect.equals(null, pack);
-      });
+      }));
     });
   }
 
@@ -61,7 +61,7 @@ class Manager {
       AssetManager assetManager = new AssetManager();
       Future<AssetPack> futurePack;
       futurePack = assetManager.loadPack('testpack', 'testpack.pack');
-      futurePack.then((pack) {
+      futurePack.then(expectAsync1((pack) {
         Expect.equals(true, pack.loadedSuccessfully);
         Expect.equals(1, assetManager.length);
         Expect.notEquals(null, assetManager.testpack);
@@ -73,13 +73,13 @@ class Manager {
         Expect.equals(null, pack.type('test'));
         Expect.equals(null, pack.type('tests'));
         Expect.throws(() => assetManager.testpack);
-      });
+      }));
     });
     test('reload', () {
       AssetManager assetManager = new AssetManager();
       Future<AssetPack> futurePack;
       futurePack = assetManager.loadPack('testpack', 'testpack.pack');
-      futurePack.then((pack) {
+      futurePack.then(expectAsync1((pack) {
         Expect.equals(true, pack.loadedSuccessfully);
         Expect.equals(1, assetManager.length);
         Expect.notEquals(null, assetManager.testpack);
@@ -101,7 +101,7 @@ class Manager {
           assetManager.unloadPack('testpack');
           Expect.throws(() => assetManager.testpack);
         });
-      });
+      }));
     });
   }
 
