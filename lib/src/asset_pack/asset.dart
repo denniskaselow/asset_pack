@@ -70,7 +70,7 @@ class Asset {
   }
 
   Future<Asset> _loadAndImport(AssetRequest request) {
-    return _loadAsset(request).chain((asset) {
+    return _loadAsset(request).then((asset) {
       return _importAsset(asset._loaded, request);
     });
   }

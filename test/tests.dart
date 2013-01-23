@@ -20,6 +20,7 @@
 
 library asset_pack_tests;
 import 'dart:html';
+import 'dart:async';
 import 'package:unittest/unittest.dart';
 import 'package:asset_pack/asset_pack.dart';
 part 'loader.dart';

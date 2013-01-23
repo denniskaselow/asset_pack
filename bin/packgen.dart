@@ -1,5 +1,6 @@
 import 'dart:io';
-import 'dart:json';
+import 'dart:json' as JSON;
+import 'dart:async';
 import 'package:asset_pack/asset_pack_file.dart';
 
 Future<List<String>> findAllAssetPaths(String dirPath) {

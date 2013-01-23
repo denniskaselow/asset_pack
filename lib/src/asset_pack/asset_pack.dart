@@ -86,7 +86,7 @@ class AssetPack extends PropertyMap {
         var futureAsset = asset._loadAndImport(request);
         futureAssets.add(futureAsset);
       });
-      Futures.wait(futureAssets).then((List<Asset> loadedAssets) {
+      Future.wait(futureAssets).then((List<Asset> loadedAssets) {
         loadedAssets.forEach((asset) {
           assets[asset.name] = asset;
           this[asset.name] = asset.imported;

@@ -67,7 +67,7 @@ class AssetManager extends PropertyMap {
       var futurePack = loadPack(name, url);
       futurePacks.add(futurePack);
     });
-    return Futures.wait(futurePacks);
+    return Future.wait(futurePacks);
   }
 
   /** Unload pack with [name]. */

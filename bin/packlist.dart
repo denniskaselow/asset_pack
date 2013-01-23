@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:json';
+import 'dart:json' as JSON;
 import 'package:asset_pack/asset_pack_file.dart';
 
 AssetPackFile openAssetPackFile(String path) {
