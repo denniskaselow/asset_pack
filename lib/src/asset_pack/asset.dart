@@ -49,6 +49,9 @@ class Asset {
 
   Asset(this.pack, this.name, this.url, this.type, this.loader, this.importer);
 
+  /// The full asset manager asset path.
+  String get assetPath => '${pack.name}.${name}';
+
   Future<Asset> _loadAsset(AssetRequest request) {
     Completer<Asset> completer = new Completer<Asset>();
     Future<dynamic> loadedFuture = loader.load(request);

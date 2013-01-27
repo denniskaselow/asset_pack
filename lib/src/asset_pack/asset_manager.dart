@@ -33,6 +33,20 @@ class AssetManager extends PropertyMap {
     loaders['text'] = loaders['json'];
   }
 
+  dynamic getAssetAtPath(String assetPath) {
+    List<String> splitPath = assetPath.split(".");
+    if (splitPath.length != 2) {
+      return null;
+    }
+    String packName = splitPath[0];
+    String assetName = splitPath[1];
+    AssetPack pack = this[packName];
+    if (pack == null) {
+      return null;
+    }
+    return pack[assetName];
+  }
+
   /** Register a pack with [name] and load the contents from [url].
    * The future will complete to [null] if the asset pack cannot be loaded. */
   Future<AssetPack> loadPack(String name, String url) {

@@ -33,6 +33,12 @@ class Manager {
         Expect.equals(1, assetManager.length);
         Expect.equals(4, assetManager.testpack.length);
         Expect.equals(pack, assetManager.testpack);
+        Expect.equals(assetManager.getAssetAtPath('testpack.list'),
+                      assetManager.testpack.list);
+        Expect.equals(assetManager.getAssetAtPath('testpack'), null);
+        Expect.equals(assetManager.getAssetAtPath('testpack.'), null);
+        Expect.equals(assetManager.getAssetAtPath('.'), null);
+        Expect.equals(assetManager.getAssetAtPath(''), null);
         Expect.equals('json', pack.type('list'));
         Expect.equals('json', pack.type('map'));
         Expect.equals('json', pack.type('test'));
