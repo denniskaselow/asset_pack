@@ -7,5 +7,6 @@ authors:
 homepage: https://github.com/johnmccutchan/assetpack
 dependencies:
   unittest: any
-  property_map: any
+  property_map:
+    git: https://github.com/sethillgard/property_map.git
   browser: any
