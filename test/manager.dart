@@ -111,12 +111,43 @@ class Manager {
     });
   }
 
+  static void dynamicPackTest() {
+    test('registerAsset', () {
+      AssetManager assetManager = new AssetManager();
+      Asset asset1 = assetManager.registerAssetAtPath('packy.text', 'text',
+          'hello');
+      Asset asset2 = assetManager.registerAssetAtPath('packy.text', 'foo', '');
+      // Second attempt to register asset 'packy.text' returns first.
+      Expect.equals(asset1, asset2);
+      // Asset can be accessed via assets map.
+      Expect.equals(assetManager.packy.assets['text'], asset1);
+      // Asset properly registered:
+      Expect.equals(assetManager.packy.text, 'hello');
+      Expect.equals(asset1.importer, null);
+      Expect.equals(asset1.loader, null);
+      Expect.equals(asset1.status, 'OK');
+      Expect.equals(asset1.type, 'text');
+      Expect.equals(asset1.pack.type('text'), 'text');
+      assetManager.deregisterAssetAtPath('packy.text');
+      // Pack is removed.
+      Expect.throws(() {
+        // Access a non-existant pack throws.
+        var i = assetManager.packy;
+      });
+      // Asset is not findable.
+      Expect.equals(assetManager.getAssetAtPath('packy.text'), null);
+    });
+  }
+
   static void runTests() {
     group('loadPack', () {
       loadTest();
     });
     group('unloadpack', () {
       unloadTest();
+    });
+    group('dynamicpack', () {
+      dynamicPackTest();
     });
   }
 }

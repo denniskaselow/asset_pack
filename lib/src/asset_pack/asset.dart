@@ -44,7 +44,9 @@ class Asset {
   dynamic get imported {
     if (_imported != null)
       return _imported;
-    return importer.fallback;
+    if (imported != null)
+      return importer.fallback;
+    return null;
   }
 
   Asset(this.pack, this.name, this.url, this.type, this.loader, this.importer);
@@ -67,6 +69,7 @@ class Asset {
     Future<dynamic> importedFuture = importer.import(payload, request);
     importedFuture.then((imported) {
       _imported = imported;
+      _status = 'OK';
       completer.complete(this);
     });
     return completer.future;
@@ -79,7 +82,11 @@ class Asset {
   }
 
   void _delete() {
-    importer.delete(_imported);
-    loader.delete(_loaded);
+    if (imported != null) {
+      importer.delete(_imported);
+    }
+    if (loader != null) {
+      loader.delete(_loaded);
+    }
   }
 }
