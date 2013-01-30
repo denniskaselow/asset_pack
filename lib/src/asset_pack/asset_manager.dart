@@ -25,12 +25,87 @@ class AssetManager extends PropertyMap {
   final Map<String, AssetImporter> importers = new Map<String, AssetImporter>();
   /** A map from asset type to loader. Add your own loaders. */
   final Map<String, AssetLoader> loaders = new Map<String, AssetLoader>();
-
   AssetManager() {
     importers['json'] = new AssetImporterJson();
     importers['text'] = new AssetImporterText();
     loaders['json'] = new AssetLoaderText();
     loaders['text'] = loaders['json'];
+  }
+
+  /// Get imported asset at [assetPath].
+  dynamic getAssetAtPath(String assetPath) {
+    List<String> splitPath = assetPath.split(".");
+    if (splitPath.length != 2) {
+      return null;
+    }
+    String packName = splitPath[0];
+    String assetName = splitPath[1];
+    AssetPack pack = this[packName];
+    if (pack == null) {
+      return null;
+    }
+    return pack[assetName];
+  }
+
+  /// Register a new asset pack.
+  AssetPack registerAssetPack(String assetPackName) {
+    AssetPack pack = this[assetPackName];
+    if (pack != null) {
+      return pack;
+    }
+    pack = new AssetPack(this, assetPackName);
+    this[assetPackName] = pack;
+    return pack;
+  }
+
+  /// Register an imported asset of [type] at [assetPath].
+  Asset registerAssetAtPath(String assetPath, String type, dynamic imported) {
+    List<String> splitPath = assetPath.split(".");
+    if (splitPath.length != 2) {
+      return null;
+    }
+    String packName = splitPath[0];
+    String assetName = splitPath[1];
+    AssetPack pack = this[packName];
+    if (pack == null) {
+      // Add new pack.
+      pack = registerAssetPack(packName);
+    }
+    Asset asset = pack.assets[assetName];
+    if (asset != null) {
+      return asset;
+    }
+    // Create asset.
+    asset = new Asset(pack, assetName, '', type, null, null);
+    asset._imported = imported;
+    asset._status = 'OK';
+    // Register asset in pack.
+    pack.assets[assetName] = asset;
+    pack[assetName] = imported;
+    return asset;
+  }
+
+  void deregisterAssetAtPath(String assetPath) {
+    List<String> splitPath = assetPath.split(".");
+    if (splitPath.length != 2) {
+      return;
+    }
+    String packName = splitPath[0];
+    String assetName = splitPath[1];
+    AssetPack pack = this[packName];
+    if (pack == null) {
+      return;
+    }
+    Asset asset = pack.assets[assetName];
+    if (asset == null) {
+      return;
+    }
+    // Remove asset from pack.
+    pack.assets.remove(assetName);
+    // Remove empty packs.
+    if (pack.assets.length == 0) {
+      this.remove(packName);
+    }
   }
 
   /** Register a pack with [name] and load the contents from [url].
