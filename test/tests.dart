@@ -22,12 +22,14 @@ library asset_pack_tests;
 import 'dart:html';
 import 'dart:async';
 import 'package:unittest/unittest.dart';
+import 'package:unittest/html_enhanced_config.dart';
 import 'package:asset_pack/asset_pack.dart';
 part 'loader.dart';
 part 'importer.dart';
 part 'manager.dart';
 
 main() {
+  useHtmlEnhancedConfiguration();
   Loader.runTests();
   Importer.runTests();
   Manager.runTests();
