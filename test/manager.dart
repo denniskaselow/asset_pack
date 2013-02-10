@@ -30,15 +30,21 @@ class Manager {
         Expect.notEquals(pack, null);
         Expect.equals(true, pack.loadedSuccessfully);
         Expect.equals(4, pack.length);
-        Expect.equals(1, assetManager.length);
-        Expect.equals(4, assetManager.testpack.length);
-        Expect.equals(pack, assetManager.testpack);
-        Expect.equals(assetManager.getAssetAtPath('testpack.list'),
-                      assetManager.testpack.list);
-        Expect.equals(assetManager.getAssetAtPath('testpack'), null);
-        Expect.equals(assetManager.getAssetAtPath('testpack.'), null);
-        Expect.equals(assetManager.getAssetAtPath('.'), null);
-        Expect.equals(assetManager.getAssetAtPath(''), null);
+        Expect.equals(1, assetManager.root.length);
+        Expect.equals(4, assetManager.root.testpack.length);
+        Expect.equals(pack, assetManager.root.testpack);
+        Expect.equals(assetManager.getAssetAtPath('testpack.list').imported,
+                      assetManager.root.testpack.list);
+        Expect.equals(pack, assetManager.getAssetAtPath('testpack').imported);
+        Expect.throws(() {
+          assetManager.getAssetAtPath('testpack.');
+        });
+        Expect.throws(() {
+          assetManager.getAssetAtPath('.');
+          });
+        Expect.throws(() {
+          assetManager.getAssetAtPath('');
+        });
         Expect.equals('json', pack.type('list'));
         Expect.equals('json', pack.type('map'));
         Expect.equals('json', pack.type('test'));
@@ -69,16 +75,16 @@ class Manager {
       futurePack = assetManager.loadPack('testpack', 'testpack.pack');
       futurePack.then(expectAsync1((pack) {
         Expect.equals(true, pack.loadedSuccessfully);
-        Expect.equals(1, assetManager.length);
-        Expect.notEquals(null, assetManager.testpack);
+        Expect.equals(1, assetManager.root.length);
+        Expect.notEquals(null, assetManager.root.testpack);
         assetManager.unloadPack('testpack');
         Expect.equals(0, pack.length);
-        Expect.equals(0, assetManager.length);
+        Expect.equals(0, assetManager.root.length);
         Expect.equals(null, pack.type('list'));
         Expect.equals(null, pack.type('map'));
         Expect.equals(null, pack.type('test'));
         Expect.equals(null, pack.type('tests'));
-        Expect.throws(() => assetManager.testpack);
+        Expect.throws(() => assetManager.root.testpack);
       }));
     });
     test('reload', () {
@@ -87,25 +93,25 @@ class Manager {
       futurePack = assetManager.loadPack('testpack', 'testpack.pack');
       futurePack.then(expectAsync1((pack) {
         Expect.equals(true, pack.loadedSuccessfully);
-        Expect.equals(1, assetManager.length);
-        Expect.notEquals(null, assetManager.testpack);
+        Expect.equals(1, assetManager.root.length);
+        Expect.notEquals(null, assetManager.root.testpack);
         assetManager.unloadPack('testpack');
         Expect.equals(0, pack.length);
-        Expect.throws(() => assetManager.testpack);
+        Expect.throws(() => assetManager.root.testpack);
         futurePack = assetManager.loadPack('testpack', 'testpack.pack');
         futurePack.then((pack) {
           Expect.equals(true, pack.loadedSuccessfully);
           Expect.equals(4, pack.length);
-          Expect.equals(1, assetManager.length);
-          Expect.equals(pack, assetManager.testpack);
+          Expect.equals(1, assetManager.root.length);
+          Expect.equals(pack, assetManager.root.testpack);
           Expect.equals('json', pack.type('list'));
           Expect.equals('json', pack.type('map'));
           Expect.equals('json', pack.type('test'));
           Expect.equals('text', pack.type('tests'));
-          Expect.notEquals(null, assetManager.testpack);
+          Expect.notEquals(null, assetManager.root.testpack);
           assetManager.unloadPack('testpack');
-          assetManager.unloadPack('testpack');
-          Expect.throws(() => assetManager.testpack);
+          Expect.throws(() => assetManager.unloadPack('testpack'));
+          Expect.throws(() => assetManager.root.testpack);
         });
       }));
     });
@@ -116,13 +122,15 @@ class Manager {
       AssetManager assetManager = new AssetManager();
       Asset asset1 = assetManager.registerAssetAtPath('packy.text', 'text',
           'hello');
-      Asset asset2 = assetManager.registerAssetAtPath('packy.text', 'foo', '');
-      // Second attempt to register asset 'packy.text' returns first.
-      Expect.equals(asset1, asset2);
+      Expect.throws(() {
+        // Second attempt to register asset 'packy.text' throws argument error.
+        Asset asset2 = assetManager.registerAssetAtPath('packy.text', 'foo', '');
+      });
       // Asset can be accessed via assets map.
-      Expect.equals(assetManager.packy.assets['text'], asset1);
+      Asset foundAsset = assetManager.getAssetAtPath('packy.text');
+      Expect.equals(foundAsset, asset1);
       // Asset properly registered:
-      Expect.equals(assetManager.packy.text, 'hello');
+      Expect.equals(assetManager.root.packy.text, 'hello');
       Expect.equals(asset1.importer, null);
       Expect.equals(asset1.loader, null);
       Expect.equals(asset1.status, 'OK');
@@ -131,11 +139,13 @@ class Manager {
       assetManager.deregisterAssetAtPath('packy.text');
       // Pack is removed.
       Expect.throws(() {
-        // Access a non-existant pack throws.
-        var i = assetManager.packy;
+        // Access a non-existant asset throws.
+        var i = assetManager.root.packy;
       });
       // Asset is not findable.
-      Expect.equals(assetManager.getAssetAtPath('packy.text'), null);
+      Expect.throws(() {
+        assetManager.getAssetAtPath('packy.text');
+      });
     });
   }
 

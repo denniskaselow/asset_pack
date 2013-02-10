@@ -28,6 +28,7 @@ part 'src/asset_pack/asset.dart';
 part 'src/asset_pack/asset_importer.dart';
 part 'src/asset_pack/importers/asset_importer_json.dart';
 part 'src/asset_pack/importers/asset_importer_text.dart';
+part 'src/asset_pack/importers/asset_importer_pack.dart';
 part 'src/asset_pack/asset_loader.dart';
 part 'src/asset_pack/loaders/asset_loader_arraybuffer.dart';
 part 'src/asset_pack/loaders/asset_loader_blob.dart';

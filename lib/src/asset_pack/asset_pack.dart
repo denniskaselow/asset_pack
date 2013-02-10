@@ -20,85 +20,188 @@
 
 part of asset_pack;
 
+
 /** A pack of assets. You access the imported asset using named properties,
  * for example, if you have an asset named 'foo', you would acecss it by:
  *
  * assetPack.foo;
- *
  */
 class AssetPack extends PropertyMap {
   final AssetManager manager;
   final String name;
   final Map<String, Asset> assets = new Map<String, Asset>();
-  //final Set<String> missingResources = new Set<String>();
-  String _baseURL;
-
   bool _loadedSuccessfully = false;
   bool get loadedSuccessfully => _loadedSuccessfully;
 
-  AssetPack(this.manager, this.name);
+  AssetPack(this.manager, this.name) : super(_propertyMapConfig);
 
-  void _setBaseURL(String url) {
-    _baseURL = url.substring(0, url.lastIndexOf('.'));
+  Asset registerAsset(String assetName, String type, dynamic imported) {
+    Asset asset = assets[assetName];
+    if (asset != null) {
+      throw new ArgumentError('$assetName already exists.');
+    }
+    // Create asset.
+    asset = new Asset(this, assetName, '', type, null, null);
+    asset._imported = imported;
+    asset._status = 'OK';
+    // Register asset in pack.
+    assets[assetName] = asset;
+    this[assetName] = imported;
+    return asset;
   }
 
-  Future<AssetPack> _load(String url) {
-    _setBaseURL(url);
-    _unload();
-    AssetLoaderText loader = new AssetLoaderText();
-    AssetRequest request = new AssetRequest(name, url, '', 'pack', {}, {});
-    Future f = loader.load(request);
-    Completer<AssetPack> completer = new Completer<AssetPack>();
-    f.then((text) {
-      if (text == null) {
-        completer.complete(this);
-        return;
+  void deregisterAsset(String assetName) {
+    final asset = assets[assetName];
+    if (asset == null) {
+      throw new ArgumentError('$assetName does not exist.');
+    }
+    // Unregister asset in pack.
+    assets.remove(assetName);
+    remove(assetName);
+  }
+
+  Asset getAssetAtPath(String assetPath) {
+    List<String> splitPath = assetPath.split(".");
+    return _getAssetAtPath(assetPath, splitPath);
+  }
+
+  Asset _getAssetAtPath(String fullAssetPath, List<String> assetPath) {
+    if (assetPath.length == 0) {
+      throw new ArgumentError('$fullAssetPath does not exist.');
+    }
+    String name = assetPath.removeAt(0);
+    Asset asset = assets[name];
+    if (asset.isPack && assetPath.length > 0) {
+      AssetPack pack = asset.imported;
+      return pack._getAssetAtPath(fullAssetPath, assetPath);
+    }
+    if (assetPath.length > 0) {
+      throw new ArgumentError('$fullAssetPath does not exist.');
+    }
+    return asset;
+  }
+
+  AssetPack registerAssetPack(String assetPackName) {
+    Asset asset = assets[assetPackName];
+    if (asset != null) {
+      throw new ArgumentError('$assetPackName already exists.');
+    }
+    AssetPack pack = new AssetPack(manager, assetPackName);
+    registerAsset(assetPackName, 'pack', pack);
+    return pack;
+  }
+
+  /** Register a pack with [name] and load the contents from [url]. */
+  Future<AssetPack> loadPack(String name, String url) {
+    if (assets[name] != null) {
+      throw new ArgumentError('$name already exists.');
+    }
+    AssetRequest assetRequest = new AssetRequest(name, url, '',
+                                                 'pack', {}, {});
+    Future<AssetPack> futurePack = manager._loadAndImport(assetRequest);
+    return futurePack.then((p) {
+      if (p != null) {
+        registerAsset(name, 'pack', p);
       }
-      var parsed;
-      try {
-        parsed = JSON.parse(text);
-      } catch (_) {
-        _loadedSuccessfully = false;
-        completer.complete(this);
-        return;
-      }
-      AssetPackFile packFile = new AssetPackFile.fromJson(parsed);
-      _loadedSuccessfully = true;
-      List<Future<Asset>> futureAssets = new List<Future<Asset>>();
-      packFile.assets.forEach((_, packFileAsset) {
-        String assetURL = packFileAsset.url;
-        String name = packFileAsset.name;
-        String type = packFileAsset.type;
-        AssetImporter importer = manager.importers[type];
-        AssetLoader loader = manager.loaders[type];
-        if (importer == null) {
-          print('Cannot load $name ($assetURL) because there is no importer for $type');
-          return;
-        }
-        if (loader == null) {
-          print('Cannot load $name ($assetURL) because there is no loader for $type');
-          return;
-        }
-        Asset asset = new Asset(this, name, assetURL, type, loader, importer);
-        AssetRequest request = new AssetRequest(name, _baseURL, assetURL, type,
-                                                packFileAsset.loadArguments,
-                                                packFileAsset.importArguments);
-        var futureAsset = asset._loadAndImport(request);
-        futureAssets.add(futureAsset);
-      });
-      Future.wait(futureAssets).then((List<Asset> loadedAssets) {
-        loadedAssets.forEach((asset) {
-          assets[asset.name] = asset;
-          this[asset.name] = asset.imported;
-        });
-        completer.complete(this);
-      });
+      return new Future.immediate(p);
     });
-    return completer.future;
+  }
+
+  /** Load many packs at once. Results in a single Future to wait on.:
+   *
+   * [['packName', 'packUrl.pack'], ['packName2', 'packUrl2.pack']]
+   */
+  Future loadPacks(List<List<String>> packs) {
+    if (packs == null) {
+      return new Future.immediate(null);
+    }
+    var futurePacks = new List<Future<AssetPack>>();
+    packs.forEach((pack) {
+      String name = pack[0];
+      String url = pack[1];
+      var futurePack = loadPack(name, url);
+      futurePacks.add(futurePack);
+    });
+    return Future.wait(futurePacks);
+  }
+
+  /** Unload pack with [name]. */
+  void unloadPack(String name) {
+    Asset asset = assets[name];
+    if (asset == null) {
+      throw new ArgumentError('$name does not exist.');
+    }
+    if (asset.isPack == false) {
+      throw new ArgumentError('$name is not a pack.');
+    }
+    AssetPack pack = asset.imported;
+    deregisterAsset(name);
+    pack._unload();
+  }
+
+  /// Register an imported asset of [type] at [assetPath].
+  Asset registerAssetAtPath(String assetPath, String type, dynamic imported) {
+    List<String> splitPath = assetPath.split(".");
+    return _registerAssetAtPath(assetPath, splitPath, type, imported);
+  }
+
+  Asset _registerAssetAtPath(String fullAssetPath, List<String> assetPath,
+                             String type, dynamic imported) {
+    String name = assetPath.removeAt(0);
+    if (assetPath.length == 0) {
+      // Leaf
+      return registerAsset(name, type, imported);
+    } else {
+      // Inner
+      Asset packAsset = assets[name];
+      if (packAsset != null) {
+        if (packAsset.isPack == false) {
+          throw new ArgumentError('Cannot register $fullAssetPath'
+                                  'because of a conflict.');
+        } else {
+          AssetPack pack = packAsset.imported;
+          return pack._registerAssetAtPath(fullAssetPath, assetPath, type,
+                                           imported);
+        }
+      } else {
+        AssetPack pack = registerAssetPack(name);
+        return pack._registerAssetAtPath(fullAssetPath, assetPath, type, imported);
+      }
+    }
+  }
+
+  void deregisterAssetAtPath(String assetPath) {
+    List<String> splitPath = assetPath.split(".");
+    _deregisterAssetAtPath(assetPath, splitPath);
+  }
+
+  void _deregisterAssetAtPath(String fullAssetPath, List<String> assetPath) {
+    String name = assetPath.removeAt(0);
+    if (assetPath.length == 0) {
+      // Leaf
+      deregisterAsset(name);
+    } else {
+      // Inner
+      Asset packAsset = assets[name];
+      if (packAsset != null) {
+        if (packAsset.isPack == false) {
+          throw new ArgumentError('Cannot deregister $fullAssetPath'
+                                  'because of a conflict.');
+        } else {
+          AssetPack pack = packAsset.imported;
+          pack._deregisterAssetAtPath(fullAssetPath, assetPath);
+          if (pack.assets.length == 0) {
+            // Remove empty packs.
+            deregisterAsset(name);
+          }
+        }
+      } else {
+        throw new ArgumentError('$fullAssetPath does not exist.');
+      }
+    }
   }
 
   void _unload() {
-    //missingResources.clear();
     _loadedSuccessfully = false;
     assets.forEach((name, asset) {
       asset._delete();

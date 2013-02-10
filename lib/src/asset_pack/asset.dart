@@ -49,37 +49,12 @@ class Asset {
     return null;
   }
 
+  bool get isPack => type == 'pack';
+
   Asset(this.pack, this.name, this.url, this.type, this.loader, this.importer);
 
   /// The full asset manager asset path.
   String get assetPath => '${pack.name}.${name}';
-
-  Future<Asset> _loadAsset(AssetRequest request) {
-    Completer<Asset> completer = new Completer<Asset>();
-    Future<dynamic> loadedFuture = loader.load(request);
-    loadedFuture.then((loaded) {
-      _loaded = loaded;
-      completer.complete(this);
-    });
-    return completer.future;
-  }
-
-  Future<Asset> _importAsset(dynamic payload, AssetRequest request) {
-    Completer<Asset> completer = new Completer<Asset>();
-    Future<dynamic> importedFuture = importer.import(payload, request);
-    importedFuture.then((imported) {
-      _imported = imported;
-      _status = 'OK';
-      completer.complete(this);
-    });
-    return completer.future;
-  }
-
-  Future<Asset> _loadAndImport(AssetRequest request) {
-    return _loadAsset(request).then((asset) {
-      return _importAsset(asset._loaded, request);
-    });
-  }
 
   void _delete() {
     if (imported != null) {
