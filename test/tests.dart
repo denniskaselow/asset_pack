@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2012 John McCutchan <john@johnmccutchan.com>
+  Copyright (C) 2013 John McCutchan <john@johnmccutchan.com>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -29,7 +29,7 @@ part 'importer.dart';
 part 'manager.dart';
 
 main() {
-  useHtmlEnhancedConfiguration();
+  //useHtmlEnhancedConfiguration();
   Loader.runTests();
   Importer.runTests();
   Manager.runTests();
