@@ -26,7 +26,7 @@ class AssetLoaderArrayBuffer extends AssetLoader {
     var completer = new Completer<dynamic>();
     var httpRequest = new HttpRequest();
     httpRequest.responseType = 'arraybuffer';
-    httpRequest.on.load.add((event) {
+    httpRequest.onLoad.listen((event) {
       if (httpRequest.status == 200) {
         completer.complete(httpRequest.response);
       } else {

@@ -25,7 +25,7 @@ class AssetLoaderText extends AssetLoader {
     var completer = new Completer<dynamic>();
     var httpRequest = new HttpRequest();
     httpRequest.responseType = 'text';
-    httpRequest.on.load.add((event) {
+    httpRequest.onLoad.listen((event) {
       if (httpRequest.status == 200) {
         completer.complete(httpRequest.responseText);
       } else {

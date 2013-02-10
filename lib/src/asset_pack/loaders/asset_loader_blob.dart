@@ -25,7 +25,7 @@ class AssetLoaderBlob extends AssetLoader {
     var completer = new Completer<dynamic>();
     var httpRequest = new HttpRequest();
     httpRequest.responseType = 'blob';
-    httpRequest.on.load.add((event) {
+    httpRequest.onLoad.listen((event) {
       if (httpRequest.status == 200) {
         completer.complete(httpRequest.response);
       } else {
