@@ -47,6 +47,10 @@ class AssetImporterPack extends AssetImporter {
       String assetURL = packFileAsset.url;
       String name = packFileAsset.name;
       String type = packFileAsset.type;
+      if (type == 'fill_me_in' || type == '') {
+        print('Ignoring $name');
+        return;
+      }
       AssetRequest request = new AssetRequest(name, baseURL, assetURL, type,
           packFileAsset.loadArguments,
           packFileAsset.importArguments);

@@ -27,6 +27,12 @@ part of asset_pack;
  * assetPack.foo;
  */
 class AssetPack extends PropertyMap {
+  bool _invalidName(String name) {
+    return name == 'manager' ||
+           name == 'name' ||
+           name == 'assets';
+           name == 'loadedSuccessfully';
+  }
   final AssetManager manager;
   final String name;
   final Map<String, Asset> assets = new Map<String, Asset>();
@@ -36,6 +42,9 @@ class AssetPack extends PropertyMap {
   AssetPack(this.manager, this.name) : super(_propertyMapConfig);
 
   Asset registerAsset(String assetName, String type, dynamic imported) {
+    if (_invalidName(assetName)) {
+      throw new ArgumentError('$assetName is an invalid name.');
+    }
     Asset asset = assets[assetName];
     if (asset != null) {
       throw new ArgumentError('$assetName already exists.');
@@ -82,6 +91,9 @@ class AssetPack extends PropertyMap {
   }
 
   AssetPack registerAssetPack(String assetPackName) {
+    if (_invalidName(assetPackName)) {
+      throw new ArgumentError('$assetPackName is an invalid name.');
+    }
     Asset asset = assets[assetPackName];
     if (asset != null) {
       throw new ArgumentError('$assetPackName already exists.');
