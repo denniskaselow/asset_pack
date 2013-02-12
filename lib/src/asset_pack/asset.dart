@@ -20,6 +20,10 @@
 
 part of asset_pack;
 
+/// The [Asset] class holds the metadata for an imported asset. The imported
+/// object can be accessed via the [imported] property. Assets belong to a
+/// [pack]. They have a [name]. Assets loaded from a [url] have a
+/// [loader] and [importer].
 class Asset {
   final AssetPack pack;
   /** The name of the asset. */
@@ -34,13 +38,14 @@ class Asset {
   final AssetImporter importer;
 
   String _status = 'Unloaded';
+  /// Status string.
   String get status => _status;
   bool get _isLoaded => status == 'OK';
 
   dynamic _loaded;
   dynamic _imported;
 
-  /** The imported asset */
+  /** The imported object */
   dynamic get imported {
     if (_imported != null)
       return _imported;
@@ -49,12 +54,13 @@ class Asset {
     return null;
   }
 
+  /// Is [imported] a pack file?
   bool get isPack => type == 'pack';
 
   Asset(this.pack, this.name, this.url, this.type, this.loader, this.importer);
 
-  /// The full asset manager asset path.
-  String get assetPath => '${pack.name}.${name}';
+  /// Path to this asset.
+  String get path => '${pack.path}.${name}';
 
   void _delete() {
     if (imported != null) {

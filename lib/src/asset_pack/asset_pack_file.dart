@@ -65,6 +65,16 @@ class AssetPackFileAsset {
 }
 
 class AssetPackFile {
+  /** Returns true if [name] is valid. Some names, for example, "assets",
+   * are not allowed.
+   */
+  static bool validAssetName(String name) {
+    return name != 'manager' &&
+           name != 'name' &&
+           name != 'assets' &&
+           name != 'loadedSuccessfully';
+  }
+
   /** Assets in the pack file */
   final Map<String, AssetPackFileAsset> assets =
       new Map<String, AssetPackFileAsset>();

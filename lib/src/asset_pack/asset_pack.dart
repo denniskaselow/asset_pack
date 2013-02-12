@@ -21,57 +21,95 @@
 part of asset_pack;
 
 
-/** A pack of assets. You access the imported asset using named properties,
- * for example, if you have an asset named 'foo', you would acecss it by:
+/**
+ * A set of assets. The importer property of an asset can be accessed as if
+ * it were a property on the pack with the name of the asset. Metadata for
+ * an asset can be accessed via the [assets] map. That means that the
+ * following is true:
  *
- * assetPack.foo;
+ * pack.assets["assetName"].imported == pack.assetName
+ *
+ * Asset packs can contain other asset packs.
+ *
+ * You can determine the path of an asset pack by getting it's path variable.
+ *
  */
 class AssetPack extends PropertyMap {
-  bool _invalidName(String name) {
-    return name == 'manager' ||
-           name == 'name' ||
-           name == 'assets';
-           name == 'loadedSuccessfully';
-  }
   final AssetManager manager;
   final String name;
   final Map<String, Asset> assets = new Map<String, Asset>();
   bool _loadedSuccessfully = false;
+
+  /// Was this pack loaded successfully?
   bool get loadedSuccessfully => _loadedSuccessfully;
+  /// Parent pack or null.
+  AssetPack parent;
+  /// Path to this pack.
+  String get path => parent == null ? '' : '${parent.path}.$name';
 
   AssetPack(this.manager, this.name) : super(_propertyMapConfig);
 
-  Asset registerAsset(String assetName, String type, dynamic imported) {
-    if (_invalidName(assetName)) {
-      throw new ArgumentError('$assetName is an invalid name.');
-    }
+  /// Returns the type of [assetName].
+  String type(String assetName) {
     Asset asset = assets[assetName];
     if (asset != null) {
-      throw new ArgumentError('$assetName already exists.');
+      return asset.type;
+    }
+    return null;
+  }
+
+  /// Returns the url of [assetName].
+  String url(String assetName) {
+    Asset asset = assets[assetName];
+    if (asset != null) {
+      return asset.url;
+    }
+    return null;
+  }
+
+  /// Add asset to this pack.
+  Asset registerAsset(String name, String type, dynamic imported) {
+    if (AssetPackFile.validAssetName(name) == false) {
+      throw new ArgumentError('$name is an invalid name.');
+    }
+    Asset asset = assets[name];
+    if (asset != null) {
+      throw new ArgumentError('$name already exists.');
     }
     // Create asset.
-    asset = new Asset(this, assetName, '', type, null, null);
+    asset = new Asset(this, name, '', type, null, null);
     asset._imported = imported;
     asset._status = 'OK';
     // Register asset in pack.
-    assets[assetName] = asset;
-    this[assetName] = imported;
+    assets[name] = asset;
+    this[name] = imported;
     return asset;
   }
 
-  void deregisterAsset(String assetName) {
-    final asset = assets[assetName];
+  /// Remove an asset from this pack.
+  void deregisterAsset(String name) {
+    final asset = assets[name];
     if (asset == null) {
-      throw new ArgumentError('$assetName does not exist.');
+      throw new ArgumentError('$name does not exist.');
     }
     // Unregister asset in pack.
-    assets.remove(assetName);
-    remove(assetName);
+    assets.remove(name);
+    remove(name);
   }
 
-  Asset getAssetAtPath(String assetPath) {
-    List<String> splitPath = assetPath.split(".");
-    return _getAssetAtPath(assetPath, splitPath);
+  /// Get asset's imported property at [path].
+  dynamic getImportedAtPath(String path) {
+    Asset asset = getAssetAtPath(path);
+    if (asset != null) {
+      return asset.imported;
+    }
+    return null;
+  }
+
+  /// Get asset metadata at [path]. Returns the [Asset] not the imported value
+  Asset getAssetAtPath(String path) {
+    List<String> splitPath = path.split(".");
+    return _getAssetAtPath(path, splitPath);
   }
 
   Asset _getAssetAtPath(String fullAssetPath, List<String> assetPath) {
@@ -90,20 +128,41 @@ class AssetPack extends PropertyMap {
     return asset;
   }
 
-  AssetPack registerAssetPack(String assetPackName) {
-    if (_invalidName(assetPackName)) {
-      throw new ArgumentError('$assetPackName is an invalid name.');
+  /// Add a child asset pack to this asset pack.
+  AssetPack registerPack(String name) {
+    if (AssetPackFile.validAssetName(name) == false) {
+      throw new ArgumentError('$name is an invalid name.');
     }
-    Asset asset = assets[assetPackName];
+    Asset asset = assets[name];
     if (asset != null) {
-      throw new ArgumentError('$assetPackName already exists.');
+      throw new ArgumentError('$name already exists.');
     }
-    AssetPack pack = new AssetPack(manager, assetPackName);
-    registerAsset(assetPackName, 'pack', pack);
+    AssetPack pack = new AssetPack(manager, name);
+    pack.parent = this;
+    registerAsset(name, 'pack', pack);
     return pack;
   }
 
-  /** Register a pack with [name] and load the contents from [url]. */
+  /// Remove a child pack from this asset pack.
+  void deregisterPack(String name) {
+    if (AssetPackFile.validAssetName(name) == false) {
+      throw new ArgumentError('$name is an invalid name.');
+    }
+    Asset asset = assets[name];
+    if (asset == null) {
+      throw new ArgumentError('$name does not exist.');
+    }
+    if (asset.isPack == false) {
+      throw new ArgumentError('$name is not an asset pack.');
+    }
+    AssetPack pack = asset.imported;
+    pack.parent = null;
+    // TODO: recursively clean up child packs.
+    deregisterAsset(name);
+    pack._unload();
+  }
+
+  /// Load the pack at [url] and add it as a child pack named [name].
   Future<AssetPack> loadPack(String name, String url) {
     if (assets[name] != null) {
       throw new ArgumentError('$name already exists.');
@@ -119,10 +178,8 @@ class AssetPack extends PropertyMap {
     });
   }
 
-  /** Load many packs at once. Results in a single Future to wait on.:
-   *
-   * [['packName', 'packUrl.pack'], ['packName2', 'packUrl2.pack']]
-   */
+  /// Load many packs, adding each one as a child pack.
+  /// [['packName', 'packUrl'], ['packName2', 'packUrl2']]
   Future loadPacks(List<List<String>> packs) {
     if (packs == null) {
       return new Future.immediate(null);
@@ -137,21 +194,8 @@ class AssetPack extends PropertyMap {
     return Future.wait(futurePacks);
   }
 
-  /** Unload pack with [name]. */
-  void unloadPack(String name) {
-    Asset asset = assets[name];
-    if (asset == null) {
-      throw new ArgumentError('$name does not exist.');
-    }
-    if (asset.isPack == false) {
-      throw new ArgumentError('$name is not a pack.');
-    }
-    AssetPack pack = asset.imported;
-    deregisterAsset(name);
-    pack._unload();
-  }
-
-  /// Register an imported asset of [type] at [assetPath].
+  /// Add an asset of [type] at [assetPath]. Will recursively
+  /// create child packs.
   Asset registerAssetAtPath(String assetPath, String type, dynamic imported) {
     List<String> splitPath = assetPath.split(".");
     return _registerAssetAtPath(assetPath, splitPath, type, imported);
@@ -176,12 +220,13 @@ class AssetPack extends PropertyMap {
                                            imported);
         }
       } else {
-        AssetPack pack = registerAssetPack(name);
+        AssetPack pack = registerPack(name);
         return pack._registerAssetAtPath(fullAssetPath, assetPath, type, imported);
       }
     }
   }
 
+  /// Remove the asset at [assetPath].
   void deregisterAssetAtPath(String assetPath) {
     List<String> splitPath = assetPath.split(".");
     _deregisterAssetAtPath(assetPath, splitPath);
@@ -220,23 +265,5 @@ class AssetPack extends PropertyMap {
     });
     assets.clear();
     this.clear();
-  }
-
-  /** Returns the type of [assetName]. */
-  String type(String assetName) {
-    Asset asset = assets[assetName];
-    if (asset != null) {
-      return asset.type;
-    }
-    return null;
-  }
-
-  /** Returns the url of [assetName]. */
-  String url(String assetName) {
-    Asset asset = assets[assetName];
-    if (asset != null) {
-      return asset.url;
-    }
-    return null;
   }
 }

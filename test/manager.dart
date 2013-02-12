@@ -77,7 +77,7 @@ class Manager {
         Expect.equals(true, pack.loadedSuccessfully);
         Expect.equals(1, assetManager.root.length);
         Expect.notEquals(null, assetManager.root.testpack);
-        assetManager.unloadPack('testpack');
+        assetManager.deregisterPack('testpack');
         Expect.equals(0, pack.length);
         Expect.equals(0, assetManager.root.length);
         Expect.equals(null, pack.type('list'));
@@ -95,7 +95,7 @@ class Manager {
         Expect.equals(true, pack.loadedSuccessfully);
         Expect.equals(1, assetManager.root.length);
         Expect.notEquals(null, assetManager.root.testpack);
-        assetManager.unloadPack('testpack');
+        assetManager.deregisterPack('testpack');
         Expect.equals(0, pack.length);
         Expect.throws(() => assetManager.root.testpack);
         futurePack = assetManager.loadPack('testpack', 'testpack.pack');
@@ -109,8 +109,8 @@ class Manager {
           Expect.equals('json', pack.type('test'));
           Expect.equals('text', pack.type('tests'));
           Expect.notEquals(null, assetManager.root.testpack);
-          assetManager.unloadPack('testpack');
-          Expect.throws(() => assetManager.unloadPack('testpack'));
+          assetManager.deregisterPack('testpack');
+          Expect.throws(() => assetManager.deregisterPack('testpack'));
           Expect.throws(() => assetManager.root.testpack);
         });
       }));

@@ -42,36 +42,40 @@ class AssetManager {
   }
 
   AssetPack _root;
+  /// The root pack.
   AssetPack get root => _root;
 
-  /// Get imported asset at [assetPath].
+  /// Forwarded to root.
   dynamic getAssetAtPath(String assetPath) => root.getAssetAtPath(assetPath);
 
-  /// Registers a new asset at path. Will automatically create asset packs.
+  /// Forwarded to root. See [AssetPack] for method documentation.
   Asset registerAssetAtPath(String assetPath, String type, dynamic imported) {
     return root.registerAssetAtPath(assetPath, type, imported);
   }
 
-  /// Deregisters assetPath.
+  /// Forwarded to root. See [AssetPack] for method documentation.
   void deregisterAssetAtPath(String assetPath) {
     root.deregisterAssetAtPath(assetPath);
   }
 
-  /// Register a new asset pack.
-  AssetPack registerAssetPack(String assetPackName) {
+  /// Forwarded to root. See [AssetPack] for method documentation.
+  AssetPack registerPack(String assetPackName) {
     return _root.registerAssetPack(assetPackName);
   }
 
+  /// Forwared to root. See [AssetPack] for method documentation.
+  void deregisterPack(String name) {
+    return _root.deregisterPack(name);
+  }
+
+  /// Forwarded to root. See [AssetPack] for method documentation.
   Future<AssetPack> loadPack(String name, String url) {
     return _root.loadPack(name, url);
   }
 
+  /// Forwarded to root. See [AssetPack] for method documentation.
   Future loadPacks(List<List<String>> packs) {
     return _root.loadPacks(packs);
-  }
-
-  void unloadPack(String name) {
-    _root.unloadPack(name);
   }
 
   Future _loadAndImport(AssetRequest request) {

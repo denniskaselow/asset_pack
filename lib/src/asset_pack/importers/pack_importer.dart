@@ -77,5 +77,10 @@ class PackImporter extends AssetImporter {
       return;
     }
     AssetPack pack = imported;
+    try {
+      if (pack.parent != null) {
+        pack.parent.deregisterAssetPack(pack.name);
+      }
+    } catch(_) {}
   }
 }
