@@ -4,8 +4,8 @@
 ## Introduction ##
 
 An asset management library for Dart games. Assets are organized into a tree
-of asset packs. Assets can be any resource from simple text string to a complex
-skinned character. 
+of asset packs. Assets can be any resource from a simple text string to a
+complex skinned character. 
 
 Typically an asset pack file is loaded from the network, parsed, and all child
 assets are loaded from the network and imported. An asset pack file is a JSON
@@ -21,9 +21,9 @@ Each asset manager has a tree of asset packs. Each asset pack contains
 assets and other asset packs. Every asset has a logical asset path, which
 is a `.` separated list of strings. Example asset paths follow:
 
-1\. animals.cats.pic
-2\. animals.kinds
-3\. animals.dogs.pic
+1. animals.cats.pic
+2. animals.kinds
+3. animals.dogs.pic
 
 ## Why asset_pack ? ##
 
@@ -42,11 +42,12 @@ deep integration with other game libraries for Dart.
 
 Imported assets are accessed via a property tree. The root of the tree is
 accessed via the `root` property on an `AssetManager`. Example: 
+
 `ImageElement image = assetManager.root.animals.cats.picture;`
 
 Each imported asset also has an associated `Asset` instance. An `Asset` holds
 metadata associated with the imported asset. It can be accessed via the
-`assets` map of the `AssetPack`:
+`assets` map of the `AssetPack`. Example:
 
 `Asset asset = assetManager.root.animals.cats.assets["picture"]`;
 
@@ -58,15 +59,15 @@ is loaded via an `AssetLoader` and then imported by an `AssetImporter`.
 ## Which loaders and importers come out of the box? ##
 
 Loaders:
-1\. ArrayBufferLoader
-2\. BlobLoader
-3\. ImageLoader
-4\. TextLoader
+1. ArrayBufferLoader
+2. BlobLoader
+3. ImageLoader
+4. TextLoader
 
 Importers:
-1\. JsonImporter
-2\. PackImporter
-3\. TextImporter
+1. JsonImporter
+2. PackImporter
+3. TextImporter
 
 ## I want to add an importer for a new asset type, what do I do? ##
 
