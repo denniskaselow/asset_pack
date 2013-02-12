@@ -48,7 +48,7 @@ class PackImporter extends AssetImporter {
       String name = packFileAsset.name;
       String type = packFileAsset.type;
       if (type == 'fill_me_in' || type == '') {
-        print('Ignoring $name');
+        print('Ignoring asset $name');
         return;
       }
       AssetRequest request = new AssetRequest(name, baseURL, assetURL, type,
@@ -79,7 +79,7 @@ class PackImporter extends AssetImporter {
     AssetPack pack = imported;
     try {
       if (pack.parent != null) {
-        pack.parent.deregisterAssetPack(pack.name);
+        pack.parent.deregisterPack(pack.name);
       }
     } catch(_) {}
   }
