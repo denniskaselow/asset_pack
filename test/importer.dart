@@ -88,7 +88,51 @@ class Importer {
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.notEquals(null, text);
-        JsonImporter importer = new JsonImporter();
+        PropertyMapImporter importer = new PropertyMapImporter();
+        importer.import(text, assetRequest).then((imported) {
+          Expect.equals(5, imported.length);
+        });
+      }));
+    });
+  }
+
+  static void propertyMapTest() {
+    TextLoader textLoader = new TextLoader();
+    test('404', () {
+      Future loaded;
+      var assetRequest = new AssetRequest('notthere', '', 'notthere.json',
+                                          'json', {}, {});
+      loaded = textLoader.load(assetRequest);
+      loaded.then(expectAsync1((String text) {
+        Expect.equals(null, text);
+        PropertyMapImporter importer = new PropertyMapImporter();
+        importer.import(text, assetRequest).then(
+            (imported) {
+              Expect.equals(importer.fallback.length, imported.length);
+            });
+      }));
+    });
+    test('map', () {
+      Future loaded;
+      var assetRequest = new AssetRequest('map', '', 'map.json',
+                                          'json', {}, {});
+      loaded = textLoader.load(assetRequest);
+      loaded.then(expectAsync1((String text) {
+        Expect.notEquals(null, text);
+        PropertyMapImporter importer = new PropertyMapImporter();
+        importer.import(text, assetRequest).then((imported) {
+          Expect.equals("b", imported.a);
+        });
+      }));
+    });
+    test('list', () {
+      Future loaded;
+      var assetRequest = new AssetRequest('list', '', 'list.json',
+                                          'json', {}, {});
+      loaded = textLoader.load(assetRequest);
+      loaded.then(expectAsync1((String text) {
+        Expect.notEquals(null, text);
+        PropertyMapImporter importer = new PropertyMapImporter();
         importer.import(text, assetRequest).then((imported) {
           Expect.equals(5, imported.length);
         });
@@ -97,11 +141,14 @@ class Importer {
   }
 
   static void runTests() {
-    group('AssertImporterText', () {
+    group('TextImporter', () {
       Importer.textTest();
     });
-    group('AssertImporterJson', () {
+    group('JsonImporter', () {
       Importer.jsonTest();
+    });
+    group('PropertyMapImporter', () {
+      Importer.propertyMapTest();
     });
   }
 }

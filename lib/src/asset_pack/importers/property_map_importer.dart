@@ -18,22 +18,25 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-library asset_pack;
-import 'dart:html';
-import 'dart:json' as JSON;
-import 'dart:async';
-import 'package:property_map/property_map.dart';
-import 'asset_pack_file.dart';
-part 'src/asset_pack/asset.dart';
-part 'src/asset_pack/asset_importer.dart';
-part 'src/asset_pack/importers/json_importer.dart';
-part 'src/asset_pack/importers/pack_importer.dart';
-part 'src/asset_pack/importers/property_map_importer.dart';
-part 'src/asset_pack/importers/text_importer.dart';
-part 'src/asset_pack/asset_loader.dart';
-part 'src/asset_pack/loaders/arraybuffer_loader.dart';
-part 'src/asset_pack/loaders/blob_loader.dart';
-part 'src/asset_pack/loaders/image_loader.dart';
-part 'src/asset_pack/loaders/text_loader.dart';
-part 'src/asset_pack/asset_manager.dart';
-part 'src/asset_pack/asset_pack.dart';
+part of asset_pack;
+
+class PropertyMapImporter extends AssetImporter {
+  dynamic get fallback => new PropertyMap();
+
+  Future<dynamic> import(dynamic payload, AssetRequest assetRequest) {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    if (payload is String) {
+      try {
+        var parsed = PropertyMap.parseJson(payload);
+        completer.complete(parsed);
+      } catch (_) {
+        completer.complete(fallback);
+      }
+    }
+    return completer.future;
+  }
+
+  void delete(dynamic imported) {
+
+  }
+}
