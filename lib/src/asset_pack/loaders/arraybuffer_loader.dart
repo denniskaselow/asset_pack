@@ -20,23 +20,25 @@
 
 part of asset_pack;
 
-class AssetImporterJson extends AssetImporter {
-  dynamic get fallback => {};
+class ArrayBufferLoader extends AssetLoader {
 
-  Future<dynamic> import(dynamic payload, AssetRequest assetRequest) {
-    Completer<dynamic> completer = new Completer<dynamic>();
-    if (payload is String) {
-      try {
-        var parsed = JSON.parse(payload);
-        completer.complete(parsed);
-      } catch (_) {
-        completer.complete(fallback);
+  Future<dynamic> load(AssetRequest assetRequest) {
+    var completer = new Completer<dynamic>();
+    var httpRequest = new HttpRequest();
+    httpRequest.responseType = 'arraybuffer';
+    httpRequest.onLoad.listen((event) {
+      if (httpRequest.status == 200) {
+        completer.complete(httpRequest.response);
+      } else {
+        completer.complete(null);
       }
-    }
+    });
+    httpRequest.open('GET', assetRequest.URL);
+    httpRequest.send();
     return completer.future;
   }
 
-  void delete(dynamic imported) {
+  void delete(dynamic arg) {
 
   }
 }

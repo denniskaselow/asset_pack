@@ -20,7 +20,7 @@
 
 part of asset_pack;
 
-class AssetLoaderImage extends AssetLoader {
+class ImageLoader extends AssetLoader {
   Future<dynamic> load(AssetRequest assetRequest) {
     var completer = new Completer<dynamic>();
     ImageElement image = new ImageElement();

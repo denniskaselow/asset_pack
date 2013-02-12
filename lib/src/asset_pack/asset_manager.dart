@@ -33,10 +33,10 @@ class AssetManager {
     _propertyMapConfig.autoConvertLists = false;
     _propertyMapConfig.autoConvertMaps = false;
     _root = new AssetPack(this, 'root');
-    importers['json'] = new AssetImporterJson();
-    importers['text'] = new AssetImporterText();
-    importers['pack'] = new AssetImporterPack(this);
-    loaders['json'] = new AssetLoaderText();
+    importers['json'] = new JsonImporter();
+    importers['text'] = new TextImporter();
+    importers['pack'] = new PackImporter(this);
+    loaders['json'] = new TextLoader();
     loaders['text'] = loaders['json'];
     loaders['pack'] = loaders['json'];
   }

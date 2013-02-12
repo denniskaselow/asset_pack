@@ -20,14 +20,14 @@
 
 part of asset_pack;
 
-class AssetLoaderBlob extends AssetLoader {
+class TextLoader extends AssetLoader {
   Future<dynamic> load(AssetRequest assetRequest) {
     var completer = new Completer<dynamic>();
     var httpRequest = new HttpRequest();
-    httpRequest.responseType = 'blob';
+    httpRequest.responseType = 'text';
     httpRequest.onLoad.listen((event) {
       if (httpRequest.status == 200) {
-        completer.complete(httpRequest.response);
+        completer.complete(httpRequest.responseText);
       } else {
         completer.complete(null);
       }

@@ -22,7 +22,7 @@ part of asset_pack_tests;
 
 class Loader {
   static void imageTest() {
-    AssetLoaderImage imageLoader = new AssetLoaderImage();
+    ImageLoader imageLoader = new ImageLoader();
     test('404', () {
       Future loaded;
       var assetRequest = new AssetRequest('notthere', '', 'notthere.png',
@@ -46,7 +46,7 @@ class Loader {
   }
 
   static void arrayBufferTest() {
-    AssetLoaderArrayBuffer arrayBufferLoader = new AssetLoaderArrayBuffer();
+    ArrayBufferLoader arrayBufferLoader = new ArrayBufferLoader();
     test('404', () {
       Future loaded;
       var assetRequest = new AssetRequest('notthere', '', 'notthere.bin',
@@ -69,7 +69,7 @@ class Loader {
   }
 
   static void blobTest() {
-    AssetLoaderBlob blobLoader = new AssetLoaderBlob();
+    BlobLoader blobLoader = new BlobLoader();
     test('404', () {
       Future loaded;
       var assetRequest = new AssetRequest('notthere', '', 'notthere.bin',
@@ -92,7 +92,7 @@ class Loader {
   }
 
   static void textTest() {
-    AssetLoaderText textLoader = new AssetLoaderText();
+    TextLoader textLoader = new TextLoader();
     test('404', () {
       Future loaded;
       var assetRequest = new AssetRequest('notthere', '', 'notthere.bin',

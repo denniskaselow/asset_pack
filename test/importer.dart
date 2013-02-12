@@ -22,7 +22,7 @@ part of asset_pack_tests;
 
 class Importer {
   static void textTest() {
-    AssetLoaderText textLoader = new AssetLoaderText();
+    TextLoader textLoader = new TextLoader();
     test('404', () {
       Future loaded;
       var assetRequest = new AssetRequest('notthere', '', 'notthere.json',
@@ -30,7 +30,7 @@ class Importer {
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.equals(null, text);
-        AssetImporterText importer = new AssetImporterText();
+        TextImporter importer = new TextImporter();
         importer.import(text, assetRequest).then(
             (imported) {
               Expect.equals(importer.fallback, imported);
@@ -44,7 +44,7 @@ class Importer {
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.notEquals(null, text);
-        AssetImporterText importer = new AssetImporterText();
+        TextImporter importer = new TextImporter();
         importer.import(text, assetRequest).then((imported) {
           Expect.equals('{"a":[1,2,3]}\n', imported);
         });
@@ -53,7 +53,7 @@ class Importer {
   }
 
   static void jsonTest() {
-    AssetLoaderText textLoader = new AssetLoaderText();
+    TextLoader textLoader = new TextLoader();
     test('404', () {
       Future loaded;
       var assetRequest = new AssetRequest('notthere', '', 'notthere.json',
@@ -61,7 +61,7 @@ class Importer {
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.equals(null, text);
-        AssetImporterJson importer = new AssetImporterJson();
+        JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest).then(
             (imported) {
               Expect.equals(importer.fallback.length, imported.length);
@@ -75,7 +75,7 @@ class Importer {
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.notEquals(null, text);
-        AssetImporterJson importer = new AssetImporterJson();
+        JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest).then((imported) {
           Expect.equals("b", imported["a"]);
         });
@@ -88,7 +88,7 @@ class Importer {
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.notEquals(null, text);
-        AssetImporterJson importer = new AssetImporterJson();
+        JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest).then((imported) {
           Expect.equals(5, imported.length);
         });

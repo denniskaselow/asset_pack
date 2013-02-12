@@ -20,9 +20,9 @@
 
 part of asset_pack;
 
-class AssetImporterPack extends AssetImporter {
+class PackImporter extends AssetImporter {
   final AssetManager manager;
-  AssetImporterPack(this.manager);
+  PackImporter(this.manager);
 
   dynamic get fallback => null;
 

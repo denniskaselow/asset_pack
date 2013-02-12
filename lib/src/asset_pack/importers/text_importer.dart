@@ -20,24 +20,21 @@
 
 part of asset_pack;
 
-class AssetLoaderText extends AssetLoader {
-  Future<dynamic> load(AssetRequest assetRequest) {
-    var completer = new Completer<dynamic>();
-    var httpRequest = new HttpRequest();
-    httpRequest.responseType = 'text';
-    httpRequest.onLoad.listen((event) {
-      if (httpRequest.status == 200) {
-        completer.complete(httpRequest.responseText);
-      } else {
-        completer.complete(null);
+class TextImporter extends AssetImporter {
+  dynamic get fallback => '';
+  Future<dynamic> import(dynamic payload, AssetRequest assetRequest) {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    if (payload is String) {
+      try {
+        completer.complete(payload);
+      } catch (_) {
+        completer.complete(fallback);
       }
-    });
-    httpRequest.open('GET', assetRequest.URL);
-    httpRequest.send();
+    }
     return completer.future;
   }
 
-  void delete(dynamic arg) {
+  void delete(dynamic imported) {
 
   }
 }
