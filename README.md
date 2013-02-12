@@ -21,9 +21,9 @@ Each asset manager has a tree of asset packs. Each asset pack contains
 assets and other asset packs. Every asset has a logical asset path, which
 is a `.` separated list of strings. Example asset paths follow:
 
-1. animals.cats.pic
-2. animals.kinds
-3. animals.dogs.pic
+* animals.cats.pic
+* animals.kinds
+* animals.dogs.pic
 
 ## Why asset_pack ? ##
 
@@ -59,15 +59,15 @@ is loaded via an `AssetLoader` and then imported by an `AssetImporter`.
 ## Which loaders and importers come out of the box? ##
 
 Loaders:
-1. ArrayBufferLoader
-2. BlobLoader
-3. ImageLoader
-4. TextLoader
+* ArrayBufferLoader
+* BlobLoader
+* ImageLoader
+* TextLoader
 
 Importers:
-1. JsonImporter
-2. PackImporter
-3. TextImporter
+* JsonImporter
+* PackImporter
+* TextImporter
 
 ## I want to add an importer for a new asset type, what do I do? ##
 
