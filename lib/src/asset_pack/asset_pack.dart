@@ -157,7 +157,6 @@ class AssetPack extends PropertyMap {
     }
     AssetPack pack = asset.imported;
     pack.parent = null;
-    // TODO: recursively clean up child packs.
     deregisterAsset(name);
     pack._unload();
   }
