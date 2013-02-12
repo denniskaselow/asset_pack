@@ -1,25 +1,6 @@
 import 'dart:io';
 import 'dart:json' as JSON;
-import 'dart:async';
 import 'package:asset_pack/asset_pack_file.dart';
-
-Future<List<String>> findAllAssetPaths(String dirPath) {
-  var assetPaths = new List<String>();
-  var completer = new Completer<List<String>>();
-  var directory = new Directory(dirPath);
-  var list = directory.list(recursive:true);
-  list.onFile = (file) {
-    if (file.startsWith(dirPath) == false) {
-      return;
-    }
-    file = file.substring(dirPath.length);
-    assetPaths.add(file);
-  };
-  list.onDone = (_) {
-    completer.complete(assetPaths);
-  };
-  return completer.future;
-}
 
 AssetPackFile openAssetPackFile(String path) {
   File out = new File(path);
@@ -49,7 +30,7 @@ void merge(AssetPackFile packFile, List<String> assetPaths) {
   assetPaths.forEach((assetPath) {
     Path path = new Path(assetPath);
     String name = path.filenameWithoutExtension;
-    String type = 'fill_me_in';
+    String type = '';
     String url = assetPath;
     if (packFile.assets.containsKey(name)) {
       print('Old asset pack already has $name');
@@ -57,10 +38,6 @@ void merge(AssetPackFile packFile, List<String> assetPaths) {
     }
     if (name == '') {
       print('Skipping $url because it has no name.');
-      return;
-    }
-    if (type == '') {
-      print('Skipping $url because it has no type.');
       return;
     }
     print('Adding new asset $name ($url) (type=$type)');
@@ -98,17 +75,36 @@ void output(AssetPackFile packFile, String path) {
 
 main() {
   Options options = new Options();
-  String inPath;
+  String pathString;
   if (options.arguments.length == 0) {
-    inPath = '/Users/johnmccutchan/workspace/assetpack/test/testpack';
+    print('Usage: dart packgen.dart <absolute path>.');
+    return;
   } else {
-    inPath = options.arguments[0];
+    pathString = options.arguments[0];
   }
-  String outPath = '$inPath.pack';
-  var futureAssetPaths = findAllAssetPaths(inPath);
-  futureAssetPaths.then((assetPaths) {
-    AssetPackFile packFile = openAssetPackFile(outPath);
-    merge(packFile, assetPaths);
-    output(packFile, outPath);
+  // Always have a / at the end of th epath.
+  pathString = '$pathString\/';
+  Path path = new Path(pathString).canonicalize().directoryPath;
+  if (path.isAbsolute == false) {
+    print('ERROR: path must be absolute until dart:io becomes sane.');
+    return;
+  }
+  String packPathString = '${path}.pack';
+  print('Scanning $path for assets.');
+  print('Adding assets to $packPathString');
+  List<String> assetPaths = new List<String>();
+  Directory dir = new Directory.fromPath(path);
+  pathString = path.toString();
+  int pathStringLength = pathString.length;
+  dir.listSync(recursive:true).forEach((listing) {
+    if (listing is File) {
+      String filePathString = listing.fullPathSync();
+      if (filePathString.startsWith(pathString)) {
+        assetPaths.add(filePathString.substring(pathStringLength));
+      }
+    }
   });
+  AssetPackFile packFile = openAssetPackFile(packPathString);
+  merge(packFile, assetPaths);
+  output(packFile, packPathString);
 }
