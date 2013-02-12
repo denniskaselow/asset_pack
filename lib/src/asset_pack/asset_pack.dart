@@ -45,7 +45,17 @@ class AssetPack extends PropertyMap {
   /// Parent pack or null.
   AssetPack parent;
   /// Path to this pack.
-  String get path => parent == null ? '' : '${parent.path}.$name';
+  String get path {
+    if (parent == null) {
+      return '';
+    }
+    String parentPath = parent.path;
+    if (parentPath == '') {
+      return name;
+    } else {
+      return '$parentPath.$name';
+    }
+  }
 
   AssetPack(this.manager, this.name) : super(_propertyMapConfig);
 
@@ -171,6 +181,7 @@ class AssetPack extends PropertyMap {
     Future<AssetPack> futurePack = manager._loadAndImport(assetRequest);
     return futurePack.then((p) {
       if (p != null) {
+        p.parent = this;
         registerAsset(name, 'pack', p);
       }
       return new Future.immediate(p);
