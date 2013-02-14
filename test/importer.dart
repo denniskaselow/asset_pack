@@ -29,11 +29,11 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.equals(null, text);
+        expect(null, text);
         TextImporter importer = new TextImporter();
         importer.import(text, assetRequest).then(
             (imported) {
-              Expect.equals(importer.fallback, imported);
+              expect(importer.fallback, imported);
             });
       }));
     });
@@ -43,10 +43,10 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.notEquals(null, text);
+        expect(text == null, false);
         TextImporter importer = new TextImporter();
         importer.import(text, assetRequest).then((imported) {
-          Expect.equals('{"a":[1,2,3]}\n', imported);
+          expect('{"a":[1,2,3]}\n', imported);
         });
       }));
     });
@@ -60,11 +60,11 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.equals(null, text);
+        expect(null, text);
         JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest).then(
             (imported) {
-              Expect.equals(importer.fallback.length, imported.length);
+              expect(importer.fallback.length, imported.length);
             });
       }));
     });
@@ -74,10 +74,10 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.notEquals(null, text);
+        expect(text == null, false);
         JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest).then((imported) {
-          Expect.equals("b", imported["a"]);
+          expect("b", imported["a"]);
         });
       }));
     });
@@ -87,10 +87,10 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.notEquals(null, text);
+        expect(text == null, false);
         JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest).then((imported) {
-          Expect.equals(5, imported.length);
+          expect(5, imported.length);
         });
       }));
     });
@@ -104,11 +104,11 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.equals(null, text);
+        expect(null, text);
         PropertyMapImporter importer = new PropertyMapImporter();
         importer.import(text, assetRequest).then(
             (imported) {
-              Expect.equals(importer.fallback.length, imported.length);
+              expect(importer.fallback.length, imported.length);
             });
       }));
     });
@@ -118,10 +118,10 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.notEquals(null, text);
+        expect(text == null, false);
         PropertyMapImporter importer = new PropertyMapImporter();
         importer.import(text, assetRequest).then((imported) {
-          Expect.equals("b", imported.a);
+          expect("b", imported.a);
         });
       }));
     });
@@ -131,10 +131,10 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.notEquals(null, text);
+        expect(text == null, false);
         PropertyMapImporter importer = new PropertyMapImporter();
         importer.import(text, assetRequest).then((imported) {
-          Expect.equals(5, imported.length);
+          expect(5, imported.length);
         });
       }));
     });
