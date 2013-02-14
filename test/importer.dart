@@ -88,7 +88,7 @@ class Importer {
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         Expect.notEquals(null, text);
-        PropertyMapImporter importer = new PropertyMapImporter();
+        JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest).then((imported) {
           Expect.equals(5, imported.length);
         });
