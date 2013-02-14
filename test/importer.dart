@@ -29,11 +29,11 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        expect(null, text);
+        expect(text, null);
         TextImporter importer = new TextImporter();
         importer.import(text, assetRequest).then(
             (imported) {
-              expect(importer.fallback, imported);
+              expect(imported, importer.fallback);
             });
       }));
     });
@@ -46,7 +46,7 @@ class Importer {
         expect(text == null, false);
         TextImporter importer = new TextImporter();
         importer.import(text, assetRequest).then((imported) {
-          expect('{"a":[1,2,3]}\n', imported);
+          expect(imported, '{"a":[1,2,3]}\n');
         });
       }));
     });
@@ -60,11 +60,11 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        expect(null, text);
+        expect(text, null);
         JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest).then(
             (imported) {
-              expect(importer.fallback.length, imported.length);
+              expect(imported.length, importer.fallback.length);
             });
       }));
     });
@@ -77,7 +77,7 @@ class Importer {
         expect(text == null, false);
         JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest).then((imported) {
-          expect("b", imported["a"]);
+          expect(imported['a'], 'b');
         });
       }));
     });
@@ -90,7 +90,7 @@ class Importer {
         expect(text == null, false);
         JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest).then((imported) {
-          expect(5, imported.length);
+          expect(imported.length, 5);
         });
       }));
     });
@@ -104,11 +104,11 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        expect(null, text);
+        expect(text, null);
         PropertyMapImporter importer = new PropertyMapImporter();
         importer.import(text, assetRequest).then(
             (imported) {
-              expect(importer.fallback.length, imported.length);
+              expect(imported.length, importer.fallback.length);
             });
       }));
     });
@@ -121,7 +121,7 @@ class Importer {
         expect(text == null, false);
         PropertyMapImporter importer = new PropertyMapImporter();
         importer.import(text, assetRequest).then((imported) {
-          expect("b", imported.a);
+          expect(imported.a, 'b');
         });
       }));
     });
@@ -134,7 +134,7 @@ class Importer {
         expect(text == null, false);
         PropertyMapImporter importer = new PropertyMapImporter();
         importer.import(text, assetRequest).then((imported) {
-          expect(5, imported.length);
+          expect(imported.length, 5);
         });
       }));
     });

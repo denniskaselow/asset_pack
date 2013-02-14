@@ -29,7 +29,7 @@ class Loader {
                                           'png', {}, {});
       loaded = imageLoader.load(assetRequest);
       loaded.then(expectAsync1((ImageElement imageElement) {
-        Expect.equals(null, imageElement);
+        expect(imageElement, null);
       }));
     });
     test('64x64 png', () {
@@ -38,9 +38,9 @@ class Loader {
                                           {});
       loaded = imageLoader.load(assetRequest);
       loaded.then(expectAsync1((ImageElement imageElement) {
-        Expect.notEquals(null, imageElement);
-        Expect.equals(64, imageElement.width);
-        Expect.equals(64, imageElement.height);
+        expect(imageElement == null, false);
+        expect(imageElement.width, 64);
+        expect(imageElement.height, 64);
       }));
     });
   }
@@ -53,7 +53,7 @@ class Loader {
                                           'bin', {}, {});
       loaded = arrayBufferLoader.load(assetRequest);
       loaded.then(expectAsync1((ArrayBuffer arrayBuffer) {
-        Expect.equals(null, arrayBuffer);
+        expect(arrayBuffer, null);
       }));
     });
     test('32 bytes', () {
@@ -62,8 +62,8 @@ class Loader {
                                           'bin', {}, {});
       loaded = arrayBufferLoader.load(assetRequest);
       loaded.then(expectAsync1((ArrayBuffer arrayBuffer) {
-        Expect.notEquals(null, arrayBuffer);
-        Expect.equals(32, arrayBuffer.byteLength);
+        expect(arrayBuffer == null, false);
+        expect(arrayBuffer.byteLength, 32);
       }));
     });
   }
@@ -76,7 +76,7 @@ class Loader {
                                           'bin', {}, {});
       loaded = blobLoader.load(assetRequest);
       loaded.then(expectAsync1((Blob blob) {
-        Expect.equals(null, blob);
+        expect(blob, null);
       }));
     });
     test('32 bytes', () {
@@ -85,8 +85,8 @@ class Loader {
                                           'bin', {}, {});
       loaded = blobLoader.load(assetRequest);
       loaded.then(expectAsync1((Blob blob) {
-        Expect.notEquals(null, blob);
-        Expect.equals(32, blob.size);
+        expect(blob == null, false);
+        expect(blob.size, 32);
       }));
     });
   }
@@ -99,7 +99,7 @@ class Loader {
                                           'text', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.equals(null, text);
+        expect(text, null);
       }));
     });
     test('test.json', () {
@@ -108,12 +108,11 @@ class Loader {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.notEquals(null, text);
-        Expect.equals('{"a":[1,2,3]}\n', text);
+        expect(text == null, false);
+        expect(text, '{"a":[1,2,3]}\n');
       }));
     });
   }
-
 
   static void runTests() {
     group('AssetLoaderImage', () {
