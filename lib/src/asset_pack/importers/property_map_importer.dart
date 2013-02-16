@@ -21,13 +21,16 @@
 part of asset_pack;
 
 class PropertyMapImporter extends AssetImporter {
-  dynamic get fallback => new PropertyMap();
+  final PropertyMapConfig configuration;
+  dynamic get fallback => null;
+
+  PropertyMapImporter([this.configuration = null]);
 
   Future<dynamic> import(dynamic payload, AssetRequest assetRequest) {
     Completer<dynamic> completer = new Completer<dynamic>();
     if (payload is String) {
       try {
-        var parsed = PropertyMap.parseJson(payload);
+        var parsed = PropertyMap.parseJson(payload, configuration);
         completer.complete(parsed);
       } catch (_) {
         completer.complete(fallback);
