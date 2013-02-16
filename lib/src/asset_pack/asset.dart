@@ -45,14 +45,8 @@ class Asset {
   dynamic _loaded;
   dynamic _imported;
 
-  /** The imported object */
-  dynamic get imported {
-    if (_imported != null)
-      return _imported;
-    if (imported != null)
-      return importer.fallback;
-    return null;
-  }
+  /// The imported object.
+  dynamic get imported => _imported;
 
   /// Is [imported] a pack file?
   bool get isPack => type == 'pack';
