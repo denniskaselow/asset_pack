@@ -19,13 +19,18 @@
 */
 
 library asset_pack;
+
 import 'dart:html';
 import 'dart:json' as JSON;
 import 'dart:async';
 import 'package:property_map/property_map.dart';
 import 'asset_pack_file.dart';
+
 part 'src/asset_pack/asset.dart';
 part 'src/asset_pack/asset_importer.dart';
+part 'src/asset_pack/asset_manager.dart';
+part 'src/asset_pack/asset_pack.dart';
+part 'src/asset_pack/decoders/base_64_decoder.dart';
 part 'src/asset_pack/importers/json_importer.dart';
 part 'src/asset_pack/importers/pack_importer.dart';
 part 'src/asset_pack/importers/property_map_importer.dart';
@@ -35,5 +40,3 @@ part 'src/asset_pack/loaders/arraybuffer_loader.dart';
 part 'src/asset_pack/loaders/blob_loader.dart';
 part 'src/asset_pack/loaders/image_loader.dart';
 part 'src/asset_pack/loaders/text_loader.dart';
-part 'src/asset_pack/asset_manager.dart';
-part 'src/asset_pack/asset_pack.dart';
