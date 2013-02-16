@@ -29,11 +29,11 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.equals(null, text);
+        expect(text, null);
         TextImporter importer = new TextImporter();
         importer.import(text, assetRequest).then(
             (imported) {
-              Expect.equals(importer.fallback, imported);
+              expect(imported, importer.fallback);
             });
       }));
     });
@@ -43,10 +43,10 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.notEquals(null, text);
+        expect(text == null, false);
         TextImporter importer = new TextImporter();
         importer.import(text, assetRequest).then((imported) {
-          Expect.equals('{"a":[1,2,3]}\n', imported);
+          expect(imported, '{"a":[1,2,3]}\n');
         });
       }));
     });
@@ -60,11 +60,11 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.equals(null, text);
+        expect(text, null);
         JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest).then(
             (imported) {
-              Expect.equals(importer.fallback.length, imported.length);
+              expect(imported.length, importer.fallback.length);
             });
       }));
     });
@@ -74,10 +74,10 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.notEquals(null, text);
+        expect(text == null, false);
         JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest).then((imported) {
-          Expect.equals("b", imported["a"]);
+          expect(imported['a'], 'b');
         });
       }));
     });
@@ -87,21 +87,68 @@ class Importer {
                                           'json', {}, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
-        Expect.notEquals(null, text);
+        expect(text == null, false);
         JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest).then((imported) {
-          Expect.equals(5, imported.length);
+          expect(imported.length, 5);
+        });
+      }));
+    });
+  }
+
+  static void propertyMapTest() {
+    TextLoader textLoader = new TextLoader();
+    test('404', () {
+      Future loaded;
+      var assetRequest = new AssetRequest('notthere', '', 'notthere.json',
+                                          'json', {}, {});
+      loaded = textLoader.load(assetRequest);
+      loaded.then(expectAsync1((String text) {
+        expect(text, null);
+        PropertyMapImporter importer = new PropertyMapImporter();
+        importer.import(text, assetRequest).then(
+            (imported) {
+              expect(imported.length, importer.fallback.length);
+            });
+      }));
+    });
+    test('map', () {
+      Future loaded;
+      var assetRequest = new AssetRequest('map', '', 'map.json',
+                                          'json', {}, {});
+      loaded = textLoader.load(assetRequest);
+      loaded.then(expectAsync1((String text) {
+        expect(text == null, false);
+        PropertyMapImporter importer = new PropertyMapImporter();
+        importer.import(text, assetRequest).then((imported) {
+          expect(imported.a, 'b');
+        });
+      }));
+    });
+    test('list', () {
+      Future loaded;
+      var assetRequest = new AssetRequest('list', '', 'list.json',
+                                          'json', {}, {});
+      loaded = textLoader.load(assetRequest);
+      loaded.then(expectAsync1((String text) {
+        expect(text == null, false);
+        PropertyMapImporter importer = new PropertyMapImporter();
+        importer.import(text, assetRequest).then((imported) {
+          expect(imported.length, 5);
         });
       }));
     });
   }
 
   static void runTests() {
-    group('AssertImporterText', () {
+    group('TextImporter', () {
       Importer.textTest();
     });
-    group('AssertImporterJson', () {
+    group('JsonImporter', () {
       Importer.jsonTest();
+    });
+    group('PropertyMapImporter', () {
+      Importer.propertyMapTest();
     });
   }
 }
