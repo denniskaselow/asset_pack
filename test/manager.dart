@@ -29,9 +29,14 @@ class Manager {
       futurePack.then(expectAsync1((pack) {
         expect(pack == null, false);
         expect(pack.loadedSuccessfully, true);
-        expect(pack.length, 4);
+        expect(pack.length, 5);
+        expect(pack.subpack.length, 1);
+        expect(assetManager.root.testpack.subpack.length, 1);
+        expect(assetManager.root.testpack.subpack.somemap.containsKey('a'), true);
+        expect(assetManager.root.testpack.subpack.somemap['a'], 'b');
+        expect(pack.subpack.type('somemap'), 'json');
         expect(assetManager.root.length, 1);
-        expect(assetManager.root.testpack.length, 4);
+        expect(assetManager.root.testpack.length, 5);
         expect(assetManager.root.testpack, pack);
         expect(assetManager.root.testpack.list,
                assetManager.getAssetAtPath('testpack.list').imported);
@@ -101,7 +106,7 @@ class Manager {
         futurePack = assetManager.loadPack('testpack', 'testpack.pack');
         futurePack.then((pack) {
           expect(pack.loadedSuccessfully, true);
-          expect(pack.length, 4);
+          expect(pack.length, 5);
           expect(assetManager.root.length, 1);
           expect(assetManager.root.testpack, pack);
           expect(pack.type('list') , 'json');

@@ -30,7 +30,7 @@ class PackImporter extends AssetImporter {
     if (payload == null) {
       return new Future.immediate(fallback);
     }
-    String url = assetRequest.baseURL;
+    String url = assetRequest.URL;
     String baseURL = url.substring(0, url.lastIndexOf('.'));
     var parsed;
     if (payload is String) {
@@ -68,7 +68,7 @@ class PackImporter extends AssetImporter {
     return Future.wait(futureAssets).then((loaded) {
       // TODO(johnmccutchan): Be honest and check.
       pack._loadedSuccessfully = true;
-      return pack;
+      return new Future.immediate(pack);
     });
   }
 
