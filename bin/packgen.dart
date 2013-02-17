@@ -3,7 +3,7 @@ import 'dart:json' as JSON;
 import 'package:asset_pack/asset_pack_file.dart';
 
 AssetPackFile openAssetPackFile(String path) {
-  File out = new File(path);
+  File out = new File.fromPath(new Path(path));
   String contents;
   try {
     contents = out.readAsStringSync();
@@ -53,7 +53,7 @@ void merge(AssetPackFile packFile, List<String> assetPaths) {
 }
 
 void output(AssetPackFile packFile, String path) {
-  File out = new File(path);
+  File out = new File.fromPath(new Path(path));
   RandomAccessFile raf;
   try {
     raf = out.openSync(FileMode.WRITE);
@@ -76,29 +76,58 @@ void output(AssetPackFile packFile, String path) {
 main() {
   Options options = new Options();
   String pathString;
+
+  // There are some workarounds required for running on Windows
+  bool isWindows = Platform.operatingSystem == 'windows';
+
   if (options.arguments.length == 0) {
-    print('Usage: dart packgen.dart <absolute path>.');
+    print('Usage: dart packgen.dart <path>.');
     return;
   } else {
     pathString = options.arguments[0];
   }
-  // Always have a / at the end of th epath.
+
+  // Always have a / at the end of the path.
   pathString = '$pathString\/';
   Path path = new Path(pathString).canonicalize().directoryPath;
+
+  // If the path is not absolute create the absolute path
   if (path.isAbsolute == false) {
-    print('ERROR: path must be absolute until dart:io becomes sane.');
-    return;
+    Directory working = new Directory.current();
+    Path fullPath = new Path(working.path);
+    path = fullPath.join(path);
   }
+
   String packPathString = '${path}.pack';
   print('Scanning $path for assets.');
   print('Adding assets to $packPathString');
   List<String> assetPaths = new List<String>();
   Directory dir = new Directory.fromPath(path);
   pathString = path.toString();
+
+  // Workaround for Windows
+  //
+  // The path string is prefixed with a '/' but the results
+  // of File.fullPathSync are not prefixed with that. To do the
+  // matching the '/' must be removed.
+  if (isWindows) {
+    pathString = pathString.substring(1);
+  }
+
   int pathStringLength = pathString.length;
   dir.listSync(recursive:true).forEach((listing) {
     if (listing is File) {
       String filePathString = listing.fullPathSync();
+
+      // Workaround for Windows
+      //
+      // File.fullPathSync returns a string with '\' as the
+      // path separator.
+      if (isWindows) {
+        filePathString = filePathString.replaceAll('\\', '/');
+      }
+
+      // Workaround for pub symbolic links
       if (filePathString.startsWith(pathString)) {
         assetPaths.add(filePathString.substring(pathStringLength));
       }
