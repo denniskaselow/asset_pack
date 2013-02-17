@@ -34,8 +34,8 @@ part 'manager.dart';
 main() {
   //useHtmlEnhancedConfiguration();
   Decoder.runTests();
-  //Loader.runTests();
-  //Importer.runTests();
-  //Manager.runTests();
+  Loader.runTests();
+  Importer.runTests();
+  Manager.runTests();
   print('tests complete.');
 }
