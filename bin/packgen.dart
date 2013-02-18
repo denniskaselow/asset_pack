@@ -82,7 +82,7 @@ main() {
   } else {
     pathString = options.arguments[0];
   }
-  // Always have a / at the end of th epath.
+  // Always have a / at the end of the path.
   pathString = '$pathString\/';
   Path path = new Path(pathString).canonicalize().directoryPath;
   if (path.isAbsolute == false) {

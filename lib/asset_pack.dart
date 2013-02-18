@@ -40,3 +40,4 @@ part 'src/asset_pack/loaders/arraybuffer_loader.dart';
 part 'src/asset_pack/loaders/blob_loader.dart';
 part 'src/asset_pack/loaders/image_loader.dart';
 part 'src/asset_pack/loaders/text_loader.dart';
+part 'src/asset_pack/loaders/video_loader.dart';

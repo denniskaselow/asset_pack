@@ -114,18 +114,45 @@ class Loader {
     });
   }
 
+  static void videoTest() {
+    VideoLoader videoLoader = new VideoLoader();
+    test('404', () {
+      Future loaded;
+      var assetRequest = new AssetRequest('notthere', '', 'notthere.mp4',
+                                          'mp4', {}, {});
+      loaded = videoLoader.load(assetRequest);
+      loaded.then(expectAsync1((VideoElement videoElement) {
+        expect(videoElement, null);
+      }));
+    });
+    test('webm', () {
+      Future loaded;
+      var assetRequest = new AssetRequest('test', '', 'big_buck_bunny.webm',
+                                          'webm', {}, {});
+      loaded = videoLoader.load(assetRequest);
+      loaded.then(expectAsync1((VideoElement videoElement) {
+        expect(videoElement == null, false);
+        expect(videoElement.videoWidth, 640);
+        expect(videoElement.videoHeight, 360);
+      }));
+    });
+  }
+
   static void runTests() {
-    group('AssetLoaderImage', () {
+    group('ImageLoader', () {
       Loader.imageTest();
     });
-    group('AssetLoaderArrayBuffer', () {
+    group('ArrayBufferLoader', () {
       Loader.arrayBufferTest();
     });
-    group('AssetLoaderBlob', () {
+    group('BlobLoader', () {
       Loader.blobTest();
     });
-    group('AssetLoaderText', () {
+    group('TextLoader', () {
       Loader.textTest();
+    });
+    group('VideoLoader', () {
+      Loader.videoTest();
     });
   }
 }

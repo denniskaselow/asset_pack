@@ -27,7 +27,6 @@ AssetPackFile openAssetPackFile(String path) {
   return new AssetPackFile.fromJson(json);
 }
 
-
 main() {
   bool verbose = true;
   Options options = new Options();
