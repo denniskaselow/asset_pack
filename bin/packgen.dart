@@ -2,6 +2,97 @@ import 'dart:io';
 import 'dart:json' as JSON;
 import 'package:asset_pack/asset_pack_file.dart';
 
+/// Configuration file for generating .pack files
+class PackGenConfig {
+  /// Serialization name for type
+  const String _typeName = 'type';
+  /// Serialization name for import arguments
+  const String _importArgumentsName = 'importArguments';
+  /// Serialization name for load arguments
+  const String _loadArgumentsName = 'loadArguments';
+
+  Map _values;
+
+  /// Creates the default configuration.
+  ///
+  /// No explicit import or export arguments are specified.
+  ///
+  ///     getAssetType('json') == 'json';
+  ///     getAssetType('txt')  == 'text';
+  PackGenConfig() {
+    _values = new Map();
+
+    // Add json file connection
+    Map jsonMap = new Map();
+    jsonMap[_typeName] = 'json';
+
+    _values['json'] = jsonMap;
+
+    // Add text file connection
+    Map textMap = new Map();
+    textMap[_typeName] = 'text';
+
+    _values['txt'] = textMap;
+
+    // Add pack file connection
+    Map packMap = new Map();
+    packMap[_typeName] = 'pack';
+
+    _values['pack'] = packMap;
+  }
+
+  /// Loads a configuration data from a file at the given [path].
+  PackGenConfig.fromPath(Path path) {
+    // Read the file
+    File configFile = new File.fromPath(path);
+    String contents;
+
+    try {
+      contents = configFile.readAsStringSync();
+    } catch (_) {
+      print('Could not open existing config file.');
+    }
+
+    // Parse it as JSON
+    try {
+      _values = JSON.parse(contents);
+    } catch (_) {
+      print('Could not parse config file.');
+      _values = new Map();
+    }
+  }
+
+  String getType(String extension) {
+    String value = _getConfigValue(extension, _typeName);
+
+    return (value != null) ? value : '';
+  }
+
+  Map getImportArguments(String extension) {
+    Map value = _getConfigValue(extension, _importArgumentsName);
+
+    return (value != null) ? value : new Map();
+  }
+
+  Map getLoadArguments(String extension) {
+    Map value = _getConfigValue(extension, _loadArgumentsName);
+
+    return (value != null) ? value : new Map();
+  }
+
+  dynamic _getConfigValue(String extension, String configValue) {
+    if (_values.containsKey(extension)) {
+      Map extensionMap = _values[extension];
+
+      if (extensionMap.containsKey(configValue)) {
+        return extensionMap[configValue];
+      }
+    }
+
+    return null;
+  }
+}
+
 AssetPackFile openAssetPackFile(String path) {
   File out = new File.fromPath(new Path(path));
   String contents;
@@ -26,12 +117,12 @@ AssetPackFile openAssetPackFile(String path) {
   return new AssetPackFile.fromJson(json);
 }
 
-void merge(AssetPackFile packFile, List<String> assetPaths) {
+void merge(AssetPackFile packFile, List<String> assetPaths, PackGenConfig configuration) {
   assetPaths.forEach((assetPath) {
     Path path = new Path(assetPath);
     String name = path.filenameWithoutExtension;
-    String type = '';
     String url = assetPath;
+
     if (packFile.assets.containsKey(name)) {
       print('Old asset pack already has $name');
       return;
@@ -40,8 +131,14 @@ void merge(AssetPackFile packFile, List<String> assetPaths) {
       print('Skipping $url because it has no name.');
       return;
     }
+
+    String extension = path.extension;
+    String type = configuration.getType(extension);
+    Map importArguments = configuration.getImportArguments(extension);
+    Map loadArguments = configuration.getLoadArguments(extension);
+
     print('Adding new asset $name ($url) (type=$type)');
-    packFile.assets[name] = new AssetPackFileAsset(name, url, type);
+    packFile.assets[name] = new AssetPackFileAsset(name, url, type, importArguments, loadArguments);
   });
   packFile.assets.forEach((k, v) {
     if (assetPaths.contains(v.url)) {
@@ -73,23 +170,30 @@ void output(AssetPackFile packFile, String path) {
   raf.closeSync();
 }
 
-main() {
+void main() {
   Options options = new Options();
   String pathString;
+  PackGenConfig configuration;
 
   // There are some workarounds required for running on Windows
   bool isWindows = Platform.operatingSystem == 'windows';
 
   if (options.arguments.length == 0) {
-    print('Usage: dart packgen.dart <path>.');
+    print('Usage: dart packgen.dart <path> [config].');
     return;
   } else {
     pathString = options.arguments[0];
+
+    if (options.arguments.length == 2) {
+      configuration = new PackGenConfig.fromPath(new Path(options.arguments[1]));
+    } else {
+      configuration = new PackGenConfig();
+    }
   }
 
   // Always have a / at the end of the path.
   pathString = '$pathString\/';
-  Path path = new Path(pathString).canonicalize().directoryPath;
+  Path path = new Path(pathString).directoryPath;
 
   // If the path is not absolute create the absolute path
   if (path.isAbsolute == false) {
@@ -98,6 +202,8 @@ main() {
     path = fullPath.join(path);
   }
 
+  path = path.canonicalize();
+
   String packPathString = '${path}.pack';
   print('Scanning $path for assets.');
   print('Adding assets to $packPathString');
@@ -105,9 +211,7 @@ main() {
   Directory dir = new Directory.fromPath(path);
   pathString = path.toString();
 
-  // Workaround for Windows
-  //
-  // The path string is prefixed with a '/' but the results
+  // On Windows the path string is prefixed with a '/' but the results
   // of File.fullPathSync are not prefixed with that. To do the
   // matching the '/' must be removed.
   if (isWindows) {
@@ -119,21 +223,22 @@ main() {
     if (listing is File) {
       String filePathString = listing.fullPathSync();
 
-      // Workaround for Windows
-      //
-      // File.fullPathSync returns a string with '\' as the
-      // path separator.
+      // On Windows File.fullPathSync returns a string with '\' as the
+      // path separator. Modify to use '/'
       if (isWindows) {
         filePathString = filePathString.replaceAll('\\', '/');
       }
 
       // Workaround for pub symbolic links
+      // Doesn't work on Windows as symbolic links don't switch the path.
+      // \todo Maybe check for a packages directory?
       if (filePathString.startsWith(pathString)) {
         assetPaths.add(filePathString.substring(pathStringLength));
       }
     }
   });
+
   AssetPackFile packFile = openAssetPackFile(packPathString);
-  merge(packFile, assetPaths);
+  merge(packFile, assetPaths, configuration);
   output(packFile, packPathString);
 }

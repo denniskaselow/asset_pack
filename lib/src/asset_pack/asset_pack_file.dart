@@ -28,9 +28,9 @@ class AssetPackFileAsset {
   /** The type of the asset. */
   String type;
   /** Arguments passed to the loader */
-  final Map<String, dynamic> loadArguments = new Map<String, dynamic>();
+  final Map<String, dynamic> loadArguments;
   /** Arguments passed to the importer */
-  final Map<String, dynamic> importArguments = new Map<String, dynamic>();
+  final Map<String, dynamic> importArguments;
 
   /** Convert to JSON */
   Map toJson() {
@@ -44,7 +44,7 @@ class AssetPackFileAsset {
   }
 
   /** Construct a new instance with no load or import arguments */
-  AssetPackFileAsset(this.name, this.url, this.type);
+  AssetPackFileAsset(this.name, this.url, this.type, this.loadArguments, this.importArguments);
 
   /** Construct a new instance from a Map */
   static AssetPackFileAsset fromJson(Map map) {
@@ -53,13 +53,7 @@ class AssetPackFileAsset {
     String type = map['type'];
     Map loadArguments = map['loadArguments'];
     Map importArguments = map['importArguments'];
-    AssetPackFileAsset asset = new AssetPackFileAsset(name, url, type);
-    loadArguments.forEach((k, v) {
-      asset.loadArguments[k] = v;
-    });
-    importArguments.forEach((k, v) {
-      asset.importArguments[k] = v;
-    });
+    AssetPackFileAsset asset = new AssetPackFileAsset(name, url, type, loadArguments, importArguments);
     return asset;
   }
 }
