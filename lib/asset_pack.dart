@@ -30,6 +30,7 @@ part 'src/asset_pack/asset.dart';
 part 'src/asset_pack/asset_importer.dart';
 part 'src/asset_pack/asset_manager.dart';
 part 'src/asset_pack/asset_pack.dart';
+part 'src/asset_pack/decoders/base_64_decoder.dart';
 part 'src/asset_pack/importers/json_importer.dart';
 part 'src/asset_pack/importers/pack_importer.dart';
 part 'src/asset_pack/importers/property_map_importer.dart';
