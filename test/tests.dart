@@ -19,17 +19,21 @@
 */
 
 library asset_pack_tests;
+
 import 'dart:html';
 import 'dart:async';
 import 'package:unittest/unittest.dart';
 import 'package:unittest/html_enhanced_config.dart';
 import 'package:asset_pack/asset_pack.dart';
+
+part 'decoder.dart';
 part 'loader.dart';
 part 'importer.dart';
 part 'manager.dart';
 
 main() {
   //useHtmlEnhancedConfiguration();
+  Decoder.runTests();
   Loader.runTests();
   Importer.runTests();
   Manager.runTests();

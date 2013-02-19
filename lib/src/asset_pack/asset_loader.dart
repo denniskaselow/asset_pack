@@ -28,12 +28,12 @@ class AssetRequest {
   final Map importArguments;
   final String baseURL;
   String get URL => '$baseURL$assetURL';
+  final AssetPackTrace trace;
   AssetRequest(this.name, this.baseURL, this.assetURL, this.type,
-               this.loadArguments, this.importArguments);
+               this.loadArguments, this.importArguments, this.trace);
 }
 
 abstract class AssetLoader {
-
   Future<dynamic> load(AssetRequest assetRequest);
 
   void delete(dynamic arg);
