@@ -176,14 +176,19 @@ class AssetPack extends PropertyMap {
     if (assets[name] != null) {
       throw new ArgumentError('$name already exists.');
     }
+    AssetPackTrace trace = new AssetPackTrace();
+    trace.packLoadStart(name);
     AssetRequest assetRequest = new AssetRequest(name, url, '',
-                                                 'pack', {}, {});
+                                                 'pack', {}, {},
+                                                 trace);
     Future<AssetPack> futurePack = manager._loadAndImport(assetRequest);
     return futurePack.then((p) {
       if (p != null) {
         p.parent = this;
         registerAsset(name, 'pack', p);
       }
+      trace.packLoadEnd(name);
+      trace.dump();
       return new Future.immediate(p);
     });
   }

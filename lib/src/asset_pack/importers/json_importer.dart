@@ -27,7 +27,9 @@ class JsonImporter extends AssetImporter {
     Completer<dynamic> completer = new Completer<dynamic>();
     if (payload is String) {
       try {
+        assetRequest.trace.assetEvent(assetRequest, 'JsonParseStart');
         var parsed = JSON.parse(payload);
+        assetRequest.trace.assetEvent(assetRequest, 'JsonParseEnd');
         completer.complete(parsed);
       } catch (_) {
         completer.complete(fallback);

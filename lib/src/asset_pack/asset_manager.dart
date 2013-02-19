@@ -87,8 +87,17 @@ class AssetManager {
     if (loader == null) {
       throw new ArgumentError('Cannot find loader for ${request.type}.');
     }
+    request.trace.assetLoadStart(request);
     return loader.load(request).then((payload) {
+      request.trace.assetLoadEnd(request);
+      request.trace.assetImportStart(request);
       return importer.import(payload, request);
+    }).then((v) {
+      if (v == null) {
+        request.trace.assetEvent(request, 'ERROR_NullImport');
+      }
+      request.trace.assetImportEnd(request);
+      return new Future.immediate(v);
     });
   }
 }

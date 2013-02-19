@@ -26,6 +26,7 @@ import 'dart:async';
 import 'package:property_map/property_map.dart';
 import 'asset_pack_file.dart';
 
+part 'src/asset_pack/asset_pack_trace.dart';
 part 'src/asset_pack/asset.dart';
 part 'src/asset_pack/asset_importer.dart';
 part 'src/asset_pack/asset_manager.dart';

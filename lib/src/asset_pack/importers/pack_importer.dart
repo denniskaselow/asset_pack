@@ -53,14 +53,15 @@ class PackImporter extends AssetImporter {
       }
       AssetRequest request = new AssetRequest(name, baseURL, assetURL, type,
           packFileAsset.loadArguments,
-          packFileAsset.importArguments);
+          packFileAsset.importArguments,
+          assetRequest.trace);
       var futureAsset = manager._loadAndImport(request).then((imported) {
         Asset asset = new Asset(pack, request.name, request.assetURL,
                                 request.type,
                                 manager.loaders[request.type],
                                 manager.importers[request.type]);
         asset._imported = imported;
-        pack.assets[asset.name]= asset;
+        pack.assets[asset.name] = asset;
         pack[asset.name] = asset.imported;
       });
       futureAssets.add(futureAsset);
