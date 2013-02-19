@@ -27,18 +27,17 @@ class PropertyMapImporter extends AssetImporter {
   PropertyMapImporter([this.configuration = null]);
 
   Future<dynamic> import(dynamic payload, AssetRequest assetRequest) {
-    Completer<dynamic> completer = new Completer<dynamic>();
     if (payload is String) {
       try {
         assetRequest.trace.assetEvent(assetRequest, 'JsonParseStart');
         var parsed = PropertyMap.parseJson(payload, configuration);
         assetRequest.trace.assetEvent(assetRequest, 'JsonParseEnd');
-        completer.complete(parsed);
+        return new Future.immediate(parsed);
       } catch (_) {
-        completer.complete(fallback);
+        return new Future.immediate(null);
       }
     }
-    return completer.future;
+    return new Future.immediate(null);
   }
 
   void delete(dynamic imported) {

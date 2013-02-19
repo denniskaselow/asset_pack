@@ -23,15 +23,10 @@ part of asset_pack;
 class TextImporter extends AssetImporter {
   dynamic get fallback => '';
   Future<dynamic> import(dynamic payload, AssetRequest assetRequest) {
-    Completer<dynamic> completer = new Completer<dynamic>();
     if (payload is String) {
-      try {
-        completer.complete(payload);
-      } catch (_) {
-        completer.complete(fallback);
-      }
+      return new Future.immediate(payload);
     }
-    return completer.future;
+    return new Future.immediate(fallback);
   }
 
   void delete(dynamic imported) {
