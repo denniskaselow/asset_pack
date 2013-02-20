@@ -184,11 +184,6 @@ void runTest(List<PackgenTest> tests, int index) {
 }
 
 void main() {
-  // Get the pack file to compare against
-  //AssetPackFile originalPackFile = openAssetPackFile('test/testpack.pack');
-  // Get the subpack within the directory
-  //AssetPackFile originalSubPackFile = openAssetPackFile('test/testpack/subpack.pack');
-
   // Copy the directory to a temporary one
   // Working directory is the root asset_pack dir by default
   // Directory.path does not give the full path unless the full path is
@@ -238,7 +233,7 @@ void main() {
 
   // Add an additional check that compares the asset pack file
   Function compareOutput = (AssetPackFile assetPack, Directory directory) {
-    AssetPackFile expected = openAssetPackFile('test/testpack.pack');
+    AssetPackFile expected = openAssetPackFile('test/testpack_expected.pack');
 
     checkPackFile(assetPack, directory);
     comparePackFiles(assetPack, expected);

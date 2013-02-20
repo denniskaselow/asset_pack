@@ -22,7 +22,7 @@ part of asset_pack;
 
 class PropertyMapImporter extends AssetImporter {
   final PropertyMapConfig configuration;
-  dynamic get fallback => null;
+  dynamic get fallback => new PropertyMap(configuration);
 
   PropertyMapImporter([this.configuration = null]);
 

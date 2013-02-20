@@ -5,3 +5,7 @@ packages
 pubspec.lock
 *.sublime-workspace
 *.sublime-project
+
+# Generated test packs
+test/testpack_copy
+test/testpack_copy.pack
