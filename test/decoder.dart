@@ -21,6 +21,7 @@
 part of asset_pack_tests;
 
 class Decoder {
+  static final AssetPackTrace trace = new AssetPackTrace();
   static void decodeToStringTest() {
     test('Base64Decoder string', () {
       // Example strings taken from Wikipedia (http://en.wikipedia.org/wiki/Base64)
@@ -82,7 +83,8 @@ class Decoder {
       // Load the Lenna image into an arraybuffer
       Future loaded;
       ArrayBufferLoader arrayBufferLoader = new ArrayBufferLoader();
-      var assetRequest = new AssetRequest('lenna', '', 'lenna.png', 'bin', {}, {});
+      var assetRequest = new AssetRequest('lenna', '', 'lenna.png', 'bin', {},
+                                          {}, trace);
       loaded = arrayBufferLoader.load(assetRequest);
       loaded.then(expectAsync1((ArrayBuffer expectedBuffer) {
         // Check that the buffers are the same size

@@ -21,12 +21,13 @@
 part of asset_pack_tests;
 
 class Importer {
+  static final AssetPackTrace trace = new AssetPackTrace();
   static void textTest() {
     TextLoader textLoader = new TextLoader();
     test('404', () {
       Future loaded;
       var assetRequest = new AssetRequest('notthere', '', 'notthere.json',
-                                          'json', {}, {});
+                                          'json', {}, {}, trace);
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         expect(text, null);
@@ -40,7 +41,7 @@ class Importer {
     test('text', () {
       Future loaded;
       var assetRequest = new AssetRequest('test', '', 'test.json',
-                                          'json', {}, {});
+                                          'json', {}, {}, trace);
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
@@ -57,21 +58,20 @@ class Importer {
     test('404', () {
       Future loaded;
       var assetRequest = new AssetRequest('notthere', '', 'notthere.json',
-                                          'json', {}, {});
+                                          'json', {}, {}, trace);
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         expect(text, null);
         JsonImporter importer = new JsonImporter();
-        importer.import(text, assetRequest).then(
-            (imported) {
-              expect(imported.length, importer.fallback.length);
-            });
+        importer.import(text, assetRequest).then((imported) {
+          expect(imported.length, importer.fallback.length);
+        });
       }));
     });
     test('map', () {
       Future loaded;
       var assetRequest = new AssetRequest('map', '', 'map.json',
-                                          'json', {}, {});
+                                          'json', {}, {}, trace);
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
@@ -84,7 +84,7 @@ class Importer {
     test('list', () {
       Future loaded;
       var assetRequest = new AssetRequest('list', '', 'list.json',
-                                          'json', {}, {});
+                                          'json', {}, {}, trace);
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
@@ -101,21 +101,20 @@ class Importer {
     test('404', () {
       Future loaded;
       var assetRequest = new AssetRequest('notthere', '', 'notthere.json',
-                                          'json', {}, {});
+                                          'json', {}, {}, trace);
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         expect(text, null);
         PropertyMapImporter importer = new PropertyMapImporter();
-        importer.import(text, assetRequest).then(
-            (imported) {
-              expect(imported.length, importer.fallback.length);
-            });
+        importer.import(text, assetRequest).then((imported) {
+          expect(imported.length, importer.fallback.length);
+        });
       }));
     });
     test('map', () {
       Future loaded;
       var assetRequest = new AssetRequest('map', '', 'map.json',
-                                          'json', {}, {});
+                                          'json', {}, {}, trace);
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
@@ -128,7 +127,7 @@ class Importer {
     test('list', () {
       Future loaded;
       var assetRequest = new AssetRequest('list', '', 'list.json',
-                                          'json', {}, {});
+                                          'json', {}, {}, trace);
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
