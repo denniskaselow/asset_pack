@@ -34,10 +34,10 @@ class PropertyMapImporter extends AssetImporter {
         assetRequest.trace.assetEvent(assetRequest, 'JsonParseEnd');
         return new Future.immediate(parsed);
       } catch (_) {
-        return new Future.immediate(null);
+        return new Future.immediate(fallback);
       }
     }
-    return new Future.immediate(null);
+    return new Future.immediate(fallback);
   }
 
   void delete(dynamic imported) {

@@ -188,7 +188,7 @@ class AssetPack extends PropertyMap {
         registerAsset(name, 'pack', p);
       }
       trace.packLoadEnd(name);
-      trace.dump();
+      print(trace.toTraceViewer());
       return new Future.immediate(p);
     });
   }
