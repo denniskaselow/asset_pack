@@ -110,7 +110,8 @@ class Loader {
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
-        expect(text, '{"a":[1,2,3]}\n');
+        String expected = '{"a":[1,2,3]}';
+        expect(text.startsWith(expected), true);
       }));
     });
   }
