@@ -47,22 +47,44 @@ class PackImporter extends AssetImporter {
       String assetURL = packFileAsset.url;
       String name = packFileAsset.name;
       String type = packFileAsset.type;
-      if (type == 'fill_me_in' || type == '') {
+
+      // TODO: Add proper "ignore" flag in asset pack file.
+      // HACK: For now, use an empty string.
+      if (type == '') {
         print('Ignoring asset $name');
         return;
       }
+
+      AssetImporter importer = manager.importers[type];
+      if (importer == null) {
+        throw new ArgumentError('Cannot find importer for ${type}.');
+      }
+      AssetLoader loader = manager.loaders[type];
+      if (loader == null) {
+        throw new ArgumentError('Cannot find loader for ${type}.');
+      }
+
+      // Construct the asset request. The request is used by the loader
+      // and the importer.
       AssetRequest request = new AssetRequest(name, baseURL, assetURL, type,
           packFileAsset.loadArguments,
           packFileAsset.importArguments,
           assetRequest.trace);
+
+      // Create the Asset which is a container holding the imported asset.
+      Asset asset = new Asset(pack, request.name, request.assetURL,
+                              request.type, loader, importer);
+      pack.assets[asset.name] = asset;
+      // Assign the fallback asset to begin with. Once the asset is loaded
+      // and imported the fallback will be replaced.
+      asset.imported = importer.fallback;
+      // Mark the asset status.
+      asset._status = 'Loading';
       var futureAsset = manager._loadAndImport(request).then((imported) {
-        Asset asset = new Asset(pack, request.name, request.assetURL,
-                                request.type,
-                                manager.loaders[request.type],
-                                manager.importers[request.type]);
-        asset._imported = imported;
-        pack.assets[asset.name] = asset;
-        pack[asset.name] = asset.imported;
+        // Set the imported asset.
+        asset.imported = imported;
+        // Mark the asset status.
+        asset._status = 'Ok';
       });
       futureAssets.add(futureAsset);
     });

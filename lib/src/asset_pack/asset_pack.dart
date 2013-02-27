@@ -88,7 +88,7 @@ class AssetPack extends PropertyMap {
     }
     // Create asset.
     asset = new Asset(this, name, '', type, null, null);
-    asset._imported = imported;
+    asset.imported = imported;
     asset._status = 'OK';
     // Register asset in pack.
     assets[name] = asset;
