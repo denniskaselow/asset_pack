@@ -159,8 +159,19 @@ class Manager {
       Future load = assetManager.loadAndRegisterAsset('test', 'testpack/json/test.json', 'text', {}, {});
 
       load.then(expectAsync1((asset) {
+        // Test the asset itself
         String expected = '{"a":[1,2,3]}';
         expect(asset.imported.startsWith(expected), true);
+
+        // Test the asset access through the assetManager
+        expect(assetManager.root.test.startsWith(expected), true);
+
+        // Deregister the asset
+        assetManager.deregisterAssetAtPath('test');
+        expect(() {
+          // Access a non-existant asset throws.
+          var i = assetManager.root.test;
+        }, throws);
       }));
     });
   }
