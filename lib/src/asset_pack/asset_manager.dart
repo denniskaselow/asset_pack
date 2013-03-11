@@ -60,7 +60,7 @@ class AssetManager {
 
   /// Forwarded to root. See [AssetPack] for method documentation.
   AssetPack registerPack(String assetPackName) {
-    return _root.registerAssetPack(assetPackName);
+    return _root.registerPack(assetPackName);
   }
 
   /// Forwared to root. See [AssetPack] for method documentation.
