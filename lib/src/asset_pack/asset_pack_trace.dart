@@ -185,3 +185,21 @@ class AssetPackTrace {
   }
 }
 
+/// An [AssetPackTrace] that doesn't trace anything.
+///
+/// Used to turn off tracing.
+class NullAssetPackTrace implements AssetPackTrace {
+  final Stopwatch time = new Stopwatch();
+  final List<AssetPackTraceEvent> events = new List<AssetPackTraceEvent>();
+
+  void packLoadStart(String name) {}
+  void packLoadEnd(String name) {}
+  void assetLoadStart(AssetRequest request) {}
+  void assetLoadEnd(AssetRequest request) {}
+  void assetImportStart(AssetRequest request) {}
+  void assetImportEnd(AssetRequest request) {}
+  void assetEvent(AssetRequest request, String type) {}
+  dynamic toJson() { return {}; }
+  void dump() {}
+  String toTraceViewer() { return ''; }
+}
