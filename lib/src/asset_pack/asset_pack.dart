@@ -128,6 +128,9 @@ class AssetPack extends PropertyMap {
     }
     String name = assetPath.removeAt(0);
     Asset asset = assets[name];
+    if (asset == null) {
+      throw new ArgumentError('$fullAssetPath does not exist.');
+    }
     if (asset.isPack && assetPath.length > 0) {
       AssetPack pack = asset.imported;
       return pack._getAssetAtPath(fullAssetPath, assetPath);
