@@ -153,6 +153,18 @@ class Manager {
     });
   }
 
+  static void dynamicLoadTest() {
+    test('loadAndRegisterAsset', () {
+      AssetManager assetManager = new AssetManager();
+      Future load = assetManager.loadAndRegisterAsset('test', 'testpack/json/test.json', 'text', {}, {});
+
+      load.then(expectAsync1((asset) {
+        String expected = '{"a":[1,2,3]}';
+        expect(asset.startsWith(expected), true);
+      }));
+    });
+  }
+
   static void runTests() {
     group('loadPack', () {
       loadTest();
@@ -162,6 +174,7 @@ class Manager {
     });
     group('dynamicpack', () {
       dynamicPackTest();
+      dynamicLoadTest();
     });
   }
 }
