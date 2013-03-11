@@ -274,7 +274,7 @@ class AssetPack extends PropertyMap {
   }
 
   /// Clear all assets from this pack.
-  void clear() {
+  void unload() {
     _unload();
   }
 
