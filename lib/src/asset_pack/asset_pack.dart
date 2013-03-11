@@ -104,8 +104,7 @@ class AssetPack extends PropertyMap {
     Future futureAsset = manager._loadAndImport(assetRequest);
 
     return futureAsset.then((imported) {
-      Asset asset = (imported != null) ? registerAsset(name, type, imported) : null;
-      return new Future.immediate(asset);
+      return imported != null ? registerAsset(name, type, imported) : null;
     });
   }
 
