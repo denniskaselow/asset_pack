@@ -61,7 +61,7 @@ class Asset {
   String get path => '${pack.path}.${name}';
 
   void _delete() {
-    if (imported != null) {
+    if (importer != null) {
       importer.delete(_imported);
     }
     if (loader != null) {
