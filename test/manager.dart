@@ -160,7 +160,7 @@ class Manager {
 
       load.then(expectAsync1((asset) {
         String expected = '{"a":[1,2,3]}';
-        expect(asset.startsWith(expected), true);
+        expect(asset.imported.startsWith(expected), true);
       }));
     });
   }

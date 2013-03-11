@@ -97,21 +97,22 @@ class AssetPack extends PropertyMap {
   }
 
   /// Adds and loads an [Asset] to this pack.
-  Future loadAndRegisterAsset(String name, String url, String type, Map loaderArguments, Map importerArguments) {
+  Future<Asset> loadAndRegisterAsset(String name, String url, String type, Map loaderArguments, Map importerArguments) {
     AssetPackTrace trace = new AssetPackTrace();
     trace.packLoadStart(name);
     AssetRequest assetRequest = new AssetRequest(name, url, '',
                                                  type, loaderArguments, importerArguments,
                                                  trace);
-    Future<AssetPack> futureAsset = manager._loadAndImport(assetRequest);
-    return futureAsset.then((imported) {
-      if (imported != null) {
-        registerAsset(name, type, imported);
-      }
+    Future futureAsset = manager._loadAndImport(assetRequest);
+
+    Completer completer = new Completer();
+    futureAsset.then((imported) {
+      Asset asset = (imported != null) ? registerAsset(name, type, imported) : null;
       trace.packLoadEnd(name);
-      print(trace.toTraceViewer());
-      return new Future.immediate(imported);
+      completer.complete(asset);
     });
+
+    return completer.future;
   }
 
   /// Remove an asset from this pack.

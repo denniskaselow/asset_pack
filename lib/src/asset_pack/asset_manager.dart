@@ -54,7 +54,7 @@ class AssetManager {
   }
 
   /// Forwarded to root. See [AssetPack] for method documentation.
-  Future loadAndRegisterAsset(String name, String url, String type, Map loaderArguments, Map importerArguments) {
+  Future<Asset> loadAndRegisterAsset(String name, String url, String type, Map loaderArguments, Map importerArguments) {
     return root.loadAndRegisterAsset(name, url, type, loaderArguments, importerArguments);
   }
 
