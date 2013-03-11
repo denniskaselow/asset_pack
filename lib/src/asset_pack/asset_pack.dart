@@ -273,6 +273,11 @@ class AssetPack extends PropertyMap {
     }
   }
 
+  // Clear all assets from this pack.
+  void clear() {
+    _unload();
+  }
+
   void _unload() {
     _loadedSuccessfully = false;
     assets.forEach((name, asset) {
