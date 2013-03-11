@@ -167,7 +167,7 @@ class Manager {
         expect(assetManager.root.test.startsWith(expected), true);
 
         // Deregister the asset
-        assetManager.deregisterAssetAtPath('test');
+        assetManager.root.deregisterAsset('test');
         expect(() {
           // Access a non-existant asset throws.
           var i = assetManager.root.test;
