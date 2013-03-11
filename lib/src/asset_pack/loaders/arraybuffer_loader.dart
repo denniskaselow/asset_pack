@@ -25,6 +25,7 @@ class ArrayBufferLoader extends AssetLoader {
   Future<dynamic> load(AssetRequest assetRequest) {
     var completer = new Completer<dynamic>();
     var httpRequest = new HttpRequest();
+    httpRequest.open('GET', assetRequest.URL, true);
     httpRequest.responseType = 'arraybuffer';
     httpRequest.onLoad.listen((event) {
       if (httpRequest.status == 200) {
@@ -33,7 +34,6 @@ class ArrayBufferLoader extends AssetLoader {
         completer.complete(null);
       }
     });
-    httpRequest.open('GET', assetRequest.URL);
     httpRequest.send();
     return completer.future;
   }
