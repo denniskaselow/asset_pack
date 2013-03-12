@@ -34,7 +34,7 @@ part of asset_pack;
  * You can determine the path of an asset pack by getting it's path variable.
  *
  */
-class AssetPack extends PropertyMap {
+class AssetPack {
   final AssetManager manager;
   final String name;
   final Map<String, Asset> assets = new Map<String, Asset>();
@@ -57,7 +57,7 @@ class AssetPack extends PropertyMap {
     }
   }
 
-  AssetPack(this.manager, this.name) : super(_propertyMapConfig);
+  AssetPack(this.manager, this.name);
 
   /// Returns the type of [assetName].
   String type(String assetName) {
@@ -92,7 +92,6 @@ class AssetPack extends PropertyMap {
     asset._status = 'OK';
     // Register asset in pack.
     assets[name] = asset;
-    this[name] = imported;
     return asset;
   }
 
@@ -116,7 +115,6 @@ class AssetPack extends PropertyMap {
     }
     // Unregister asset in pack.
     assets.remove(name);
-    remove(name);
   }
 
   /// Get asset's imported property at [path].
@@ -133,6 +131,9 @@ class AssetPack extends PropertyMap {
     List<String> splitPath = path.split(".");
     return _getAssetAtPath(path, splitPath);
   }
+
+  /// Forwarded to [getImportedAtPath].
+  dynamic operator[](String path) => getImportedAtPath(path);
 
   Asset _getAssetAtPath(String fullAssetPath, List<String> assetPath) {
     if (assetPath.length == 0) {
@@ -288,8 +289,11 @@ class AssetPack extends PropertyMap {
     }
   }
 
+  /// Number of assets in pack.
+  int get length => assets.length;
+
   /// Clear all assets from this pack.
-  void unload() {
+  void clear() {
     _unload();
   }
 
@@ -299,6 +303,5 @@ class AssetPack extends PropertyMap {
       asset._delete();
     });
     assets.clear();
-    this.clear();
   }
 }

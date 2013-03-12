@@ -1,12 +1,10 @@
 name: asset_pack
-description: Asset Management Library for Dart Games
-version: 0.0.1
+version: 0.3.0
 authors:
 - John McCutchan <john@johnmccutchan.com>
 - Daniel Rodriguez <seth.illgard@gmail.com>
+description: Asset Management Library for Dart Games
 homepage: https://github.com/johnmccutchan/assetpack
 dependencies:
   unittest: any
-  property_map:
-    git: https://github.com/sethillgard/property_map.git
   browser: any

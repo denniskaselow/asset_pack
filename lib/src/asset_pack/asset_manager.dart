@@ -20,8 +20,6 @@
 
 part of asset_pack;
 
-final PropertyMapConfig _propertyMapConfig = new PropertyMapConfig();
-
 class AssetManager {
   /** A map from asset type to importers. Add your own importers. */
   final Map<String, AssetImporter> importers = new Map<String, AssetImporter>();
@@ -29,9 +27,6 @@ class AssetManager {
   final Map<String, AssetLoader> loaders = new Map<String, AssetLoader>();
 
   AssetManager() {
-    _propertyMapConfig.allowNonSerializables = true;
-    _propertyMapConfig.autoConvertLists = false;
-    _propertyMapConfig.autoConvertMaps = false;
     _root = new AssetPack(this, 'root');
     importers['json'] = new JsonImporter();
     importers['text'] = new TextImporter();
@@ -46,7 +41,13 @@ class AssetManager {
   AssetPack get root => _root;
 
   /// Forwarded to root.
-  dynamic getAssetAtPath(String assetPath) => root.getAssetAtPath(assetPath);
+  dynamic getImportedAtPath(String path) => root.getImportedAtPath(path);
+
+  /// Forwarded to [getImportedAtPath].
+  dynamic operator[](String path) => getImportedAtPath(path);
+
+  /// Forwarded to root.
+  Asset getAssetAtPath(String assetPath) => root.getAssetAtPath(assetPath);
 
   /// Forwarded to root. See [AssetPack] for method documentation.
   Asset registerAssetAtPath(String assetPath, String type, dynamic imported) {
@@ -54,8 +55,11 @@ class AssetManager {
   }
 
   /// Forwarded to root. See [AssetPack] for method documentation.
-  Future<Asset> loadAndRegisterAsset(String name, String url, String type, Map loaderArguments, Map importerArguments) {
-    return root.loadAndRegisterAsset(name, url, type, loaderArguments, importerArguments);
+  Future<Asset> loadAndRegisterAsset(String name, String url, String type,
+                                     Map loaderArguments,
+                                     Map importerArguments) {
+    return root.loadAndRegisterAsset(name, url, type, loaderArguments,
+                                     importerArguments);
   }
 
   /// Forwarded to root. See [AssetPack] for method documentation.

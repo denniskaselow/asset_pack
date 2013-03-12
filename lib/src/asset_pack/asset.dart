@@ -48,7 +48,6 @@ class Asset {
   dynamic get imported => _imported;
   set imported(dynamic import) {
     _imported = import;
-    pack[name] = _imported;
     // TODO(johnmccutchan): Fire event into stream.
   }
 

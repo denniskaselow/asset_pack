@@ -37,5 +37,4 @@ main() {
   Loader.runTests();
   Importer.runTests();
   Manager.runTests();
-  print('tests complete.');
 }

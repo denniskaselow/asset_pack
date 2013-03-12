@@ -30,16 +30,14 @@ class Manager {
         expect(pack == null, false);
         expect(pack.loadedSuccessfully, true);
         expect(pack.length, 5);
-        expect(pack.subpack.length, 1);
-        expect(assetManager.root.testpack.subpack.length, 1);
-        expect(assetManager.root.testpack.subpack.somemap.containsKey('a'), true);
-        expect(assetManager.root.testpack.subpack.somemap['a'], 'b');
-        expect(pack.subpack.type('somemap'), 'json');
-        expect(assetManager.root.length, 1);
-        expect(assetManager.root.testpack.length, 5);
-        expect(assetManager.root.testpack, pack);
-        expect(assetManager.root.testpack.list,
-               assetManager.getAssetAtPath('testpack.list').imported);
+        expect(pack['subpack'].length, 1);
+        expect(assetManager['testpack.subpack'].length, 1);
+        expect(assetManager['testpack.subpack.somemap'].containsKey('a'), true);
+        expect(assetManager['testpack.subpack.somemap']['a'], 'b');
+        expect(pack['subpack'].type('somemap'), 'json');
+        expect(assetManager.root.assets.length, 1);
+        expect(assetManager['testpack'].length, 5);
+        expect(assetManager['testpack'], pack);
         expect(assetManager.getAssetAtPath('testpack').imported, pack);
         expect(() {
           assetManager.getAssetAtPath('testpack.');
@@ -55,7 +53,8 @@ class Manager {
         expect(pack.type('test') , 'json');
         expect(pack.type('tests'), 'text');
         test('duplicate pack', () {
-          expect(() => assetManager.loadPack('testpack', 'testpack.pack'), throws);
+          expect(() => assetManager.loadPack('testpack', 'testpack.pack'),
+                                             throws);
         });
       }));
     });
@@ -80,16 +79,16 @@ class Manager {
       futurePack = assetManager.loadPack('testpack', 'testpack.pack');
       futurePack.then(expectAsync1((pack) {
         expect(pack.loadedSuccessfully, true);
-        expect(assetManager.root.length, 1);
-        expect(assetManager.root.testpack == null, false);
+        expect(assetManager.root.assets.length, 1);
+        expect(assetManager['testpack'] == null, false);
         assetManager.deregisterPack('testpack');
         expect(pack.length, 0);
-        expect(assetManager.root.length, 0);
+        expect(assetManager.root.assets.length, 0);
         expect(pack.type('list') , null);
         expect(pack.type('map')  , null);
         expect(pack.type('test') , null);
         expect(pack.type('tests'), null);
-        expect(() => assetManager.root.testpack, throws);
+        expect(() => assetManager['testpack'], throws);
       }));
     });
     test('reload', () {
@@ -98,25 +97,25 @@ class Manager {
       futurePack = assetManager.loadPack('testpack', 'testpack.pack');
       futurePack.then(expectAsync1((pack) {
         expect(pack.loadedSuccessfully, true);
-        expect(assetManager.root.length, 1);
-        expect(assetManager.root.testpack == null, false);
+        expect(assetManager.root.assets.length, 1);
+        expect(assetManager['testpack'] == null, false);
         assetManager.deregisterPack('testpack');
         expect(pack.length, 0);
-        expect(() => assetManager.root.testpack, throws);
+        expect(() => assetManager['testpack'], throws);
         futurePack = assetManager.loadPack('testpack', 'testpack.pack');
         futurePack.then((pack) {
           expect(pack.loadedSuccessfully, true);
-          expect(pack.length, 5);
-          expect(assetManager.root.length, 1);
-          expect(assetManager.root.testpack, pack);
+          expect(pack.assets.length, 5);
+          expect(assetManager.root.assets.length, 1);
+          expect(assetManager['testpack'], pack);
           expect(pack.type('list') , 'json');
           expect(pack.type('map')  , 'json');
           expect(pack.type('test') , 'json');
           expect(pack.type('tests'), 'text');
-          expect(assetManager.root.testpack == null, false);
+          expect(assetManager['testpack'] == null, false);
           assetManager.deregisterPack('testpack');
           expect(() => assetManager.deregisterPack('testpack'), throws);
-          expect(() => assetManager.root.testpack, throws);
+          expect(() => assetManager['testpack'], throws);
         });
       }));
     });
@@ -125,16 +124,18 @@ class Manager {
   static void dynamicPackTest() {
     test('registerAsset', () {
       AssetManager assetManager = new AssetManager();
-      Asset asset1 = assetManager.registerAssetAtPath('packy.text', 'text', 'hello');
+      Asset asset1 = assetManager.registerAssetAtPath('packy.text', 'text',
+                                                      'hello');
       expect(() {
         // Second attempt to register asset 'packy.text' throws argument error.
-        Asset asset2 = assetManager.registerAssetAtPath('packy.text', 'foo', '');
+        Asset asset2 = assetManager.registerAssetAtPath('packy.text', 'foo',
+                                                        '');
       }, throws);
       // Asset can be accessed via assets map.
       Asset foundAsset = assetManager.getAssetAtPath('packy.text');
       expect(foundAsset, asset1);
       // Asset properly registered:
-      expect(assetManager.root.packy.text, 'hello');
+      expect(assetManager['packy.text'], 'hello');
       expect(asset1.importer, null);
       expect(asset1.loader, null);
       expect(asset1.status, 'OK');
@@ -144,7 +145,7 @@ class Manager {
       // Pack is removed.
       expect(() {
         // Access a non-existant asset throws.
-        var i = assetManager.root.packy;
+        var i = assetManager['packy'];
       }, throws);
       // Asset is not findable.
       expect(() {
@@ -156,7 +157,12 @@ class Manager {
   static void dynamicLoadTest() {
     test('loadAndRegisterAsset', () {
       AssetManager assetManager = new AssetManager();
-      Future load = assetManager.loadAndRegisterAsset('test', 'testpack/json/test.json', 'text', {}, {});
+      Future load = assetManager.loadAndRegisterAsset(
+          'test',
+          'testpack/json/test.json',
+          'text',
+          {},
+          {});
 
       load.then(expectAsync1((asset) {
         // Test the asset itself
@@ -164,13 +170,13 @@ class Manager {
         expect(asset.imported.startsWith(expected), true);
 
         // Test the asset access through the assetManager
-        expect(assetManager.root.test.startsWith(expected), true);
+        expect(assetManager['test'].startsWith(expected), true);
 
         // Deregister the asset
         assetManager.root.deregisterAsset('test');
         expect(() {
           // Access a non-existant asset throws.
-          var i = assetManager.root.test;
+          var i = assetManager['test'];
         }, throws);
       }));
     });

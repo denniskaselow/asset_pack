@@ -97,58 +97,12 @@ class Importer {
     });
   }
 
-  static void propertyMapTest() {
-    TextLoader textLoader = new TextLoader();
-    test('404', () {
-      Future loaded;
-      var assetRequest = new AssetRequest('notthere', '', 'notthere.json',
-                                          'json', {}, {}, trace);
-      loaded = textLoader.load(assetRequest);
-      loaded.then(expectAsync1((String text) {
-        expect(text, null);
-        PropertyMapImporter importer = new PropertyMapImporter();
-        importer.import(text, assetRequest).then((imported) {
-          expect(imported.length, importer.fallback.length);
-        });
-      }));
-    });
-    test('map', () {
-      Future loaded;
-      var assetRequest = new AssetRequest('map', '', 'map.json',
-                                          'json', {}, {}, trace);
-      loaded = textLoader.load(assetRequest);
-      loaded.then(expectAsync1((String text) {
-        expect(text == null, false);
-        PropertyMapImporter importer = new PropertyMapImporter();
-        importer.import(text, assetRequest).then((imported) {
-          expect(imported.a, 'b');
-        });
-      }));
-    });
-    test('list', () {
-      Future loaded;
-      var assetRequest = new AssetRequest('list', '', 'list.json',
-                                          'json', {}, {}, trace);
-      loaded = textLoader.load(assetRequest);
-      loaded.then(expectAsync1((String text) {
-        expect(text == null, false);
-        PropertyMapImporter importer = new PropertyMapImporter();
-        importer.import(text, assetRequest).then((imported) {
-          expect(imported.length, 5);
-        });
-      }));
-    });
-  }
-
   static void runTests() {
     group('TextImporter', () {
       Importer.textTest();
     });
     group('JsonImporter', () {
       Importer.jsonTest();
-    });
-    group('PropertyMapImporter', () {
-      Importer.propertyMapTest();
     });
   }
 }
