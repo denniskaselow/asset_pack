@@ -96,9 +96,12 @@ class AssetPack {
   }
 
   /// Adds and loads an [Asset] to this pack.
-  Future<Asset> loadAndRegisterAsset(String name, String url, String type, Map loaderArguments, Map importerArguments) {
-    AssetRequest assetRequest = new AssetRequest(name, url, '',
-                                                 type, loaderArguments, importerArguments,
+  Future<Asset> loadAndRegisterAsset(String name, String url, String type,
+                                     Map loaderArguments,
+                                     Map importerArguments) {
+    AssetRequest assetRequest = new AssetRequest(name, url, '', type,
+                                                 loaderArguments,
+                                                 importerArguments,
                                                  new NullAssetPackTrace());
     Future futureAsset = manager._loadAndImport(assetRequest);
 
