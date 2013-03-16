@@ -28,7 +28,6 @@ class Manager {
       futurePack = assetManager.loadPack('testpack', 'testpack.pack');
       futurePack.then(expectAsync1((pack) {
         expect(pack == null, false);
-        expect(pack.loadedSuccessfully, true);
         expect(pack.length, 5);
         expect(pack['subpack'].length, 1);
         expect(assetManager['testpack.subpack'].length, 1);
@@ -78,7 +77,6 @@ class Manager {
       Future<AssetPack> futurePack;
       futurePack = assetManager.loadPack('testpack', 'testpack.pack');
       futurePack.then(expectAsync1((pack) {
-        expect(pack.loadedSuccessfully, true);
         expect(assetManager.root.assets.length, 1);
         expect(assetManager['testpack'] == null, false);
         assetManager.deregisterPack('testpack');
@@ -96,7 +94,6 @@ class Manager {
       Future<AssetPack> futurePack;
       futurePack = assetManager.loadPack('testpack', 'testpack.pack');
       futurePack.then(expectAsync1((pack) {
-        expect(pack.loadedSuccessfully, true);
         expect(assetManager.root.assets.length, 1);
         expect(assetManager['testpack'] == null, false);
         assetManager.deregisterPack('testpack');
@@ -104,7 +101,6 @@ class Manager {
         expect(() => assetManager['testpack'], throws);
         futurePack = assetManager.loadPack('testpack', 'testpack.pack');
         futurePack.then((pack) {
-          expect(pack.loadedSuccessfully, true);
           expect(pack.assets.length, 5);
           expect(assetManager.root.assets.length, 1);
           expect(assetManager['testpack'], pack);

@@ -89,8 +89,6 @@ class PackImporter extends AssetImporter {
       futureAssets.add(futureAsset);
     });
     return Future.wait(futureAssets).then((loaded) {
-      // TODO(johnmccutchan): Be honest and check.
-      pack._loadedSuccessfully = true;
       return new Future.immediate(pack);
     });
   }

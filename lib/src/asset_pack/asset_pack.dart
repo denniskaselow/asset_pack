@@ -38,12 +38,11 @@ class AssetPack {
   final AssetManager manager;
   final String name;
   final Map<String, Asset> assets = new Map<String, Asset>();
-  bool _loadedSuccessfully = false;
 
-  /// Was this pack loaded successfully?
-  bool get loadedSuccessfully => _loadedSuccessfully;
+  AssetPack _parent;
   /// Parent pack or null.
-  AssetPack parent;
+  AssetPack get parent => _parent;
+
   /// Path to this pack.
   String get path {
     if (parent == null) {
@@ -167,7 +166,7 @@ class AssetPack {
       throw new ArgumentError('$name already exists.');
     }
     AssetPack pack = new AssetPack(manager, name);
-    pack.parent = this;
+    pack._parent = this;
     registerAsset(name, 'pack', pack);
     return pack;
   }
@@ -185,9 +184,9 @@ class AssetPack {
       throw new ArgumentError('$name is not an asset pack.');
     }
     AssetPack pack = asset.imported;
-    pack.parent = null;
+    pack._parent = null;
     deregisterAsset(name);
-    pack._unload();
+    pack._delete();
   }
 
   /// Load the pack at [url] and add it as a child pack named [name].
@@ -203,7 +202,7 @@ class AssetPack {
     Future<AssetPack> futurePack = manager._loadAndImport(assetRequest);
     return futurePack.then((p) {
       if (p != null) {
-        p.parent = this;
+        p._parent = this;
         registerAsset(name, 'pack', p);
       }
       trace.packLoadEnd(name);
@@ -255,7 +254,8 @@ class AssetPack {
         }
       } else {
         AssetPack pack = registerPack(name);
-        return pack._registerAssetAtPath(fullAssetPath, assetPath, type, imported);
+        return pack._registerAssetAtPath(fullAssetPath, assetPath, type,
+                                         imported);
       }
     }
   }
@@ -297,14 +297,20 @@ class AssetPack {
 
   /// Clear all assets from this pack.
   void clear() {
-    _unload();
+    _delete();
   }
 
-  void _unload() {
-    _loadedSuccessfully = false;
+  void _delete() {
     assets.forEach((name, asset) {
       asset._delete();
     });
     assets.clear();
+  }
+
+  /// Reloads all assets in the pack. Does not reload the .pack file.
+  void reload() {
+    assets.forEach((name, asset) {
+      asset.reload();
+    });
   }
 }
