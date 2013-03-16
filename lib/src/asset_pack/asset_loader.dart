@@ -20,7 +20,11 @@
 
 part of asset_pack;
 
+/// Interface of an [AssetLoader]. An asset loader is responsible
+/// for loading an object from a url pointing to a network or filesystem.
 abstract class AssetLoader {
+  /// Fetch [asset] Url.
   Future<dynamic> load(Asset asset);
+  /// Delete fetched [arg].
   void delete(dynamic arg);
 }
