@@ -24,31 +24,17 @@ class Importer {
   static final AssetPackTrace trace = new AssetPackTrace();
   static void textTest() {
     TextLoader textLoader = new TextLoader();
-    test('404', () {
-      Future loaded;
-      var assetRequest = new AssetRequest('notthere', '', 'notthere.json',
-                                          'json', {}, {}, trace);
-      loaded = textLoader.load(assetRequest);
-      loaded.then(expectAsync1((String text) {
-        expect(text, null);
-        TextImporter importer = new TextImporter();
-        importer.import(text, assetRequest).then(
-            (imported) {
-              expect(imported, importer.fallback);
-            });
-      }));
-    });
     test('text', () {
       Future loaded;
-      var assetRequest = new AssetRequest('test', '', 'test.json',
-                                          'json', {}, {}, trace);
-      loaded = textLoader.load(assetRequest);
+      var asset = new Asset(null, 'test', '', 'test.json',
+                            'json', null, {}, null, {});
+      loaded = textLoader.load(asset);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
         TextImporter importer = new TextImporter();
-        importer.import(text, assetRequest).then((imported) {
+        importer.import(text, asset).then((asset) {
           String expected = '{"a":[1,2,3]}';
-          expect(imported.startsWith(expected), true);
+          expect(asset.imported.startsWith(expected), true);
         });
       }));
     });
@@ -56,42 +42,29 @@ class Importer {
 
   static void jsonTest() {
     TextLoader textLoader = new TextLoader();
-    test('404', () {
-      Future loaded;
-      var assetRequest = new AssetRequest('notthere', '', 'notthere.json',
-                                          'json', {}, {}, trace);
-      loaded = textLoader.load(assetRequest);
-      loaded.then(expectAsync1((String text) {
-        expect(text, null);
-        JsonImporter importer = new JsonImporter();
-        importer.import(text, assetRequest).then((imported) {
-          expect(imported.length, importer.fallback.length);
-        });
-      }));
-    });
     test('map', () {
       Future loaded;
-      var assetRequest = new AssetRequest('map', '', 'map.json',
-                                          'json', {}, {}, trace);
+      var assetRequest = new Asset(null, 'map', '', 'map.json',
+                                   'json', null, {}, null, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
         JsonImporter importer = new JsonImporter();
-        importer.import(text, assetRequest).then((imported) {
-          expect(imported['a'], 'b');
+        importer.import(text, assetRequest).then((asset) {
+          expect(asset.imported['a'], 'b');
         });
       }));
     });
     test('list', () {
       Future loaded;
-      var assetRequest = new AssetRequest('list', '', 'list.json',
-                                          'json', {}, {}, trace);
+      var assetRequest = new Asset(null, 'list', '', 'list.json',
+                                   'json', null, {}, null, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
         JsonImporter importer = new JsonImporter();
-        importer.import(text, assetRequest).then((imported) {
-          expect(imported.length, 5);
+        importer.import(text, assetRequest).then((asset) {
+          expect(asset.imported.length, 5);
         });
       }));
     });

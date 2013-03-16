@@ -21,10 +21,10 @@
 part of asset_pack;
 
 class TextLoader extends AssetLoader {
-  Future<dynamic> load(AssetRequest assetRequest) {
+  Future<dynamic> load(Asset asset) {
     var completer = new Completer<dynamic>();
     var httpRequest = new HttpRequest();
-    httpRequest.open('GET', assetRequest.URL, true);
+    httpRequest.open('GET', asset.url, true);
     httpRequest.responseType = 'text';
     httpRequest.onLoad.listen((event) {
       if (httpRequest.status == 200) {

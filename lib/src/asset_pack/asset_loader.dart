@@ -20,21 +20,7 @@
 
 part of asset_pack;
 
-class AssetRequest {
-  final String name;
-  final String assetURL;
-  final String type;
-  final Map loadArguments;
-  final Map importArguments;
-  final String baseURL;
-  String get URL => '$baseURL$assetURL';
-  final AssetPackTrace trace;
-  AssetRequest(this.name, this.baseURL, this.assetURL, this.type,
-               this.loadArguments, this.importArguments, this.trace);
-}
-
 abstract class AssetLoader {
-  Future<dynamic> load(AssetRequest assetRequest);
-
+  Future<dynamic> load(Asset asset);
   void delete(dynamic arg);
 }

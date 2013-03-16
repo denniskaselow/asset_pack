@@ -26,18 +26,18 @@ class Loader {
     ImageLoader imageLoader = new ImageLoader();
     test('404', () {
       Future loaded;
-      var assetRequest = new AssetRequest('notthere', '', 'notthere.png',
-                                          'png', {}, {}, trace);
-      loaded = imageLoader.load(assetRequest);
+      var asset = new Asset(null, 'notthere', '', 'notthere.png',
+                            'png', null, {}, null, {});
+      loaded = imageLoader.load(asset);
       loaded.then(expectAsync1((ImageElement imageElement) {
         expect(imageElement, null);
       }));
     });
     test('64x64 png', () {
       Future loaded;
-      var assetRequest = new AssetRequest('test', '', 'test.png', 'png', {},
-                                          {}, trace);
-      loaded = imageLoader.load(assetRequest);
+      var asset = new Asset(null, 'test', '', 'test.png', 'png',
+                            null, {}, null, {});
+      loaded = imageLoader.load(asset);
       loaded.then(expectAsync1((ImageElement imageElement) {
         expect(imageElement == null, false);
         expect(imageElement.width, 64);
@@ -50,8 +50,8 @@ class Loader {
     ArrayBufferLoader arrayBufferLoader = new ArrayBufferLoader();
     test('404', () {
       Future loaded;
-      var assetRequest = new AssetRequest('notthere', '', 'notthere.bin',
-                                          'bin', {}, {}, trace);
+      var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
+                                   'bin', null, {}, null, {});
       loaded = arrayBufferLoader.load(assetRequest);
       loaded.then(expectAsync1((ArrayBuffer arrayBuffer) {
         expect(arrayBuffer, null);
@@ -59,8 +59,8 @@ class Loader {
     });
     test('32 bytes', () {
       Future loaded;
-      var assetRequest = new AssetRequest('binarydata', '', 'binarydata.bin',
-                                          'bin', {}, {}, trace);
+      var assetRequest = new Asset(null, 'binarydata', '', 'binarydata.bin',
+                                   'bin', null, {}, null, {});
       loaded = arrayBufferLoader.load(assetRequest);
       loaded.then(expectAsync1((ArrayBuffer arrayBuffer) {
         expect(arrayBuffer == null, false);
@@ -73,8 +73,8 @@ class Loader {
     BlobLoader blobLoader = new BlobLoader();
     test('404', () {
       Future loaded;
-      var assetRequest = new AssetRequest('notthere', '', 'notthere.bin',
-                                          'bin', {}, {}, trace);
+      var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
+                                   'bin', null, {}, null, {});
       loaded = blobLoader.load(assetRequest);
       loaded.then(expectAsync1((Blob blob) {
         expect(blob, null);
@@ -82,8 +82,8 @@ class Loader {
     });
     test('32 bytes', () {
       Future loaded;
-      var assetRequest = new AssetRequest('binarydata', '', 'binarydata.bin',
-                                          'bin', {}, {}, trace);
+      var assetRequest = new Asset(null, 'binarydata', '', 'binarydata.bin',
+                                   'bin', null, {}, null, {});
       loaded = blobLoader.load(assetRequest);
       loaded.then(expectAsync1((Blob blob) {
         expect(blob == null, false);
@@ -96,8 +96,8 @@ class Loader {
     TextLoader textLoader = new TextLoader();
     test('404', () {
       Future loaded;
-      var assetRequest = new AssetRequest('notthere', '', 'notthere.bin',
-                                          'text', {}, {}, trace);
+      var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
+                                   'text', null, {}, null, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         expect(text, null);
@@ -105,8 +105,8 @@ class Loader {
     });
     test('test.json', () {
       Future loaded;
-      var assetRequest = new AssetRequest('test', '', 'test.json',
-                                          'json', {}, {}, trace);
+      var assetRequest = new Asset(null, 'test', '', 'test.json',
+                                   'json', null, {}, null, {});
       loaded = textLoader.load(assetRequest);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
@@ -120,8 +120,8 @@ class Loader {
     VideoLoader videoLoader = new VideoLoader();
     test('404', () {
       Future loaded;
-      var assetRequest = new AssetRequest('notthere', '', 'notthere.mp4',
-                                          'mp4', {}, {}, trace);
+      var assetRequest = new Asset(null, 'notthere', '', 'notthere.mp4',
+                                   'mp4', null, {}, null, {});
       loaded = videoLoader.load(assetRequest);
       loaded.then(expectAsync1((VideoElement videoElement) {
         expect(videoElement, null);
@@ -129,8 +129,8 @@ class Loader {
     });
     test('webm', () {
       Future loaded;
-      var assetRequest = new AssetRequest('test', '', 'big_buck_bunny.webm',
-                                          'webm', {}, {}, trace);
+      var assetRequest = new Asset(null, 'test', '', 'big_buck_bunny.webm',
+                                   'webm', null, {}, null, {});
       loaded = videoLoader.load(assetRequest);
       loaded.then(expectAsync1((VideoElement videoElement) {
         expect(videoElement == null, false);

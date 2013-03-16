@@ -24,27 +24,29 @@ class PackImporter extends AssetImporter {
   final AssetManager manager;
   PackImporter(this.manager);
 
-  dynamic get fallback => null;
+  void initialize(Asset asset) {
+    asset.imported = new AssetPack(manager, asset.name);
+  }
 
-  Future<dynamic> import(dynamic payload, AssetRequest assetRequest) {
+  Future<Asset> import(dynamic payload, Asset asset) {
     if (payload == null) {
-      return new Future.immediate(fallback);
+      return new Future.immediate(asset);
     }
-    String url = assetRequest.URL;
-    String baseURL = url.substring(0, url.lastIndexOf('.'));
+    String url = asset.url;
+    String baseUrl = url.substring(0, url.lastIndexOf('.'));
     var parsed;
     if (payload is String) {
       try {
         parsed = JSON.parse(payload);
       } catch (_) {
-        return new Future.immediate(fallback);
+        return new Future.immediate(asset);
       }
     }
+    AssetPack pack = asset.imported;
     AssetPackFile packFile = new AssetPackFile.fromJson(parsed);
-    AssetPack pack = new AssetPack(manager, assetRequest.name);
     List<Future<Asset>> futureAssets = new List<Future<Asset>>();
     packFile.assets.forEach((_, packFileAsset) {
-      String assetURL = packFileAsset.url;
+      String assetUrl = packFileAsset.url;
       String name = packFileAsset.name;
       String type = packFileAsset.type;
 
@@ -55,34 +57,21 @@ class PackImporter extends AssetImporter {
         return;
       }
 
+      manager._supportedTypeCheck(type);
+
       AssetImporter importer = manager.importers[type];
-      if (importer == null) {
-        throw new ArgumentError('Cannot find importer for ${type}.');
-      }
       AssetLoader loader = manager.loaders[type];
-      if (loader == null) {
-        throw new ArgumentError('Cannot find loader for ${type}.');
-      }
 
-      // Construct the asset request. The request is used by the loader
-      // and the importer.
-      AssetRequest request = new AssetRequest(name, baseURL, assetURL, type,
-          packFileAsset.loadArguments,
-          packFileAsset.importArguments,
-          assetRequest.trace);
-
-      // Create the Asset which is a container holding the imported asset.
-      Asset asset = new Asset(pack, request.name, request.assetURL,
-                              request.type, loader, importer);
+      // Construct the asset.
+      Asset asset = new Asset(pack, name, baseUrl, assetUrl, type,
+                              loader, packFileAsset.loadArguments,
+                              importer, packFileAsset.importArguments);
+      // Initialize the imported object.
+      importer.initialize(asset);
       pack.assets[asset.name] = asset;
-      // Assign the fallback asset to begin with. Once the asset is loaded
-      // and imported the fallback will be replaced.
-      asset.imported = importer.fallback;
       // Mark the asset status.
       asset._status = 'Loading';
-      var futureAsset = manager._loadAndImport(request).then((imported) {
-        // Set the imported asset.
-        asset.imported = imported;
+      var futureAsset = manager._loadAndImport(asset).then((_) {
         // Mark the asset status.
         asset._status = 'Ok';
       });

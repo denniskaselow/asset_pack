@@ -77,7 +77,8 @@ class AssetPack {
   }
 
   /// Add asset to this pack.
-  Asset registerAsset(String name, String type, dynamic imported) {
+  Asset registerAsset(String name, String type, String url, Map loaderArguments,
+                      Map importerArguments) {
     if (AssetPackFile.validAssetName(name) == false) {
       throw new ArgumentError('$name is an invalid name.');
     }
@@ -85,9 +86,12 @@ class AssetPack {
     if (asset != null) {
       throw new ArgumentError('$name already exists.');
     }
+    manager._supportedTypeCheck(type);
+    var loader = manager.loaders[type];
+    var importer = manager.importers[type];
     // Create asset.
-    asset = new Asset(this, name, '', type, null, null);
-    asset.imported = imported;
+    asset = new Asset(this, name, '', url, type, loader, {}, importer, {});
+    importer.initialize(asset);
     asset._status = 'OK';
     // Register asset in pack.
     assets[name] = asset;
@@ -95,18 +99,12 @@ class AssetPack {
   }
 
   /// Adds and loads an [Asset] to this pack.
-  Future<Asset> loadAndRegisterAsset(String name, String url, String type,
+  Future<Asset> loadAndRegisterAsset(String name, String type, String url,
                                      Map loaderArguments,
                                      Map importerArguments) {
-    AssetRequest assetRequest = new AssetRequest(name, url, '', type,
-                                                 loaderArguments,
-                                                 importerArguments,
-                                                 new NullAssetPackTrace());
-    Future futureAsset = manager._loadAndImport(assetRequest);
-
-    return futureAsset.then((imported) {
-      return imported != null ? registerAsset(name, type, imported) : null;
-    });
+    Asset asset = registerAsset(name, type, url, loaderArguments,
+                                importerArguments);
+    return manager._loadAndImport(asset);
   }
 
   /// Remove an asset from this pack.
@@ -157,18 +155,10 @@ class AssetPack {
   }
 
   /// Add a child asset pack to this asset pack.
-  AssetPack registerPack(String name) {
-    if (AssetPackFile.validAssetName(name) == false) {
-      throw new ArgumentError('$name is an invalid name.');
-    }
-    Asset asset = assets[name];
-    if (asset != null) {
-      throw new ArgumentError('$name already exists.');
-    }
-    AssetPack pack = new AssetPack(manager, name);
-    pack._parent = this;
-    registerAsset(name, 'pack', pack);
-    return pack;
+  AssetPack registerPack(String name, String url) {
+    Asset asset = registerAsset(name, 'pack', url, {}, {});
+    asset.imported._parent = this;
+    return asset.imported;
   }
 
   /// Remove a child pack from this asset pack.
@@ -191,24 +181,10 @@ class AssetPack {
 
   /// Load the pack at [url] and add it as a child pack named [name].
   Future<AssetPack> loadPack(String name, String url) {
-    if (assets[name] != null) {
-      throw new ArgumentError('$name already exists.');
-    }
-    AssetPackTrace trace = new AssetPackTrace();
-    trace.packLoadStart(name);
-    AssetRequest assetRequest = new AssetRequest(name, url, '',
-                                                 'pack', {}, {},
-                                                 trace);
-    Future<AssetPack> futurePack = manager._loadAndImport(assetRequest);
-    return futurePack.then((p) {
-      if (p != null) {
-        p._parent = this;
-        registerAsset(name, 'pack', p);
-      }
-      trace.packLoadEnd(name);
-      print(trace.toTraceViewer());
-      return new Future.immediate(p);
-    });
+    Asset asset = registerAsset(name, 'pack', url, {}, {});
+    asset.imported._parent = this;
+    return manager._loadAndImport(asset).then((_) =>
+        new Future.immediate(asset.imported));
   }
 
   /// Load many packs, adding each one as a child pack.
@@ -227,6 +203,7 @@ class AssetPack {
     return Future.wait(futurePacks);
   }
 
+  /*
   /// Add an asset of [type] at [assetPath]. Will recursively
   /// create child packs.
   Asset registerAssetAtPath(String assetPath, String type, dynamic imported) {
@@ -291,7 +268,7 @@ class AssetPack {
       }
     }
   }
-
+*/
   /// Number of assets in pack.
   int get length => assets.length;
 

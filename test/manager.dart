@@ -60,13 +60,13 @@ class Manager {
     test('failure', () {
       futurePack = assetManager.loadPack('testpack2', 'testpackbadname.pack');
       futurePack.then(expectAsync1((pack) {
-        expect(pack, null);
+        expect(pack.length, 0);
       }));
     });
     test('badpack', () {
       futurePack = assetManager.loadPack('brokenpack', 'brokenpack.pack');
       futurePack.then(expectAsync1((pack) {
-        expect(pack, null);
+        expect(pack.length, 0);
       }));
     });
   }
@@ -120,24 +120,25 @@ class Manager {
   static void dynamicPackTest() {
     test('registerAsset', () {
       AssetManager assetManager = new AssetManager();
-      Asset asset1 = assetManager.registerAssetAtPath('packy.text', 'text',
-                                                      'hello');
+      AssetPack pack = assetManager.root.registerPack('packy', '');
+      Asset asset1 = pack.registerAsset('text', 'text', '', {}, {});
+      asset1.imported = 'hello'; // Set imported object.
       expect(() {
         // Second attempt to register asset 'packy.text' throws argument error.
-        Asset asset2 = assetManager.registerAssetAtPath('packy.text', 'foo',
-                                                        '');
+        Asset asset2 = pack.registerAsset('text', 'text', '', {}, {});
       }, throws);
       // Asset can be accessed via assets map.
       Asset foundAsset = assetManager.getAssetAtPath('packy.text');
       expect(foundAsset, asset1);
       // Asset properly registered:
       expect(assetManager['packy.text'], 'hello');
-      expect(asset1.importer, null);
-      expect(asset1.loader, null);
+      expect(asset1.importer, isNotNull);
+      expect(asset1.loader, isNotNull);
       expect(asset1.status, 'OK');
       expect(asset1.type, 'text');
       expect(asset1.pack.type('text'), 'text');
-      assetManager.deregisterAssetAtPath('packy.text');
+      pack.deregisterAsset('text');
+      assetManager.root.deregisterPack('packy');
       // Pack is removed.
       expect(() {
         // Access a non-existant asset throws.
@@ -155,8 +156,8 @@ class Manager {
       AssetManager assetManager = new AssetManager();
       Future load = assetManager.loadAndRegisterAsset(
           'test',
-          'testpack/json/test.json',
           'text',
+          'testpack/json/test.json',
           {},
           {});
 

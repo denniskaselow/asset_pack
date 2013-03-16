@@ -36,6 +36,17 @@ class AssetManager {
     loaders['pack'] = loaders['json'];
   }
 
+  void _supportedTypeCheck(String type) {
+    AssetImporter importer = importers[type];
+    if (importer == null) {
+      throw new ArgumentError('Cannot find importer for ${type}.');
+    }
+    AssetLoader loader = loaders[type];
+    if (loader == null) {
+      throw new ArgumentError('Cannot find loader for ${type}.');
+    }
+  }
+
   AssetPack _root;
   /// The root pack.
   AssetPack get root => _root;
@@ -50,11 +61,6 @@ class AssetManager {
   Asset getAssetAtPath(String assetPath) => root.getAssetAtPath(assetPath);
 
   /// Forwarded to root. See [AssetPack] for method documentation.
-  Asset registerAssetAtPath(String assetPath, String type, dynamic imported) {
-    return root.registerAssetAtPath(assetPath, type, imported);
-  }
-
-  /// Forwarded to root. See [AssetPack] for method documentation.
   Future<Asset> loadAndRegisterAsset(String name, String url, String type,
                                      Map loaderArguments,
                                      Map importerArguments) {
@@ -63,13 +69,8 @@ class AssetManager {
   }
 
   /// Forwarded to root. See [AssetPack] for method documentation.
-  void deregisterAssetAtPath(String assetPath) {
-    root.deregisterAssetAtPath(assetPath);
-  }
-
-  /// Forwarded to root. See [AssetPack] for method documentation.
-  AssetPack registerPack(String assetPackName) {
-    return _root.registerPack(assetPackName);
+  AssetPack registerPack(String assetPackName, String url) {
+    return _root.registerPack(assetPackName, url);
   }
 
   /// Forwared to root. See [AssetPack] for method documentation.
@@ -87,26 +88,12 @@ class AssetManager {
     return _root.loadPacks(packs);
   }
 
-  Future _loadAndImport(AssetRequest request) {
-    AssetImporter importer = importers[request.type];
-    if (importer == null) {
-      throw new ArgumentError('Cannot find importer for ${request.type}.');
+  Future<Asset> _loadAndImport(Asset asset) {
+    if (asset.loader == null || asset.importer == null) {
+      return new Future.immediate(asset);
     }
-    AssetLoader loader = loaders[request.type];
-    if (loader == null) {
-      throw new ArgumentError('Cannot find loader for ${request.type}.');
-    }
-    request.trace.assetLoadStart(request);
-    return loader.load(request).then((payload) {
-      request.trace.assetLoadEnd(request);
-      request.trace.assetImportStart(request);
-      return importer.import(payload, request);
-    }).then((v) {
-      if (v == null) {
-        request.trace.assetEvent(request, 'ERROR_NullImport');
-      }
-      request.trace.assetImportEnd(request);
-      return new Future.immediate(v);
+    return asset.loader.load(asset).then((payload) {
+      return asset.importer.import(payload, asset);
     });
   }
 }

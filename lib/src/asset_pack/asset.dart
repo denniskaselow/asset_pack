@@ -28,8 +28,6 @@ class Asset {
   final AssetPack pack;
   /// The name of the asset.
   final String name;
-  /// The url the asset was loaded from.
-  final String url;
   /// The type of the asset.
   final String type;
   /// The loader for the asset.
@@ -37,11 +35,17 @@ class Asset {
   /// The importer for the asset.
   final AssetImporter importer;
 
-  String _status = 'Unloaded';
+  final Map loaderArguments;
+  final Map importerArguments;
+
+  final String baseUrl;
+  final String assetUrl;
+  String get url => '$baseUrl$assetUrl';
+
+  String _status = '';
   /// Status string.
   String get status => _status;
 
-  dynamic _loaded;
   dynamic _imported;
 
   /// The imported object.
@@ -54,7 +58,9 @@ class Asset {
   /// Is [imported] a pack file?
   bool get isPack => type == 'pack';
 
-  Asset(this.pack, this.name, this.url, this.type, this.loader, this.importer);
+  Asset(this.pack, this.name, this.baseUrl, this.assetUrl, this.type,
+        this.loader, this.loaderArguments, this.importer,
+        this.importerArguments);
 
   /// Path to this asset.
   String get path => '${pack.path}.${name}';
@@ -63,8 +69,8 @@ class Asset {
     if (importer != null) {
       importer.delete(_imported);
     }
-    if (loader != null) {
-      loader.delete(_loaded);
-    }
+  }
+
+  void reload() {
   }
 }

@@ -21,7 +21,7 @@
 part of asset_pack;
 
 abstract class AssetImporter {
-  dynamic get fallback;
-  Future<dynamic> import(dynamic payload, AssetRequest assetRequest);
+  void initialize(Asset asset);
+  Future<Asset> import(dynamic payload, Asset asset);
   void delete(dynamic imported);
 }
