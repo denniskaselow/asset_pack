@@ -51,9 +51,9 @@ class PackImporter extends AssetImporter {
       String type = packFileAsset.type;
 
       // TODO: Add proper "ignore" flag in asset pack file.
-      // HACK: For now, use an empty string.
+      // HACK: For now, use an empty type string.
       if (type == '') {
-        print('Ignoring asset $name');
+        print('Ignoring asset $name because it has no type.');
         return;
       }
 

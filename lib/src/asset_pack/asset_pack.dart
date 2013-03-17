@@ -86,7 +86,6 @@ class AssetPack {
     if (asset != null) {
       throw new ArgumentError('$name already exists.');
     }
-    manager._supportedTypeCheck(type);
     var loader = manager.loaders[type];
     var importer = manager.importers[type];
     // Create asset.
