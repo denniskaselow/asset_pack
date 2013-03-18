@@ -52,6 +52,7 @@ class Asset {
   dynamic get imported => _imported;
   set imported(dynamic import) {
     _imported = import;
+    _status = 'OK';
     // TODO(johnmccutchan): Fire event into stream.
   }
 
