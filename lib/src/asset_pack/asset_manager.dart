@@ -92,7 +92,9 @@ class AssetManager {
     if (asset.loader == null || asset.importer == null) {
       return new Future.immediate(asset);
     }
+    asset._status = 'Loading';
     return asset.loader.load(asset).then((payload) {
+      asset._status = 'Importing';
       return asset.importer.import(payload, asset);
     });
   }
