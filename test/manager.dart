@@ -221,6 +221,33 @@ class Manager {
     }));
   }
 
+  static void imageMapFromPack() {
+    AssetManager assetManager = new AssetManager();
+    var futurePack = assetManager.loadPack('assets', 'image_map_pack.pack');
+    futurePack.then(expectAsync1((_) {
+      expect(assetManager['assets'], _);
+      expect(assetManager['assets'].length, 1);
+      expect(assetManager['assets'].type('imagemap'), 'imagemap');
+      expect(assetManager['assets.imagemap'], isNotNull);
+      expect(assetManager['assets.imagemap']['foo'], isNotNull);
+      expect(assetManager['assets.imagemap']['foo'].width, 64);
+      expect(assetManager['assets']['imagemap']['error'], isNull);
+    }));
+  }
+
+  static void imagetMapFromAsset() {
+    AssetManager assetManager = new AssetManager();
+    var futureAsset =
+        assetManager.root.loadAndRegisterAsset('imagemap', 'imagemap',
+                                               'image_map_pack/imagemap.imap',
+                                               {}, {});
+    futureAsset.then(expectAsync1((asset) {
+      Map imagemap = asset.imported;
+      //expect(textmap['foo'], isNotNull);
+      expect(imagemap['error'], isNull);
+    }));
+  }
+
   static void runTests() {
     group('loadPack', () {
       loadTest();
@@ -235,6 +262,10 @@ class Manager {
     group('textmap', () {
       test('textMapFromPack', textMapFromPack);
       test('textMapFromAsset', textMapFromAsset);
+    });
+    group('imagemap', () {
+      test('imageMapFromPack', imageMapFromPack);
+      test('imagetMapFromAsset', imagetMapFromAsset);
     });
   }
 }

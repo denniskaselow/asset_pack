@@ -32,7 +32,9 @@ class AssetManager {
     importers['text'] = new TextImporter();
     importers['pack'] = new PackImporter(this);
     importers['textmap'] = new NoopImporter();
-    loaders['textmap'] = new TextMapLoader();
+    importers['imagemap'] = new NoopImporter();
+    loaders['textmap'] = new MapLoader(new TextLoader());
+    loaders['imagemap'] = new MapLoader(new ImageLoader());
     loaders['json'] = new TextLoader();
     loaders['text'] = loaders['json'];
     loaders['pack'] = loaders['json'];
