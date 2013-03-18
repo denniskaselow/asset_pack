@@ -26,6 +26,7 @@ class PackImporter extends AssetImporter {
 
   void initialize(Asset asset) {
     asset.imported = new AssetPack(manager, asset.name);
+    asset.imported._parent = asset.pack;
   }
 
   Future<Asset> import(dynamic payload, Asset asset) {
@@ -53,24 +54,14 @@ class PackImporter extends AssetImporter {
       // TODO: Add proper "ignore" flag in asset pack file.
       // HACK: For now, use an empty type string.
       if (type == '') {
-        print('Ignoring asset $name because it has no type.');
         return;
       }
 
-      manager._supportedTypeCheck(type);
-
-      AssetImporter importer = manager.importers[type];
-      AssetLoader loader = manager.loaders[type];
-
-      // Construct the asset.
-      Asset asset = new Asset(pack, name, baseUrl, assetUrl, type,
-                              loader, packFileAsset.loadArguments,
-                              importer, packFileAsset.importArguments);
-      // Initialize the imported object.
-      importer.initialize(asset);
-      pack.assets[asset.name] = asset;
+      // Register asset.
+      Asset asset = pack.registerAsset(name, type, baseUrl, assetUrl,
+                                       packFileAsset.loadArguments,
+                                       packFileAsset.importArguments);
       // Mark the asset status.
-      asset._status = 'Loading';
       var futureAsset = manager._loadAndImport(asset).then((_) {
         // Mark the asset status.
         asset._status = 'Ok';
@@ -86,11 +77,5 @@ class PackImporter extends AssetImporter {
     if (imported == null) {
       return;
     }
-    AssetPack pack = imported;
-    try {
-      if (pack.parent != null) {
-        pack.parent.deregisterPack(pack.name);
-      }
-    } catch(_) {}
   }
 }

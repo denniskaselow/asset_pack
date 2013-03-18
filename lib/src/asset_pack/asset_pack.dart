@@ -77,8 +77,8 @@ class AssetPack {
   }
 
   /// Add asset to this pack.
-  Asset registerAsset(String name, String type, String url, Map loaderArguments,
-                      Map importerArguments) {
+  Asset registerAsset(String name, String type, String baseUrl, String assetUrl,
+                      Map loaderArguments, Map importerArguments) {
     if (AssetPackFile.validAssetName(name) == false) {
       throw new ArgumentError('$name is an invalid name.');
     }
@@ -89,9 +89,18 @@ class AssetPack {
     var loader = manager.loaders[type];
     var importer = manager.importers[type];
     // Create asset.
-    asset = new Asset(this, name, '', url, type, loader, {}, importer, {});
-    importer.initialize(asset);
-    asset._status = 'OK';
+    asset = new Asset(this, name, baseUrl, assetUrl, type, loader,
+                      loaderArguments, importer, loaderArguments);
+    if (importer != null) {
+      importer.initialize(asset);
+    }
+    if (importer == null) {
+      asset._status = 'No importer available.';
+    } else if (loader == null) {
+      asset._status = 'No loader available.';
+    } else {
+      asset._status = 'OK';
+    }
     // Register asset in pack.
     assets[name] = asset;
     return asset;
@@ -101,7 +110,7 @@ class AssetPack {
   Future<Asset> loadAndRegisterAsset(String name, String type, String url,
                                      Map loaderArguments,
                                      Map importerArguments) {
-    Asset asset = registerAsset(name, type, url, loaderArguments,
+    Asset asset = registerAsset(name, type, '', url, loaderArguments,
                                 importerArguments);
     return manager._loadAndImport(asset);
   }
@@ -155,16 +164,13 @@ class AssetPack {
 
   /// Add a child asset pack to this asset pack.
   AssetPack registerPack(String name, String url) {
-    Asset asset = registerAsset(name, 'pack', url, {}, {});
+    Asset asset = registerAsset(name, 'pack', '', url, {}, {});
     asset.imported._parent = this;
     return asset.imported;
   }
 
   /// Remove a child pack from this asset pack.
   void deregisterPack(String name) {
-    if (AssetPackFile.validAssetName(name) == false) {
-      throw new ArgumentError('$name is an invalid name.');
-    }
     Asset asset = assets[name];
     if (asset == null) {
       throw new ArgumentError('$name does not exist.');
@@ -180,7 +186,7 @@ class AssetPack {
 
   /// Load the pack at [url] and add it as a child pack named [name].
   Future<AssetPack> loadPack(String name, String url) {
-    Asset asset = registerAsset(name, 'pack', url, {}, {});
+    Asset asset = registerAsset(name, 'pack', '', url, {}, {});
     asset.imported._parent = this;
     return manager._loadAndImport(asset).then((_) =>
         new Future.immediate(asset.imported));
