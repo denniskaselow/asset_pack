@@ -33,6 +33,8 @@ class Manager {
         expect(assetManager['testpack.subpack'].length, 1);
         expect(assetManager['testpack.subpack.somemap'].containsKey('a'), true);
         expect(assetManager['testpack.subpack.somemap']['a'], 'b');
+        expect(assetManager['testpack.subpack'].parent,
+               assetManager['testpack']);
         expect(pack['subpack'].type('somemap'), 'json');
         expect(assetManager.root.assets.length, 1);
         expect(assetManager['testpack'].length, 5);
@@ -79,8 +81,10 @@ class Manager {
       futurePack.then(expectAsync1((pack) {
         expect(assetManager.root.assets.length, 1);
         expect(assetManager['testpack'] == null, false);
+        expect(assetManager['testpack'].parent, assetManager.root);
         assetManager.deregisterPack('testpack');
         expect(pack.length, 0);
+        expect(pack.parent, null);
         expect(assetManager.root.assets.length, 0);
         expect(pack.type('list') , null);
         expect(pack.type('map')  , null);
@@ -121,11 +125,13 @@ class Manager {
     test('registerAsset', () {
       AssetManager assetManager = new AssetManager();
       AssetPack pack = assetManager.root.registerPack('packy', '');
-      Asset asset1 = pack.registerAsset('text', 'text', '', {}, {});
+      expect(pack.parent, assetManager.root);
+      Asset asset1 = pack.registerAsset('text', 'text', '', '', {}, {});
+      expect(asset1.pack, pack);
       asset1.imported = 'hello'; // Set imported object.
       expect(() {
         // Second attempt to register asset 'packy.text' throws argument error.
-        Asset asset2 = pack.registerAsset('text', 'text', '', {}, {});
+        Asset asset2 = pack.registerAsset('text', 'text', '', '', {}, {});
       }, throws);
       // Asset can be accessed via assets map.
       Asset foundAsset = assetManager.getAssetAtPath('packy.text');
@@ -144,6 +150,7 @@ class Manager {
         // Access a non-existant asset throws.
         var i = assetManager['packy'];
       }, throws);
+      expect(pack.parent, null);
       // Asset is not findable.
       expect(() {
         assetManager.getAssetAtPath('packy.text');
@@ -163,18 +170,23 @@ class Manager {
 
       load.then(expectAsync1((asset) {
         // Test the asset itself
+        expect(asset.pack, assetManager.root);
+        expect(asset.status, 'OK');
         String expected = '{"a":[1,2,3]}';
         expect(asset.imported.startsWith(expected), true);
-
+        expect(assetManager.root.assets.length, 1);
+        expect(assetManager.root.length, 1);
         // Test the asset access through the assetManager
         expect(assetManager['test'].startsWith(expected), true);
-
+        expect(assetManager.root.type('test'), 'text');
         // Deregister the asset
         assetManager.root.deregisterAsset('test');
         expect(() {
           // Access a non-existant asset throws.
           var i = assetManager['test'];
         }, throws);
+        expect(assetManager.root.assets.length, 0);
+        expect(assetManager.root.length, 0);
       }));
     });
   }
