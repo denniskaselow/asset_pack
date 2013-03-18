@@ -48,7 +48,7 @@ AssetPackFile openAssetPackFile(String path) {
 /// Copy the contents of a file to another file.
 void copyFileContents(File original, File copy) {
   var input = original.openRead();
-  var output = copy.openWrite(FileMode.WRITE);
+  var output = copy.openWrite();
   input.pipe(output).then((_) => output.close());
 }
 
