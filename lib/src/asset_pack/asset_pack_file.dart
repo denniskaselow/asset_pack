@@ -66,10 +66,7 @@ class AssetPackFile {
    * are not allowed.
    */
   static bool validAssetName(String name) {
-    return name != 'manager' &&
-           name != 'name' &&
-           name != 'assets' &&
-           name != 'loadedSuccessfully';
+    return name != '';
   }
 
   /** Assets in the pack file */

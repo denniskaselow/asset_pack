@@ -104,7 +104,7 @@ class Manager {
         expect(pack.length, 0);
         expect(() => assetManager['testpack'], throws);
         futurePack = assetManager.loadPack('testpack', 'testpack.pack');
-        futurePack.then((pack) {
+        futurePack.then(expectAsync1((pack) {
           expect(pack.assets.length, 5);
           expect(assetManager.root.assets.length, 1);
           expect(assetManager['testpack'], pack);
@@ -116,7 +116,7 @@ class Manager {
           assetManager.deregisterPack('testpack');
           expect(() => assetManager.deregisterPack('testpack'), throws);
           expect(() => assetManager['testpack'], throws);
-        });
+        }));
       }));
     });
   }
@@ -191,6 +191,36 @@ class Manager {
     });
   }
 
+  static void textMapFromPack() {
+    AssetManager assetManager = new AssetManager();
+    var futurePack = assetManager.loadPack('assets', 'text_map_pack.pack');
+    futurePack.then(expectAsync1((_) {
+      expect(assetManager['assets'], _);
+      expect(assetManager['assets'].length, 1);
+      expect(assetManager['assets'].type('textmap'), 'textmap');
+      expect(assetManager['assets.textmap'], isNotNull);
+      expect(assetManager['assets.textmap']['foo'].startsWith("crab"), true);
+      expect(assetManager['assets']['textmap']['bar'].startsWith("test"), true);
+      expect(assetManager['assets']['textmap']['error'], isNull);
+    }));
+  }
+
+  static void textMapFromAsset() {
+    AssetManager assetManager = new AssetManager();
+    var futureAsset =
+        assetManager.root.loadAndRegisterAsset('textmap', 'textmap',
+                                               'text_map_pack/textmap.tmap',
+                                               {}, {});
+    futureAsset.then(expectAsync1((asset) {
+      Map textmap = asset.imported;
+      expect(textmap['foo'], isNotNull);
+      expect(textmap['foo'].startsWith("crab"), true);
+      expect(textmap['bar'], isNotNull);
+      expect(textmap['bar'].startsWith("test"), true);
+      expect(textmap['error'], isNull);
+    }));
+  }
+
   static void runTests() {
     group('loadPack', () {
       loadTest();
@@ -201,6 +231,10 @@ class Manager {
     group('dynamicpack', () {
       dynamicPackTest();
       dynamicLoadTest();
+    });
+    group('textmap', () {
+      test('textMapFromPack', textMapFromPack);
+      test('textMapFromAsset', textMapFromAsset);
     });
   }
 }

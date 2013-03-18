@@ -110,7 +110,10 @@ class AssetPack {
   Future<Asset> loadAndRegisterAsset(String name, String type, String url,
                                      Map loaderArguments,
                                      Map importerArguments) {
-    Asset asset = registerAsset(name, type, '', url, loaderArguments,
+    int splitPoint = url.lastIndexOf('/');
+    String baseUrl = url.substring(0, splitPoint);
+    String assetUrl = url.substring(splitPoint);
+    Asset asset = registerAsset(name, type, baseUrl, assetUrl, loaderArguments,
                                 importerArguments);
     return manager._loadAndImport(asset);
   }

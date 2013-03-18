@@ -1,0 +1,5 @@
+{
+	"foo": "/crab.txt",
+	"bar": "/inner/test.txt",
+	"error": "/blahblah.txt"
+}
