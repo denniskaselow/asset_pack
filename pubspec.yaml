@@ -9,10 +9,3 @@ homepage: https://github.com/johnmccutchan/assetpack
 dependencies:
   unittest: any
   browser: any
-  bot: '>=0.15.0 <0.16.0'
-  meta: any
-  html5lib: any
-  args: any
-  logging: any
-  pathos: any
-  source_maps: any
