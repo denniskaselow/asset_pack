@@ -18,29 +18,25 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-part of asset_pack;
+// NOTE: using DumpRenderTree with XHR content needs to be loaded from web server
+// python -m SimpleHTTPServer & DumpRenderTree http://localhost:8000/test/headless_tests.html && for x in `jobs -p`; do kill -9 $x; done
+library asset_pack_tests;
 
-class PropertyMapImporter extends AssetImporter {
-  final PropertyMapConfig configuration;
-  dynamic get fallback => new PropertyMap(configuration);
+import 'dart:html';
+import 'dart:async';
+import 'package:unittest/unittest.dart';
+import 'package:unittest/html_config.dart';
+import 'package:asset_pack/asset_pack.dart';
 
-  PropertyMapImporter([this.configuration = null]);
+part 'decoder.dart';
+part 'loader.dart';
+part 'importer.dart';
+part 'manager.dart';
 
-  Future<dynamic> import(dynamic payload, AssetRequest assetRequest) {
-    if (payload is String) {
-      try {
-        assetRequest.trace.assetEvent(assetRequest, 'JsonParseStart');
-        var parsed = PropertyMap.parseJson(payload, configuration);
-        assetRequest.trace.assetEvent(assetRequest, 'JsonParseEnd');
-        return new Future.immediate(parsed);
-      } catch (_) {
-        return new Future.immediate(fallback);
-      }
-    }
-    return new Future.immediate(fallback);
-  }
-
-  void delete(dynamic imported) {
-
-  }
+main() {
+  useHtmlConfiguration();
+  Decoder.runTests();
+  Loader.runTests();
+  Importer.runTests();
+  Manager.runTests();
 }

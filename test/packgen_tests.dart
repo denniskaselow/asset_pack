@@ -47,13 +47,9 @@ AssetPackFile openAssetPackFile(String path) {
 
 /// Copy the contents of a file to another file.
 void copyFileContents(File original, File copy) {
-  InputStream input = original.openInputStream();
-  OutputStream output = copy.openOutputStream(FileMode.WRITE);
-
-  input.pipe(output);
-
-  input.close();
-  output.close();
+  var input = original.openRead();
+  var output = copy.openWrite();
+  input.pipe(output).then((_) => output.close());
 }
 
 /// Copy the contents of the directory.
@@ -69,7 +65,7 @@ void copyDirectoryContents(Directory original, Directory copy) {
       // Convert '\' to '/' since Windows uses '\' as a separator
       // Determine the filename by looking at the last '/'. This works since
       // the traversal is not recursive
-      String fullPath = originalFile.name.replaceAll('\\', '/');
+      String fullPath = originalFile.path.replaceAll('\\', '/');
       String filename = fullPath.substring(fullPath.lastIndexOf('/') + 1);
 
       // Create the new File
@@ -155,7 +151,7 @@ Future runPackgenTest(String name, Directory directory, dynamic onStartup, dynam
   Completer completer = new Completer();
   Process.start('dart', ['bin/packgen.dart', directory.path]).then((process) {
     // Add a delay to give some time for file operations to complete
-    Timer delay = new Timer(100, (_) {
+    Timer delay = new Timer(new Duration(milliseconds:100), () {
       test(name, () {
         AssetPackFile generatedPackFile = openAssetPackFile('test/testpack_copy.pack');
 

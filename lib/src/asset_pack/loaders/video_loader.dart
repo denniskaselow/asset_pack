@@ -21,7 +21,7 @@
 part of asset_pack;
 
 class VideoLoader extends AssetLoader {
-  Future<dynamic> load(AssetRequest assetRequest) {
+  Future<dynamic> load(Asset asset) {
     var completer = new Completer<dynamic>();
     VideoElement video = new VideoElement();
     video.onCanPlay.listen((event) {
@@ -30,11 +30,10 @@ class VideoLoader extends AssetLoader {
     video.onError.listen((event) {
       completer.complete(null);
     });
-    video.src = assetRequest.URL;
+    video.src = asset.url;
     return completer.future;
   }
 
   void delete(dynamic arg) {
-
   }
 }

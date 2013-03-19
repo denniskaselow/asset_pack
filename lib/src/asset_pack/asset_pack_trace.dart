@@ -131,31 +131,31 @@ class AssetPackTrace {
     events.add(event);
   }
 
-  void assetLoadStart(AssetRequest request) {
-    var event = new AssetPackTraceEvent('AssetLoadStart', request.assetURL,
+  void assetLoadStart(Asset asset) {
+    var event = new AssetPackTraceEvent('AssetLoadStart', asset.assetUrl,
                                         time);
     events.add(event);
   }
 
-  void assetLoadEnd(AssetRequest request) {
-    var event = new AssetPackTraceEvent('AssetLoadEnd', request.assetURL, time);
+  void assetLoadEnd(Asset asset) {
+    var event = new AssetPackTraceEvent('AssetLoadEnd', asset.assetUrl, time);
     events.add(event);
   }
 
-  void assetImportStart(AssetRequest request) {
-    var event = new AssetPackTraceEvent('AssetImportStart', request.assetURL,
+  void assetImportStart(Asset asset) {
+    var event = new AssetPackTraceEvent('AssetImportStart', asset.assetUrl,
                                         time);
     events.add(event);
   }
 
-  void assetImportEnd(AssetRequest request) {
-    var event = new AssetPackTraceEvent('AssetImportEnd', request.assetURL,
+  void assetImportEnd(Asset asset) {
+    var event = new AssetPackTraceEvent('AssetImportEnd', asset.assetUrl,
                                         time);
     events.add(event);
   }
 
-  void assetEvent(AssetRequest request, String type) {
-    var event = new AssetPackTraceEvent(type, request.assetURL, time);
+  void assetEvent(Asset asset, String type) {
+    var event = new AssetPackTraceEvent(type, asset.assetUrl, time);
     events.add(event);
   }
 
@@ -185,3 +185,21 @@ class AssetPackTrace {
   }
 }
 
+/// An [AssetPackTrace] that doesn't trace anything.
+///
+/// Used to turn off tracing.
+class NullAssetPackTrace implements AssetPackTrace {
+  final Stopwatch time = new Stopwatch();
+  final List<AssetPackTraceEvent> events = new List<AssetPackTraceEvent>();
+
+  void packLoadStart(String name) {}
+  void packLoadEnd(String name) {}
+  void assetLoadStart(Asset asset) {}
+  void assetLoadEnd(Asset asset) {}
+  void assetImportStart(Asset asset) {}
+  void assetImportEnd(Asset asset) {}
+  void assetEvent(Asset asset, String type) {}
+  dynamic toJson() { return {}; }
+  void dump() {}
+  String toTraceViewer() { return ''; }
+}

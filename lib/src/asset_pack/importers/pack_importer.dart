@@ -24,51 +24,51 @@ class PackImporter extends AssetImporter {
   final AssetManager manager;
   PackImporter(this.manager);
 
-  dynamic get fallback => null;
+  void initialize(Asset asset) {
+    asset.imported = new AssetPack(manager, asset.name);
+    asset.imported._parent = asset.pack;
+  }
 
-  Future<dynamic> import(dynamic payload, AssetRequest assetRequest) {
+  Future<Asset> import(dynamic payload, Asset asset) {
     if (payload == null) {
-      return new Future.immediate(fallback);
+      return new Future.immediate(asset);
     }
-    String url = assetRequest.URL;
-    String baseURL = url.substring(0, url.lastIndexOf('.'));
+    String url = asset.url;
+    String baseUrl = url.substring(0, url.lastIndexOf('.'));
     var parsed;
     if (payload is String) {
       try {
         parsed = JSON.parse(payload);
       } catch (_) {
-        return new Future.immediate(fallback);
+        return new Future.immediate(asset);
       }
     }
+    AssetPack pack = asset.imported;
     AssetPackFile packFile = new AssetPackFile.fromJson(parsed);
-    AssetPack pack = new AssetPack(manager, assetRequest.name);
     List<Future<Asset>> futureAssets = new List<Future<Asset>>();
     packFile.assets.forEach((_, packFileAsset) {
-      String assetURL = packFileAsset.url;
+      String assetUrl = packFileAsset.url;
       String name = packFileAsset.name;
       String type = packFileAsset.type;
-      if (type == 'fill_me_in' || type == '') {
-        print('Ignoring asset $name');
+
+      // TODO: Add proper "ignore" flag in asset pack file.
+      // HACK: For now, use an empty type string.
+      if (type == '') {
         return;
       }
-      AssetRequest request = new AssetRequest(name, baseURL, assetURL, type,
-          packFileAsset.loadArguments,
-          packFileAsset.importArguments,
-          assetRequest.trace);
-      var futureAsset = manager._loadAndImport(request).then((imported) {
-        Asset asset = new Asset(pack, request.name, request.assetURL,
-                                request.type,
-                                manager.loaders[request.type],
-                                manager.importers[request.type]);
-        asset._imported = imported;
-        pack.assets[asset.name] = asset;
-        pack[asset.name] = asset.imported;
+
+      // Register asset.
+      Asset asset = pack.registerAsset(name, type, baseUrl, assetUrl,
+                                       packFileAsset.loadArguments,
+                                       packFileAsset.importArguments);
+      // Mark the asset status.
+      var futureAsset = manager._loadAndImport(asset).then((_) {
+        // Mark the asset status.
+        asset._status = 'Ok';
       });
       futureAssets.add(futureAsset);
     });
     return Future.wait(futureAssets).then((loaded) {
-      // TODO(johnmccutchan): Be honest and check.
-      pack._loadedSuccessfully = true;
       return new Future.immediate(pack);
     });
   }
@@ -77,11 +77,5 @@ class PackImporter extends AssetImporter {
     if (imported == null) {
       return;
     }
-    AssetPack pack = imported;
-    try {
-      if (pack.parent != null) {
-        pack.parent.deregisterPack(pack.name);
-      }
-    } catch(_) {}
   }
 }

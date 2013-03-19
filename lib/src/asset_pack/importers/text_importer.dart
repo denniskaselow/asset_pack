@@ -21,15 +21,16 @@
 part of asset_pack;
 
 class TextImporter extends AssetImporter {
-  dynamic get fallback => '';
-  Future<dynamic> import(dynamic payload, AssetRequest assetRequest) {
+  void initialize(Asset asset) {
+    asset.imported = '';
+  }
+  Future<Asset> import(dynamic payload, Asset asset) {
     if (payload is String) {
-      return new Future.immediate(payload);
+      asset.imported = payload;
     }
-    return new Future.immediate(fallback);
+    return new Future.immediate(asset);
   }
 
   void delete(dynamic imported) {
-
   }
 }

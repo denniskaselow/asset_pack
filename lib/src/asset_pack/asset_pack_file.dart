@@ -44,7 +44,8 @@ class AssetPackFileAsset {
   }
 
   /** Construct a new instance with no load or import arguments */
-  AssetPackFileAsset(this.name, this.url, this.type, this.loadArguments, this.importArguments);
+  AssetPackFileAsset(this.name, this.url, this.type, this.loadArguments,
+                     this.importArguments);
 
   /** Construct a new instance from a Map */
   static AssetPackFileAsset fromJson(Map map) {
@@ -53,7 +54,9 @@ class AssetPackFileAsset {
     String type = map['type'];
     Map loadArguments = map['loadArguments'];
     Map importArguments = map['importArguments'];
-    AssetPackFileAsset asset = new AssetPackFileAsset(name, url, type, loadArguments, importArguments);
+    AssetPackFileAsset asset = new AssetPackFileAsset(name, url, type,
+                                                      loadArguments,
+                                                      importArguments);
     return asset;
   }
 }
@@ -63,10 +66,7 @@ class AssetPackFile {
    * are not allowed.
    */
   static bool validAssetName(String name) {
-    return name != 'manager' &&
-           name != 'name' &&
-           name != 'assets' &&
-           name != 'loadedSuccessfully';
+    return name != '';
   }
 
   /** Assets in the pack file */

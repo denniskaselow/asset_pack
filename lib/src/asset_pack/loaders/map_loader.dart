@@ -20,11 +20,37 @@
 
 part of asset_pack;
 
-/// Interface of an [AssetLoader]. An asset loader is responsible
-/// for loading an object from a url pointing to a network or filesystem.
-abstract class AssetLoader {
-  /// Fetch [asset] Url.
-  Future<dynamic> load(Asset asset);
-  /// Delete fetched [arg].
-  void delete(dynamic arg);
+class MapLoader extends AssetLoader {
+  AssetLoader _loader;
+
+  MapLoader(this._loader);
+
+  Future<Map<String, String>> load(Asset asset) {
+    TextLoader textLoader = new TextLoader();
+    Future<String> futureMap = textLoader.load(asset);
+    return futureMap.then((map) {
+      Map parsed;
+      try {
+        parsed = JSON.parse(map);
+      } catch (e) {
+        return new Future.immediate(null);
+      }
+      Map<String, dynamic> loadedMap = {};
+      List<Future> futures = [];
+      parsed.forEach((name, requestUrl) {
+        Asset request = new Asset(null, name, asset.baseUrl, requestUrl,
+                                  '', null, {}, null, {});
+        futures.add(_loader.load(request).then((payload) {
+          loadedMap[name] = payload;
+        }));
+      });
+      return Future.wait(futures).then((_) {
+        return loadedMap;
+      });
+    });
+  }
+  void delete(dynamic arg) {
+  }
 }
+
+

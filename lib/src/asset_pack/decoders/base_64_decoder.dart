@@ -106,7 +106,7 @@ class Base64Decoder {
     ];
 
     // Generate the decoding table
-    _decodingTable = new List<int>.fixedLength(256, fill: 0);
+    _decodingTable = new List<int>.filled(256, 0);
 
     int encodingTableLength = encodingTable.length;
 

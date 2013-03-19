@@ -20,8 +20,6 @@
 
 part of asset_pack;
 
-final PropertyMapConfig _propertyMapConfig = new PropertyMapConfig();
-
 class AssetManager {
   /** A map from asset type to importers. Add your own importers. */
   final Map<String, AssetImporter> importers = new Map<String, AssetImporter>();
@@ -29,16 +27,28 @@ class AssetManager {
   final Map<String, AssetLoader> loaders = new Map<String, AssetLoader>();
 
   AssetManager() {
-    _propertyMapConfig.allowNonSerializables = true;
-    _propertyMapConfig.autoConvertLists = false;
-    _propertyMapConfig.autoConvertMaps = false;
     _root = new AssetPack(this, 'root');
     importers['json'] = new JsonImporter();
     importers['text'] = new TextImporter();
     importers['pack'] = new PackImporter(this);
+    importers['textmap'] = new NoopImporter();
+    importers['imagemap'] = new NoopImporter();
+    loaders['textmap'] = new MapLoader(new TextLoader());
+    loaders['imagemap'] = new MapLoader(new ImageLoader());
     loaders['json'] = new TextLoader();
     loaders['text'] = loaders['json'];
     loaders['pack'] = loaders['json'];
+  }
+
+  void _supportedTypeCheck(String type) {
+    AssetImporter importer = importers[type];
+    if (importer == null) {
+      throw new ArgumentError('Cannot find importer for ${type}.');
+    }
+    AssetLoader loader = loaders[type];
+    if (loader == null) {
+      throw new ArgumentError('Cannot find loader for ${type}.');
+    }
   }
 
   AssetPack _root;
@@ -46,21 +56,25 @@ class AssetManager {
   AssetPack get root => _root;
 
   /// Forwarded to root.
-  dynamic getAssetAtPath(String assetPath) => root.getAssetAtPath(assetPath);
+  dynamic getImportedAtPath(String path) => root.getImportedAtPath(path);
+
+  /// Forwarded to [getImportedAtPath].
+  dynamic operator[](String path) => getImportedAtPath(path);
+
+  /// Forwarded to root.
+  Asset getAssetAtPath(String assetPath) => root.getAssetAtPath(assetPath);
 
   /// Forwarded to root. See [AssetPack] for method documentation.
-  Asset registerAssetAtPath(String assetPath, String type, dynamic imported) {
-    return root.registerAssetAtPath(assetPath, type, imported);
+  Future<Asset> loadAndRegisterAsset(String name, String url, String type,
+                                     Map loaderArguments,
+                                     Map importerArguments) {
+    return root.loadAndRegisterAsset(name, url, type, loaderArguments,
+                                     importerArguments);
   }
 
   /// Forwarded to root. See [AssetPack] for method documentation.
-  void deregisterAssetAtPath(String assetPath) {
-    root.deregisterAssetAtPath(assetPath);
-  }
-
-  /// Forwarded to root. See [AssetPack] for method documentation.
-  AssetPack registerPack(String assetPackName) {
-    return _root.registerAssetPack(assetPackName);
+  AssetPack registerPack(String assetPackName, String url) {
+    return _root.registerPack(assetPackName, url);
   }
 
   /// Forwared to root. See [AssetPack] for method documentation.
@@ -78,26 +92,14 @@ class AssetManager {
     return _root.loadPacks(packs);
   }
 
-  Future _loadAndImport(AssetRequest request) {
-    AssetImporter importer = importers[request.type];
-    if (importer == null) {
-      throw new ArgumentError('Cannot find importer for ${request.type}.');
+  Future<Asset> _loadAndImport(Asset asset) {
+    if (asset.loader == null || asset.importer == null) {
+      return new Future.immediate(asset);
     }
-    AssetLoader loader = loaders[request.type];
-    if (loader == null) {
-      throw new ArgumentError('Cannot find loader for ${request.type}.');
-    }
-    request.trace.assetLoadStart(request);
-    return loader.load(request).then((payload) {
-      request.trace.assetLoadEnd(request);
-      request.trace.assetImportStart(request);
-      return importer.import(payload, request);
-    }).then((v) {
-      if (v == null) {
-        request.trace.assetEvent(request, 'ERROR_NullImport');
-      }
-      request.trace.assetImportEnd(request);
-      return new Future.immediate(v);
+    asset._status = 'Loading';
+    return asset.loader.load(asset).then((payload) {
+      asset._status = 'Importing';
+      return asset.importer.import(payload, asset);
     });
   }
 }

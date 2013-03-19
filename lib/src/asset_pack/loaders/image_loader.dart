@@ -21,7 +21,7 @@
 part of asset_pack;
 
 class ImageLoader extends AssetLoader {
-  Future<dynamic> load(AssetRequest assetRequest) {
+  Future<dynamic> load(Asset asset) {
     var completer = new Completer<dynamic>();
     ImageElement image = new ImageElement();
     image.onLoad.listen((event) {
@@ -30,7 +30,7 @@ class ImageLoader extends AssetLoader {
     image.onError.listen((event) {
       completer.complete(null);
     });
-    image.src = assetRequest.URL;
+    image.src = asset.url;
     return completer.future;
   }
 

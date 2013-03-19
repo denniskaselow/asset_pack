@@ -32,10 +32,9 @@ part 'importer.dart';
 part 'manager.dart';
 
 main() {
-  //useHtmlEnhancedConfiguration();
+  useHtmlEnhancedConfiguration();
   Decoder.runTests();
   Loader.runTests();
   Importer.runTests();
   Manager.runTests();
-  print('tests complete.');
 }

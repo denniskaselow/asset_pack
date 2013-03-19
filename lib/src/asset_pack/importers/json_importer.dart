@@ -21,23 +21,20 @@
 part of asset_pack;
 
 class JsonImporter extends AssetImporter {
-  dynamic get fallback => {};
+  void initialize(Asset asset) {
+    asset.imported = {};
+  }
 
-  Future<dynamic> import(dynamic payload, AssetRequest assetRequest) {
+  Future<Asset> import(dynamic payload, Asset asset) {
     if (payload is String) {
       try {
-        assetRequest.trace.assetEvent(assetRequest, 'JsonParseStart');
         var parsed = JSON.parse(payload);
-        assetRequest.trace.assetEvent(assetRequest, 'JsonParseEnd');
-        return new Future.immediate(parsed);
-      } catch (_) {
-        return new Future.immediate(fallback);
-      }
+        asset.imported = parsed;
+      } catch (_) {}
     }
-    return new Future.immediate(fallback);
+    return new Future.immediate(asset);
   }
 
   void delete(dynamic imported) {
-
   }
 }

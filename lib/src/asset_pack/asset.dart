@@ -26,42 +26,52 @@ part of asset_pack;
 /// [loader] and [importer].
 class Asset {
   final AssetPack pack;
-  /** The name of the asset. */
+  /// The name of the asset.
   final String name;
-  /** The url the asset was loaded from. */
-  final String url;
-  /** The type of the asset. */
+  /// The type of the asset.
   final String type;
-  /** The loader for the asset */
+  /// The loader for the asset.
   final AssetLoader loader;
-  /** The importer for the asset */
+  /// The importer for the asset.
   final AssetImporter importer;
 
-  String _status = 'Unloaded';
+  final Map loaderArguments;
+  final Map importerArguments;
+
+  final String baseUrl;
+  final String assetUrl;
+  String get url => '$baseUrl$assetUrl';
+
+  String _status = '';
   /// Status string.
   String get status => _status;
-  bool get _isLoaded => status == 'OK';
 
-  dynamic _loaded;
   dynamic _imported;
 
   /// The imported object.
   dynamic get imported => _imported;
+  set imported(dynamic import) {
+    _imported = import;
+    _status = 'OK';
+    // TODO(johnmccutchan): Fire event into stream.
+  }
 
   /// Is [imported] a pack file?
   bool get isPack => type == 'pack';
 
-  Asset(this.pack, this.name, this.url, this.type, this.loader, this.importer);
+  Asset(this.pack, this.name, this.baseUrl, this.assetUrl, this.type,
+        this.loader, this.loaderArguments, this.importer,
+        this.importerArguments);
 
   /// Path to this asset.
   String get path => '${pack.path}.${name}';
 
   void _delete() {
-    if (imported != null) {
+    if (importer != null) {
       importer.delete(_imported);
     }
-    if (loader != null) {
-      loader.delete(_loaded);
-    }
+  }
+
+  void reload() {
   }
 }

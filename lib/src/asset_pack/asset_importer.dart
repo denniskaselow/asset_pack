@@ -20,8 +20,14 @@
 
 part of asset_pack;
 
+/// Interface of an [AssetImporter]. An asset importer is responsible for
+/// Initializing the [imported] field in [Asset] and importing an object
+/// returned from a loader.
 abstract class AssetImporter {
-  dynamic get fallback;
-  Future<dynamic> import(dynamic payload, AssetRequest assetRequest);
+  /// Must initialize imported field in [asset].
+  void initialize(Asset asset);
+  /// Import [payload] and assign it to imported field in [asset].
+  Future<Asset> import(dynamic payload, Asset asset);
+  /// Delete [imported] object.
   void delete(dynamic imported);
 }
