@@ -130,7 +130,8 @@ class AssetPack {
 
   /// Get asset's imported property at [path].
   dynamic getImportedAtPath(String path) {
-    Asset asset = getAssetAtPath(path);
+    List<String> splitPath = path.split(".");
+    Asset asset = _getAssetAtPath(path, splitPath, false);
     if (asset != null) {
       return asset.imported;
     }
@@ -140,26 +141,36 @@ class AssetPack {
   /// Get asset metadata at [path]. Returns the [Asset] not the imported value
   Asset getAssetAtPath(String path) {
     List<String> splitPath = path.split(".");
-    return _getAssetAtPath(path, splitPath);
+    return _getAssetAtPath(path, splitPath, true);
   }
 
   /// Forwarded to [getImportedAtPath].
   dynamic operator[](String path) => getImportedAtPath(path);
 
-  Asset _getAssetAtPath(String fullAssetPath, List<String> assetPath) {
+  Asset _getAssetAtPath(String fullAssetPath, List<String> assetPath,
+                        bool throwOnNotFound) {
     if (assetPath.length == 0) {
+      if (throwOnNotFound == false) {
+        return null;
+      }
       throw new ArgumentError('$fullAssetPath does not exist.');
     }
     String name = assetPath.removeAt(0);
     Asset asset = assets[name];
     if (asset == null) {
+      if (throwOnNotFound == false) {
+        return null;
+      }
       throw new ArgumentError('$fullAssetPath does not exist.');
     }
     if (asset.isPack && assetPath.length > 0) {
       AssetPack pack = asset.imported;
-      return pack._getAssetAtPath(fullAssetPath, assetPath);
+      return pack._getAssetAtPath(fullAssetPath, assetPath, throwOnNotFound);
     }
     if (assetPath.length > 0) {
+      if (throwOnNotFound == false) {
+        return null;
+      }
       throw new ArgumentError('$fullAssetPath does not exist.');
     }
     return asset;

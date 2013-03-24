@@ -90,7 +90,7 @@ class Manager {
         expect(pack.type('map')  , null);
         expect(pack.type('test') , null);
         expect(pack.type('tests'), null);
-        expect(() => assetManager['testpack'], throws);
+        expect(() => assetManager.getAssetAtPath('testpack'), throws);
       }));
     });
     test('reload', () {
@@ -102,7 +102,7 @@ class Manager {
         expect(assetManager['testpack'] == null, false);
         assetManager.deregisterPack('testpack');
         expect(pack.length, 0);
-        expect(() => assetManager['testpack'], throws);
+        expect(() => assetManager.getAssetAtPath('testpack'), throws);
         futurePack = assetManager.loadPack('testpack', 'testpack.pack');
         futurePack.then(expectAsync1((pack) {
           expect(pack.assets.length, 5);
@@ -115,7 +115,7 @@ class Manager {
           expect(assetManager['testpack'] == null, false);
           assetManager.deregisterPack('testpack');
           expect(() => assetManager.deregisterPack('testpack'), throws);
-          expect(() => assetManager['testpack'], throws);
+          expect(() => assetManager.getAssetAtPath('testpack'), throws);
         }));
       }));
     });
@@ -148,7 +148,7 @@ class Manager {
       // Pack is removed.
       expect(() {
         // Access a non-existant asset throws.
-        var i = assetManager['packy'];
+        var i = assetManager.getAssetAtPath('packy');
       }, throws);
       expect(pack.parent, null);
       // Asset is not findable.
@@ -183,7 +183,7 @@ class Manager {
         assetManager.root.deregisterAsset('test');
         expect(() {
           // Access a non-existant asset throws.
-          var i = assetManager['test'];
+          var i = assetManager.getAssetAtPath('test');
         }, throws);
         expect(assetManager.root.assets.length, 0);
         expect(assetManager.root.length, 0);
