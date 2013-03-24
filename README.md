@@ -1,6 +1,8 @@
 # asset_pack #
 ==============
 
+[![Build Status](https://drone.io/github.com/johnmccutchan/asset_pack/status.png)](https://drone.io/github.com/johnmccutchan/asset_pack/latest)
+
 ## Introduction ##
 
 An asset management library for Dart games. Assets are organized into a tree
