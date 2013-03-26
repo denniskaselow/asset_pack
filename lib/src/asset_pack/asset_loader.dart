@@ -24,7 +24,7 @@ part of asset_pack;
 /// for loading an object from a url pointing to a network or filesystem.
 abstract class AssetLoader {
   /// Fetch [asset] Url.
-  Future<dynamic> load(Asset asset);
+  Future<dynamic> load(Asset asset, AssetPackTrace tracer);
   /// Delete fetched [arg].
   void delete(dynamic arg);
 }

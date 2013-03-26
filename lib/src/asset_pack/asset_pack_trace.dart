@@ -68,6 +68,9 @@ class AssetPackTraceEvent {
     } else if (type == 'ERROR_NullImport') {
       json['ph'] = 'I';
       json['name'] = 'NULLImport $label';
+    } else if (type == 'AssetLoadError' || type == 'AssetImportError') {
+      json['ph'] = 'I';
+      json['name'] = '${type} $label';
     } else {
       throw new ArgumentError('Unknown type $type');
       assert(false);
@@ -142,6 +145,11 @@ class AssetPackTrace {
     events.add(event);
   }
 
+  void assetLoadError(Asset asset, url, String errorLabel) {
+    var event = new AssetPackTraceEvent('AssetImportError', errorLabel, time);
+    events.add(event);
+  }
+
   void assetImportStart(Asset asset) {
     var event = new AssetPackTraceEvent('AssetImportStart', asset.assetUrl,
                                         time);
@@ -154,6 +162,10 @@ class AssetPackTrace {
     events.add(event);
   }
 
+  void assetImportError(Asset asset, url, String errorLabel) {
+    var event = new AssetPackTraceEvent('AssetImportError', errorLabel, time);
+    events.add(event);
+  }
   void assetEvent(Asset asset, String type) {
     var event = new AssetPackTraceEvent(type, asset.assetUrl, time);
     events.add(event);
@@ -196,8 +208,10 @@ class NullAssetPackTrace implements AssetPackTrace {
   void packLoadEnd(String name) {}
   void assetLoadStart(Asset asset) {}
   void assetLoadEnd(Asset asset) {}
+  void assetLoadError(Asset asset, url, String errorLabel) {}
   void assetImportStart(Asset asset) {}
   void assetImportEnd(Asset asset) {}
+  void assetImportError(Asset asset, url, String errorLabel) {}
   void assetEvent(Asset asset, String type) {}
   dynamic toJson() { return {}; }
   void dump() {}
