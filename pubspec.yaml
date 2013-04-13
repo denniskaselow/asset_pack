@@ -6,6 +6,7 @@ authors:
 - Daniel Rodriguez <seth.illgard@gmail.com>
 description: Asset Management Library for Dart Games
 homepage: https://github.com/johnmccutchan/assetpack
-dependencies:
+dev_dependencies:
   unittest: any
   browser: any
+  hop: any

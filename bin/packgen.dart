@@ -153,9 +153,9 @@ void output(AssetPackFile packFile, String path) {
   File out = new File.fromPath(new Path(path));
   RandomAccessFile raf;
   try {
-    raf = out.openSync(FileMode.WRITE);
-  } catch (_) {
-    print('Could not open $path for writing.');
+    raf = out.openSync(mode: FileMode.WRITE);
+  } catch (e) {
+    print('Could not open $path for writing. $e');
     return;
   }
   String serialized;
