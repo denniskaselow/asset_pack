@@ -32,7 +32,7 @@ class PackImporter extends AssetImporter {
   Future<Asset> import(dynamic payload, Asset asset, AssetPackTrace tracer) {
     tracer.assetImportStart(asset);
     if (payload == null) {
-      tracer.assetImportError(asset, "payload is null");
+      tracer.assetImportError(asset, "A pack asset was not available.");
       tracer.assetImportEnd(asset);
       return new Future.immediate(asset);
     }

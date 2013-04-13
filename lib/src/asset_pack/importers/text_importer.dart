@@ -30,7 +30,7 @@ class TextImporter extends AssetImporter {
       if (payload is String) {
         asset.imported = payload;
       } else {
-        tracer.assetImportError(asset, "payload is not a String");
+        tracer.assetImportError(asset, "A text asset was not a String.");
       }
       return new Future.immediate(asset);
     } finally {

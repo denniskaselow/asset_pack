@@ -36,7 +36,7 @@ class JsonImporter extends AssetImporter {
           tracer.assetImportError(asset, e.message);
         }
       } else {
-        tracer.assetImportError(asset, "payload is not a String");
+        tracer.assetImportError(asset, "A text asset was not a String.");
       }
       return new Future.immediate(asset);
     } finally {
