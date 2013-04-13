@@ -42,7 +42,7 @@ class Loader {
         isNot(throws)
     );
     expect(
-        es.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadEnd,
+        es.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadEnd),
         isNot(throws)
     );
   }

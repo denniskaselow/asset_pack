@@ -24,7 +24,7 @@ class Importer {
 
   static void expectImportTrace(AssetPackTrace tracer,
                                 {bool withError : false}) {
-    var es = tracer.event;
+    var es = tracer.events;
     if (withError) {
       expect(
           es.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportError),
