@@ -25,9 +25,10 @@ class AssetManager {
   final Map<String, AssetImporter> importers = new Map<String, AssetImporter>();
   /** A map from asset type to loader. Add your own loaders. */
   final Map<String, AssetLoader> loaders = new Map<String, AssetLoader>();
+
   final AssetPackTrace tracer;
 
-  AssetManager(this.tracer) {
+  AssetManager([tracer0]) : tracer = (tracer0 == null) ? new NullAssetPackTrace() : tracer0 {
     _root = new AssetPack(this, 'root');
     importers['json'] = new JsonImporter();
     importers['text'] = new TextImporter();

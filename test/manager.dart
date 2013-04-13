@@ -22,8 +22,7 @@ part of asset_pack_tests;
 
 class Manager {
   static void loadTest() {
-    AssetPackTrace trace = new AssetPackTrace();
-    AssetManager assetManager = new AssetManager(trace);
+    AssetManager assetManager = new AssetManager();
     Future<AssetPack> futurePack;
     test('success.', () {
       futurePack = assetManager.loadPack('testpack', 'testpack.pack');
