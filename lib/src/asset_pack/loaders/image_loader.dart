@@ -26,13 +26,13 @@ class ImageLoader extends AssetLoader {
     var completer = new Completer<dynamic>();
     ImageElement image = new ImageElement();
     image.onLoad.listen((event) {
+      tracer.assetLoadEnd(asset);
       completer.complete(image);
-      tracer.assetLoadEnd(asset);
     });
-    image.onError.listen((error) {
-      tracer.assetLoadError(asset, error.toString());
-      completer.complete(null);
+    image.onError.listen((event) {
+      tracer.assetLoadError(asset, "${event.runtimeType} : ${event.type}");
       tracer.assetLoadEnd(asset);
+      completer.complete(null);
     });
     image.src = asset.url;
     return completer.future;

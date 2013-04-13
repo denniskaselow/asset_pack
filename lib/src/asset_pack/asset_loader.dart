@@ -35,18 +35,19 @@ abstract class AssetLoader {
       // Note: file:// URIs have status of 0.
       if ((xhr.status >= 200 && xhr.status < 300) ||
           xhr.status == 0 || xhr.status == 304) {
+        tracer.assetLoadEnd(asset);
         completer.complete(extractResponse(xhr));
       } else {
-        tracer.assetLoadError(asset, "http status code rejected : ${xhr.status}");
+        tracer.assetLoadError(asset, "http status code rejected : ${xhr.status} : ${xhr.statusText}");
+        tracer.assetLoadEnd(asset);
         completer.complete(null);
       }
-      tracer.assetLoadEnd(asset);
     });
 
     xhr.onError.listen((e) {
-      tracer.assetLoadError(asset, e);
-      completer.complete(null);
+      tracer.assetLoadError(asset, "http status code rejected : ${xhr.status} : ${xhr.statusText}");
       tracer.assetLoadEnd(asset);
+      completer.complete(null);
     });
 
     xhr.send();

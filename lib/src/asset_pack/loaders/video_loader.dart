@@ -26,13 +26,13 @@ class VideoLoader extends AssetLoader {
     var completer = new Completer<dynamic>();
     VideoElement video = new VideoElement();
     video.onCanPlay.listen((event) {
-      completer.complete(video);
       tracer.assetLoadEnd(asset);
+      completer.complete(video);
     });
     video.onError.listen((error) {
       tracer.assetLoadError(asset, error.toString());
-      completer.complete(null);
       tracer.assetLoadEnd(asset);
+      completer.complete(null);
     });
     video.src = asset.url;
     return completer.future;

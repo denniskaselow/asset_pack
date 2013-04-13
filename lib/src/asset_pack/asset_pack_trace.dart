@@ -23,6 +23,7 @@ part of asset_pack;
 class AssetPackTraceEvent {
   static const packLoadStart = 'PackLoadStart';
   static const packLoadEnd = 'PackLoadEnd';
+  static const packLoadError = 'PackLoadError';
   static const assetLoadStart = 'AssetLoadStart';
   static const assetLoadEnd = 'AssetLoadEnd';
   static const assetLoadError = 'AssetLoadError';
@@ -137,6 +138,11 @@ class AssetPackTrace {
   void packLoadEnd(String name) {
     time.stop();
     var event = new AssetPackTraceEvent(AssetPackTraceEvent.packLoadEnd, name, time);
+    events.add(event);
+  }
+
+  void packLoadError(Asset asset, String errorLabel) {
+    var event = new AssetPackTraceEvent(AssetPackTraceEvent.packLoadError, "${asset.assetUrl} >> ${errorLabel}", time);
     events.add(event);
   }
 
