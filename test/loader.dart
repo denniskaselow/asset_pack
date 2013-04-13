@@ -21,27 +21,41 @@
 part of asset_pack_tests;
 
 class Loader {
-  static final AssetPackTrace trace = new AssetPackTrace();
+
+  static void expectLoadTrace(AssetPackTrace tracer, {bool withError : false}) {
+    if (withError) {
+      expect(tracer.events.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadError), isNot(throws));
+    } else {
+      expect(() => tracer.events.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadError), throws);
+    }
+    expect(tracer.events.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadStart), isNot(throws));
+    expect(tracer.events.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadEnd), isNot(throws));
+  }
+
   static void imageTest() {
     ImageLoader imageLoader = new ImageLoader();
     test('404', () {
       Future loaded;
+      var tracer = new AssetPackTrace();
       var asset = new Asset(null, 'notthere', '', 'notthere.png',
                             'png', null, {}, null, {});
-      loaded = imageLoader.load(asset, trace);
+      loaded = imageLoader.load(asset, tracer);
       loaded.then(expectAsync1((ImageElement imageElement) {
         expect(imageElement, null);
+        expectLoadTrace(tracer, withError : true);
       }));
     });
     test('64x64 png', () {
       Future loaded;
+      var tracer = new AssetPackTrace();
       var asset = new Asset(null, 'test', '', 'test.png', 'png',
                             null, {}, null, {});
-      loaded = imageLoader.load(asset, trace);
+      loaded = imageLoader.load(asset, tracer);
       loaded.then(expectAsync1((ImageElement imageElement) {
         expect(imageElement == null, false);
         expect(imageElement.width, 64);
         expect(imageElement.height, 64);
+        expectLoadTrace(tracer, withError : false);
       }));
     });
   }
@@ -50,21 +64,25 @@ class Loader {
     ArrayBufferLoader arrayBufferLoader = new ArrayBufferLoader();
     test('404', () {
       Future loaded;
+      var tracer = new AssetPackTrace();
       var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
                                    'bin', null, {}, null, {});
-      loaded = arrayBufferLoader.load(assetRequest, trace);
+      loaded = arrayBufferLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((ArrayBuffer arrayBuffer) {
         expect(arrayBuffer, null);
+        expectLoadTrace(tracer, withError : true);
       }));
     });
     test('32 bytes', () {
       Future loaded;
+      var tracer = new AssetPackTrace();
       var assetRequest = new Asset(null, 'binarydata', '', 'binarydata.bin',
                                    'bin', null, {}, null, {});
-      loaded = arrayBufferLoader.load(assetRequest, trace);
+      loaded = arrayBufferLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((ArrayBuffer arrayBuffer) {
         expect(arrayBuffer == null, false);
         expect(arrayBuffer.byteLength, 32);
+        expectLoadTrace(tracer, withError : false);
       }));
     });
   }
@@ -73,21 +91,25 @@ class Loader {
     BlobLoader blobLoader = new BlobLoader();
     test('404', () {
       Future loaded;
+      var tracer = new AssetPackTrace();
       var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
                                    'bin', null, {}, null, {});
-      loaded = blobLoader.load(assetRequest, trace);
+      loaded = blobLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((Blob blob) {
         expect(blob, null);
+        expectLoadTrace(tracer, withError : true);
       }));
     });
     test('32 bytes', () {
       Future loaded;
+      var tracer = new AssetPackTrace();
       var assetRequest = new Asset(null, 'binarydata', '', 'binarydata.bin',
                                    'bin', null, {}, null, {});
-      loaded = blobLoader.load(assetRequest, trace);
+      loaded = blobLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((Blob blob) {
         expect(blob == null, false);
         expect(blob.size, 32);
+        expectLoadTrace(tracer, withError : false);
       }));
     });
   }
@@ -96,22 +118,26 @@ class Loader {
     TextLoader textLoader = new TextLoader();
     test('404', () {
       Future loaded;
+      var tracer = new AssetPackTrace();
       var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
                                    'text', null, {}, null, {});
-      loaded = textLoader.load(assetRequest, trace);
+      loaded = textLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((String text) {
         expect(text, null);
+        expectLoadTrace(tracer, withError : true);
       }));
     });
     test('test.json', () {
       Future loaded;
+      var tracer = new AssetPackTrace();
       var assetRequest = new Asset(null, 'test', '', 'test.json',
                                    'json', null, {}, null, {});
-      loaded = textLoader.load(assetRequest, trace);
+      loaded = textLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
         String expected = '{"a":[1,2,3]}';
         expect(text.startsWith(expected), true);
+        expectLoadTrace(tracer, withError : false);
       }));
     });
   }
@@ -120,22 +146,26 @@ class Loader {
     VideoLoader videoLoader = new VideoLoader();
     test('404', () {
       Future loaded;
+      var tracer = new AssetPackTrace();
       var assetRequest = new Asset(null, 'notthere', '', 'notthere.mp4',
                                    'mp4', null, {}, null, {});
-      loaded = videoLoader.load(assetRequest, trace);
+      loaded = videoLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((VideoElement videoElement) {
         expect(videoElement, null);
+        expectLoadTrace(tracer, withError : true);
       }));
     });
     test('webm', () {
       Future loaded;
+      var tracer = new AssetPackTrace();
       var assetRequest = new Asset(null, 'test', '', 'big_buck_bunny.webm',
                                    'webm', null, {}, null, {});
-      loaded = videoLoader.load(assetRequest, trace);
+      loaded = videoLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((VideoElement videoElement) {
         expect(videoElement == null, false);
         expect(videoElement.videoWidth, 640);
         expect(videoElement.videoHeight, 360);
+        expectLoadTrace(tracer, withError : false);
       }));
     });
   }

@@ -27,7 +27,7 @@ class AssetPackTraceEvent {
   static const assetLoadStart = 'AssetLoadStart';
   static const assetLoadEnd = 'AssetLoadEnd';
   static const assetLoadError = 'AssetLoadError';
-  static const assetImportStart = 'AssetLoadStart';
+  static const assetImportStart = 'AssetImportStart';
   static const assetImportEnd = 'AssetImportEnd';
   static const assetImportError = 'AssetImportError';
 
