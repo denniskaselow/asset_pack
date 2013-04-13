@@ -21,6 +21,15 @@
 part of asset_pack;
 
 class AssetPackTraceEvent {
+  static const packLoadStart = 'PackLoadStart';
+  static const packLoadEnd = 'PackLoadEnd';
+  static const assetLoadStart = 'AssetLoadStart';
+  static const assetLoadEnd = 'AssetLoadEnd';
+  static const assetLoadError = 'AssetLoadError';
+  static const assetImportStart = 'AssetLoadStart';
+  static const assetImportEnd = 'AssetImportEnd';
+  static const assetImportError = 'AssetImportError';
+
   final String type;
   final String label;
   final int microseconds;
@@ -44,13 +53,13 @@ class AssetPackTraceEvent {
     if (type == 'AssetImportEnd') {
       json['ph'] = 'E';
       json['name'] = 'import $label';
-    } else if (type == 'AssetImportStart') {
+    } else if (type == assetImportStart) {
       json['ph'] = 'B';
       json['name'] = 'import $label';
-    } else if (type == 'AssetLoadStart') {
+    } else if (type == assetLoadStart) {
       json['ph'] = 'B';
       json['name'] = 'load $label';
-    } else if (type == 'AssetLoadEnd') {
+    } else if (type == assetLoadEnd) {
       json['ph'] = 'E';
       json['name'] = 'load $label';
     } else if (type == 'JsonParseStart') {
@@ -59,16 +68,13 @@ class AssetPackTraceEvent {
     } else if (type == 'JsonParseEnd') {
       json['ph'] = 'E';
       json['name'] = 'json $label';
-    } else if (type == 'PackLoadEnd') {
+    } else if (type == packLoadEnd) {
       json['ph'] = 'E';
       json['name'] = 'pack $label';
-    } else if (type == 'PackLoadStart') {
+    } else if (type == packLoadStart) {
       json['ph'] = 'B';
       json['name'] = 'pack $label';
-    } else if (type == 'ERROR_NullImport') {
-      json['ph'] = 'I';
-      json['name'] = 'NULLImport $label';
-    } else if (type == 'AssetLoadError' || type == 'AssetImportError') {
+    } else if (type == assetLoadError || type == assetImportError) {
       json['ph'] = 'I';
       json['name'] = '${type} $label';
     } else {
@@ -124,44 +130,43 @@ class AssetPackTrace {
     events.clear();
     time.reset();
     time.start();
-    var event = new AssetPackTraceEvent('PackLoadStart', name, time);
+    var event = new AssetPackTraceEvent(AssetPackTraceEvent.packLoadStart, name, time);
     events.add(event);
   }
 
   void packLoadEnd(String name) {
     time.stop();
-    var event = new AssetPackTraceEvent('PackLoadEnd', name, time);
+    var event = new AssetPackTraceEvent(AssetPackTraceEvent.packLoadEnd, name, time);
     events.add(event);
   }
 
   void assetLoadStart(Asset asset) {
-    var event = new AssetPackTraceEvent('AssetLoadStart', asset.assetUrl,
-                                        time);
+    var event = new AssetPackTraceEvent(AssetPackTraceEvent.assetLoadStart, asset.assetUrl, time);
     events.add(event);
   }
 
   void assetLoadEnd(Asset asset) {
-    var event = new AssetPackTraceEvent('AssetLoadEnd', asset.assetUrl, time);
+    var event = new AssetPackTraceEvent(AssetPackTraceEvent.assetLoadEnd, asset.assetUrl, time);
     events.add(event);
   }
 
   void assetLoadError(Asset asset, String errorLabel) {
-    var event = new AssetPackTraceEvent('AssetLoadError', "${asset.assetUrl} >> ${errorLabel}", time);
+    var event = new AssetPackTraceEvent(AssetPackTraceEvent.assetLoadError, "${asset.assetUrl} >> ${errorLabel}", time);
     events.add(event);
   }
 
   void assetImportStart(Asset asset) {
-    var event = new AssetPackTraceEvent('AssetImportStart', asset.assetUrl, time);
+    var event = new AssetPackTraceEvent(AssetPackTraceEvent.assetImportStart, asset.assetUrl, time);
     events.add(event);
   }
 
   void assetImportEnd(Asset asset) {
-    var event = new AssetPackTraceEvent('AssetImportEnd', asset.assetUrl, time);
+    var event = new AssetPackTraceEvent(AssetPackTraceEvent.assetImportEnd, asset.assetUrl, time);
     events.add(event);
   }
 
   void assetImportError(Asset asset, String errorLabel) {
-    var event = new AssetPackTraceEvent('AssetImportError',"${asset.assetUrl} >> ${errorLabel}", time);
+    var event = new AssetPackTraceEvent(AssetPackTraceEvent.assetImportError,"${asset.assetUrl} >> ${errorLabel}", time);
     events.add(event);
   }
   void assetEvent(Asset asset, String type) {
