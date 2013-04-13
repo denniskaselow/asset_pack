@@ -21,14 +21,18 @@
 part of asset_pack;
 
 class ImageLoader extends AssetLoader {
-  Future<dynamic> load(Asset asset) {
+  Future<dynamic> load(Asset asset, AssetPackTrace tracer) {
+    tracer.assetLoadStart(asset);
     var completer = new Completer<dynamic>();
     ImageElement image = new ImageElement();
     image.onLoad.listen((event) {
       completer.complete(image);
+      tracer.assetLoadEnd(asset);
     });
-    image.onError.listen((event) {
+    image.onError.listen((error) {
+      tracer.assetLoadError(asset, error.toString());
       completer.complete(null);
+      tracer.assetLoadEnd(asset);
     });
     image.src = asset.url;
     return completer.future;

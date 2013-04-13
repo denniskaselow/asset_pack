@@ -28,7 +28,7 @@ class Loader {
       Future loaded;
       var asset = new Asset(null, 'notthere', '', 'notthere.png',
                             'png', null, {}, null, {});
-      loaded = imageLoader.load(asset);
+      loaded = imageLoader.load(asset, trace);
       loaded.then(expectAsync1((ImageElement imageElement) {
         expect(imageElement, null);
       }));
@@ -37,7 +37,7 @@ class Loader {
       Future loaded;
       var asset = new Asset(null, 'test', '', 'test.png', 'png',
                             null, {}, null, {});
-      loaded = imageLoader.load(asset);
+      loaded = imageLoader.load(asset, trace);
       loaded.then(expectAsync1((ImageElement imageElement) {
         expect(imageElement == null, false);
         expect(imageElement.width, 64);
@@ -52,7 +52,7 @@ class Loader {
       Future loaded;
       var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
                                    'bin', null, {}, null, {});
-      loaded = arrayBufferLoader.load(assetRequest);
+      loaded = arrayBufferLoader.load(assetRequest, trace);
       loaded.then(expectAsync1((ArrayBuffer arrayBuffer) {
         expect(arrayBuffer, null);
       }));
@@ -61,7 +61,7 @@ class Loader {
       Future loaded;
       var assetRequest = new Asset(null, 'binarydata', '', 'binarydata.bin',
                                    'bin', null, {}, null, {});
-      loaded = arrayBufferLoader.load(assetRequest);
+      loaded = arrayBufferLoader.load(assetRequest, trace);
       loaded.then(expectAsync1((ArrayBuffer arrayBuffer) {
         expect(arrayBuffer == null, false);
         expect(arrayBuffer.byteLength, 32);
@@ -75,7 +75,7 @@ class Loader {
       Future loaded;
       var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
                                    'bin', null, {}, null, {});
-      loaded = blobLoader.load(assetRequest);
+      loaded = blobLoader.load(assetRequest, trace);
       loaded.then(expectAsync1((Blob blob) {
         expect(blob, null);
       }));
@@ -84,7 +84,7 @@ class Loader {
       Future loaded;
       var assetRequest = new Asset(null, 'binarydata', '', 'binarydata.bin',
                                    'bin', null, {}, null, {});
-      loaded = blobLoader.load(assetRequest);
+      loaded = blobLoader.load(assetRequest, trace);
       loaded.then(expectAsync1((Blob blob) {
         expect(blob == null, false);
         expect(blob.size, 32);
@@ -98,7 +98,7 @@ class Loader {
       Future loaded;
       var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
                                    'text', null, {}, null, {});
-      loaded = textLoader.load(assetRequest);
+      loaded = textLoader.load(assetRequest, trace);
       loaded.then(expectAsync1((String text) {
         expect(text, null);
       }));
@@ -107,7 +107,7 @@ class Loader {
       Future loaded;
       var assetRequest = new Asset(null, 'test', '', 'test.json',
                                    'json', null, {}, null, {});
-      loaded = textLoader.load(assetRequest);
+      loaded = textLoader.load(assetRequest, trace);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
         String expected = '{"a":[1,2,3]}';
@@ -122,7 +122,7 @@ class Loader {
       Future loaded;
       var assetRequest = new Asset(null, 'notthere', '', 'notthere.mp4',
                                    'mp4', null, {}, null, {});
-      loaded = videoLoader.load(assetRequest);
+      loaded = videoLoader.load(assetRequest, trace);
       loaded.then(expectAsync1((VideoElement videoElement) {
         expect(videoElement, null);
       }));
@@ -131,7 +131,7 @@ class Loader {
       Future loaded;
       var assetRequest = new Asset(null, 'test', '', 'big_buck_bunny.webm',
                                    'webm', null, {}, null, {});
-      loaded = videoLoader.load(assetRequest);
+      loaded = videoLoader.load(assetRequest, trace);
       loaded.then(expectAsync1((VideoElement videoElement) {
         expect(videoElement == null, false);
         expect(videoElement.videoWidth, 640);

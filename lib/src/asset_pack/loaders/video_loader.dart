@@ -21,14 +21,18 @@
 part of asset_pack;
 
 class VideoLoader extends AssetLoader {
-  Future<dynamic> load(Asset asset) {
+  Future<dynamic> load(Asset asset, AssetPackTrace tracer) {
+    tracer.assetLoadStart(asset);
     var completer = new Completer<dynamic>();
     VideoElement video = new VideoElement();
     video.onCanPlay.listen((event) {
       completer.complete(video);
+      tracer.assetLoadEnd(asset);
     });
-    video.onError.listen((event) {
+    video.onError.listen((error) {
+      tracer.assetLoadError(asset, error.toString());
       completer.complete(null);
+      tracer.assetLoadEnd(asset);
     });
     video.src = asset.url;
     return completer.future;

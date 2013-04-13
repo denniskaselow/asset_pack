@@ -25,14 +25,23 @@ class JsonImporter extends AssetImporter {
     asset.imported = {};
   }
 
-  Future<Asset> import(dynamic payload, Asset asset) {
-    if (payload is String) {
-      try {
-        var parsed = JSON.parse(payload);
-        asset.imported = parsed;
-      } catch (_) {}
+  Future<Asset> import(dynamic payload, Asset asset, AssetPackTrace tracer) {
+    tracer.assetImportStart(asset);
+    try {
+      if (payload is String) {
+        try {
+          var parsed = JSON.parse(payload);
+          asset.imported = parsed;
+        } catch (e) {
+          tracer.assetImportError(asset, e.message);
+        }
+      } else {
+        tracer.assetImportError(asset, "payload is not a String");
+      }
+      return new Future.immediate(asset);
+    } finally {
+      tracer.assetImportEnd(asset);
     }
-    return new Future.immediate(asset);
   }
 
   void delete(dynamic imported) {

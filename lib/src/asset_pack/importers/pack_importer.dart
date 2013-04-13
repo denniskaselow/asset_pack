@@ -29,8 +29,11 @@ class PackImporter extends AssetImporter {
     asset.imported._parent = asset.pack;
   }
 
-  Future<Asset> import(dynamic payload, Asset asset) {
+  Future<Asset> import(dynamic payload, Asset asset, AssetPackTrace tracer) {
+    tracer.assetImportStart(asset);
     if (payload == null) {
+      tracer.assetImportError(asset, "payload is null");
+      tracer.assetImportEnd(asset);
       return new Future.immediate(asset);
     }
     String url = asset.url;
@@ -39,7 +42,9 @@ class PackImporter extends AssetImporter {
     if (payload is String) {
       try {
         parsed = JSON.parse(payload);
-      } catch (_) {
+      } catch (e) {
+        tracer.assetImportError(asset, e.message);
+        tracer.assetImportEnd(asset);
         return new Future.immediate(asset);
       }
     }
@@ -54,21 +59,23 @@ class PackImporter extends AssetImporter {
       // TODO: Add proper "ignore" flag in asset pack file.
       // HACK: For now, use an empty type string.
       if (type == '') {
+        tracer.assetImportEnd(asset);
         return;
       }
 
       // Register asset.
-      Asset asset = pack.registerAsset(name, type, baseUrl, assetUrl,
+      Asset childAsset = pack.registerAsset(name, type, baseUrl, assetUrl,
                                        packFileAsset.loadArguments,
                                        packFileAsset.importArguments);
       // Mark the asset status.
-      var futureAsset = manager._loadAndImport(asset).then((_) {
+      var futureAsset = manager._loadAndImport(childAsset).then((_) {
         // Mark the asset status.
-        asset._status = 'Ok';
+        childAsset._status = 'Ok';
       });
       futureAssets.add(futureAsset);
     });
     return Future.wait(futureAssets).then((loaded) {
+      tracer.assetImportEnd(asset);
       return new Future.immediate(pack);
     });
   }

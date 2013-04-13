@@ -25,9 +25,14 @@ class NoopImporter extends AssetImporter {
     asset.imported = null;
   }
 
-  Future<Asset> import(dynamic payload, Asset asset) {
-    asset.imported = payload;
-    return new Future.immediate(asset);
+  Future<Asset> import(dynamic payload, Asset asset, AssetPackTrace tracer) {
+    tracer.assetImportStart(asset);
+    try {
+      asset.imported = payload;
+      return new Future.immediate(asset);
+    } finally {
+      tracer.assetImportEnd(asset);
+    }
   }
 
   void delete(dynamic imported) {

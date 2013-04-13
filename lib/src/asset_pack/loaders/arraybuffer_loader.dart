@@ -22,20 +22,8 @@ part of asset_pack;
 
 class ArrayBufferLoader extends AssetLoader {
 
-  Future<dynamic> load(Asset asset) {
-    var completer = new Completer<dynamic>();
-    var httpRequest = new HttpRequest();
-    httpRequest.open('GET', asset.url);
-    httpRequest.responseType = 'arraybuffer';
-    httpRequest.onLoad.listen((event) {
-      if (httpRequest.status == 200) {
-        completer.complete(httpRequest.response);
-      } else {
-        completer.complete(null);
-      }
-    });
-    httpRequest.send();
-    return completer.future;
+  Future<dynamic> load(Asset asset, AssetPackTrace tracer) {
+    return AssetLoader.httpLoad(asset, 'arraybuffer', (x) =>  x.response, tracer);
   }
 
   void delete(dynamic arg) {

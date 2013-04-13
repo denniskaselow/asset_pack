@@ -145,25 +145,23 @@ class AssetPackTrace {
     events.add(event);
   }
 
-  void assetLoadError(Asset asset, url, String errorLabel) {
-    var event = new AssetPackTraceEvent('AssetImportError', errorLabel, time);
+  void assetLoadError(Asset asset, String errorLabel) {
+    var event = new AssetPackTraceEvent('AssetLoadError', "${asset.assetUrl} >> ${errorLabel}", time);
     events.add(event);
   }
 
   void assetImportStart(Asset asset) {
-    var event = new AssetPackTraceEvent('AssetImportStart', asset.assetUrl,
-                                        time);
+    var event = new AssetPackTraceEvent('AssetImportStart', asset.assetUrl, time);
     events.add(event);
   }
 
   void assetImportEnd(Asset asset) {
-    var event = new AssetPackTraceEvent('AssetImportEnd', asset.assetUrl,
-                                        time);
+    var event = new AssetPackTraceEvent('AssetImportEnd', asset.assetUrl, time);
     events.add(event);
   }
 
-  void assetImportError(Asset asset, url, String errorLabel) {
-    var event = new AssetPackTraceEvent('AssetImportError', errorLabel, time);
+  void assetImportError(Asset asset, String errorLabel) {
+    var event = new AssetPackTraceEvent('AssetImportError',"${asset.assetUrl} >> ${errorLabel}", time);
     events.add(event);
   }
   void assetEvent(Asset asset, String type) {
@@ -208,10 +206,10 @@ class NullAssetPackTrace implements AssetPackTrace {
   void packLoadEnd(String name) {}
   void assetLoadStart(Asset asset) {}
   void assetLoadEnd(Asset asset) {}
-  void assetLoadError(Asset asset, url, String errorLabel) {}
+  void assetLoadError(Asset asset, String errorLabel) {}
   void assetImportStart(Asset asset) {}
   void assetImportEnd(Asset asset) {}
-  void assetImportError(Asset asset, url, String errorLabel) {}
+  void assetImportError(Asset asset, String errorLabel) {}
   void assetEvent(Asset asset, String type) {}
   dynamic toJson() { return {}; }
   void dump() {}

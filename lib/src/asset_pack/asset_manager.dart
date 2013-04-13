@@ -25,8 +25,9 @@ class AssetManager {
   final Map<String, AssetImporter> importers = new Map<String, AssetImporter>();
   /** A map from asset type to loader. Add your own loaders. */
   final Map<String, AssetLoader> loaders = new Map<String, AssetLoader>();
+  final AssetPackTrace tracer;
 
-  AssetManager() {
+  AssetManager(this.tracer) {
     _root = new AssetPack(this, 'root');
     importers['json'] = new JsonImporter();
     importers['text'] = new TextImporter();
@@ -97,9 +98,9 @@ class AssetManager {
       return new Future.immediate(asset);
     }
     asset._status = 'Loading';
-    return asset.loader.load(asset).then((payload) {
+    return asset.loader.load(asset, tracer).then((payload) {
       asset._status = 'Importing';
-      return asset.importer.import(payload, asset);
+      return asset.importer.import(payload, asset, tracer);
     });
   }
 }
