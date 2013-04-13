@@ -131,48 +131,84 @@ class AssetPackTrace {
     events.clear();
     time.reset();
     time.start();
-    var event = new AssetPackTraceEvent(AssetPackTraceEvent.packLoadStart, name, time);
+    var event = new AssetPackTraceEvent(
+        AssetPackTraceEvent.packLoadStart,
+        name,
+        time
+    );
     events.add(event);
   }
 
   void packLoadEnd(String name) {
     time.stop();
-    var event = new AssetPackTraceEvent(AssetPackTraceEvent.packLoadEnd, name, time);
+    var event = new AssetPackTraceEvent(
+        AssetPackTraceEvent.packLoadEnd,
+        name,
+        time
+    );
     events.add(event);
   }
 
   void packLoadError(Asset asset, String errorLabel) {
-    var event = new AssetPackTraceEvent(AssetPackTraceEvent.packLoadError, "${asset.assetUrl} >> ${errorLabel}", time);
+    var event = new AssetPackTraceEvent(
+        AssetPackTraceEvent.packLoadError,
+        "${asset.assetUrl} >> ${errorLabel}",
+        time
+    );
     events.add(event);
   }
 
   void assetLoadStart(Asset asset) {
-    var event = new AssetPackTraceEvent(AssetPackTraceEvent.assetLoadStart, asset.assetUrl, time);
+    var event = new AssetPackTraceEvent(
+        AssetPackTraceEvent.assetLoadStart,
+        asset.assetUrl,
+        time
+    );
     events.add(event);
   }
 
   void assetLoadEnd(Asset asset) {
-    var event = new AssetPackTraceEvent(AssetPackTraceEvent.assetLoadEnd, asset.assetUrl, time);
+    var event = new AssetPackTraceEvent(
+        AssetPackTraceEvent.assetLoadEnd,
+        asset.assetUrl,
+        time
+    );
     events.add(event);
   }
 
   void assetLoadError(Asset asset, String errorLabel) {
-    var event = new AssetPackTraceEvent(AssetPackTraceEvent.assetLoadError, "${asset.assetUrl} >> ${errorLabel}", time);
+    var event = new AssetPackTraceEvent(
+        AssetPackTraceEvent.assetLoadError,
+        "${asset.assetUrl} >> ${errorLabel}",
+        time
+    );
     events.add(event);
   }
 
   void assetImportStart(Asset asset) {
-    var event = new AssetPackTraceEvent(AssetPackTraceEvent.assetImportStart, asset.assetUrl, time);
+    var event = new AssetPackTraceEvent(
+        AssetPackTraceEvent.assetImportStart,
+        asset.assetUrl,
+        time
+    );
     events.add(event);
   }
 
   void assetImportEnd(Asset asset) {
-    var event = new AssetPackTraceEvent(AssetPackTraceEvent.assetImportEnd, asset.assetUrl, time);
+    var event = new AssetPackTraceEvent(
+        AssetPackTraceEvent.assetImportEnd,
+        asset.assetUrl,
+        time
+    );
     events.add(event);
   }
 
   void assetImportError(Asset asset, String errorLabel) {
-    var event = new AssetPackTraceEvent(AssetPackTraceEvent.assetImportError,"${asset.assetUrl} >> ${errorLabel}", time);
+    var event = new AssetPackTraceEvent(
+        AssetPackTraceEvent.assetImportError,
+        "${asset.assetUrl} >> ${errorLabel}",
+        time
+    );
     events.add(event);
   }
   void assetEvent(Asset asset, String type) {

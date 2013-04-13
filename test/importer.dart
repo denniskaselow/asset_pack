@@ -22,14 +22,30 @@ part of asset_pack_tests;
 
 class Importer {
 
-  static void expectImportTrace(AssetPackTrace tracer, {bool withError : false}) {
+  static void expectImportTrace(AssetPackTrace tracer,
+                                {bool withError : false}) {
+    var es = tracer.event;
     if (withError) {
-      expect(tracer.events.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportError), isNot(throws));
+      expect(
+          es.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportError),
+          isNot(throws)
+      );
     } else {
-      expect(() => tracer.events.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportError), throws);
+      expect(
+          () => es.singleWhere(
+              (e) => e.type == AssetPackTraceEvent.assetImportError
+          ),
+          throws
+      );
     }
-    expect(tracer.events.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportStart), isNot(throws));
-    expect(tracer.events.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportEnd), isNot(throws));
+    expect(
+        es.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportStart),
+        isNot(throws)
+    );
+    expect(
+        es.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportEnd),
+        isNot(throws)
+    );
   }
 
   static void textTest() {

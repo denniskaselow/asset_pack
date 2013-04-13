@@ -23,7 +23,12 @@ part of asset_pack;
 class ArrayBufferLoader extends AssetLoader {
 
   Future<dynamic> load(Asset asset, AssetPackTrace tracer) {
-    return AssetLoader.httpLoad(asset, 'arraybuffer', (x) =>  x.response, tracer);
+    return AssetLoader.httpLoad(
+        asset,
+        'arraybuffer',
+        (x) =>  x.response,
+        tracer
+    );
   }
 
   void delete(dynamic arg) {

@@ -24,7 +24,11 @@ part of asset_pack;
 /// for loading an object from a url pointing to a network or filesystem.
 abstract class AssetLoader {
 
-  static Future<dynamic> httpLoad(Asset asset, String responseType, dynamic extractResponse(HttpRequest), AssetPackTrace tracer) {
+  static Future<dynamic> httpLoad(
+      Asset asset,
+      String responseType,
+      dynamic extractResponse(HttpRequest),
+      AssetPackTrace tracer ) {
     tracer.assetLoadStart(asset);
     var completer = new Completer<dynamic>();
 
@@ -38,14 +42,20 @@ abstract class AssetLoader {
         tracer.assetLoadEnd(asset);
         completer.complete(extractResponse(xhr));
       } else {
-        tracer.assetLoadError(asset, "http status code rejected : ${xhr.status} : ${xhr.statusText}");
+        tracer.assetLoadError(
+            asset,
+            "http status code rejected : ${xhr.status} : ${xhr.statusText}"
+        );
         tracer.assetLoadEnd(asset);
         completer.complete(null);
       }
     });
 
     xhr.onError.listen((e) {
-      tracer.assetLoadError(asset, "http status code rejected : ${xhr.status} : ${xhr.statusText}");
+      tracer.assetLoadError(
+          asset,
+          "http status code rejected : ${xhr.status} : ${xhr.statusText}"
+      );
       tracer.assetLoadEnd(asset);
       completer.complete(null);
     });

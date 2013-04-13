@@ -23,13 +23,28 @@ part of asset_pack_tests;
 class Loader {
 
   static void expectLoadTrace(AssetPackTrace tracer, {bool withError : false}) {
+    var es = tracer.events;
     if (withError) {
-      expect(tracer.events.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadError), isNot(throws));
+      expect(
+          es.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadError),
+          isNot(throws)
+      );
     } else {
-      expect(() => tracer.events.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadError), throws);
+      expect(
+          () => es.singleWhere(
+              (e) => e.type == AssetPackTraceEvent.assetLoadError
+          ),
+          throws
+      );
     }
-    expect(tracer.events.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadStart), isNot(throws));
-    expect(tracer.events.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadEnd), isNot(throws));
+    expect(
+        es.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadStart),
+        isNot(throws)
+    );
+    expect(
+        es.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadEnd,
+        isNot(throws)
+    );
   }
 
   static void imageTest() {

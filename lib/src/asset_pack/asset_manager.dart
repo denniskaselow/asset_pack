@@ -28,7 +28,8 @@ class AssetManager {
 
   final AssetPackTrace tracer;
 
-  AssetManager([tracer0]) : tracer = (tracer0 == null) ? new NullAssetPackTrace() : tracer0 {
+  AssetManager([tracer0]) :
+    tracer = (tracer0 == null) ? new NullAssetPackTrace() : tracer0 {
     _root = new AssetPack(this, 'root');
     importers['json'] = new JsonImporter();
     importers['text'] = new TextImporter();
