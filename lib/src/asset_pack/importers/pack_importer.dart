@@ -59,7 +59,6 @@ class PackImporter extends AssetImporter {
       // TODO: Add proper "ignore" flag in asset pack file.
       // HACK: For now, use an empty type string.
       if (type == '') {
-        tracer.assetImportEnd(asset);
         return;
       }
 
