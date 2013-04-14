@@ -30,10 +30,12 @@ class PackImporter extends AssetImporter {
   }
 
   Future<Asset> import(dynamic payload, Asset asset, AssetPackTrace tracer) {
+    tracer.packImportStart(asset);
     tracer.assetImportStart(asset);
     if (payload == null) {
       tracer.assetImportError(asset, "A pack asset was not available.");
       tracer.assetImportEnd(asset);
+      tracer.packImportEnd(asset);
       return new Future.immediate(asset);
     }
     String url = asset.url;
@@ -45,6 +47,7 @@ class PackImporter extends AssetImporter {
       } catch (e) {
         tracer.assetImportError(asset, e.message);
         tracer.assetImportEnd(asset);
+        tracer.packImportEnd(asset);
         return new Future.immediate(asset);
       }
     }
@@ -75,6 +78,7 @@ class PackImporter extends AssetImporter {
     });
     return Future.wait(futureAssets).then((loaded) {
       tracer.assetImportEnd(asset);
+      tracer.packImportEnd(asset);
       return new Future.immediate(pack);
     });
   }

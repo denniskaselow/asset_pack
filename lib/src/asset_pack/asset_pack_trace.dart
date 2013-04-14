@@ -21,9 +21,8 @@
 part of asset_pack;
 
 class AssetPackTraceEvent {
-  static const packLoadStart = 'PackLoadStart';
-  static const packLoadEnd = 'PackLoadEnd';
-  static const packLoadError = 'PackLoadError';
+  static const packImportStart = 'PackImportStart';
+  static const packImportEnd = 'PackImportEnd';
   static const assetLoadStart = 'AssetLoadStart';
   static const assetLoadEnd = 'AssetLoadEnd';
   static const assetLoadError = 'AssetLoadError';
@@ -48,6 +47,12 @@ class AssetPackTraceEvent {
     return '${microseconds}, ${type}, ${label}';
   }
 
+  /**
+   * Convert event into a map (json) in the format loadable by chrome://tracing
+   *
+   * * see [Using Chrome://tracing to view your inline profiling data](http://www.altdevblogaday.com/2012/08/21/using-chrometracing-to-view-your-inline-profiling-data/)
+   * * see [TraceEventFormat](https://code.google.com/p/trace-viewer/wiki/TraceEventFormat)
+   */
   dynamic toTraceViewer() {
     Map json = new Map();
     json['ts'] = microseconds;
@@ -69,10 +74,10 @@ class AssetPackTraceEvent {
     } else if (type == 'JsonParseEnd') {
       json['ph'] = 'E';
       json['name'] = 'json $label';
-    } else if (type == packLoadEnd) {
+    } else if (type == packImportEnd) {
       json['ph'] = 'E';
       json['name'] = 'pack $label';
-    } else if (type == packLoadStart) {
+    } else if (type == packImportStart) {
       json['ph'] = 'B';
       json['name'] = 'pack $label';
     } else if (type == assetLoadError || type == assetImportError) {
@@ -82,6 +87,9 @@ class AssetPackTraceEvent {
       throw new ArgumentError('Unknown type $type');
       assert(false);
     }
+    json['cat'] = 'asset';
+    json['tid'] = 1;
+    json['pid'] = 1;
     return json;
   }
 }
@@ -127,32 +135,23 @@ class AssetPackTrace {
   final Stopwatch time = new Stopwatch();
   final List<AssetPackTraceEvent> events = new List<AssetPackTraceEvent>();
 
-  void packLoadStart(String name) {
+  void packImportStart(Asset asset) {
     events.clear();
     time.reset();
     time.start();
     var event = new AssetPackTraceEvent(
-        AssetPackTraceEvent.packLoadStart,
-        name,
+        AssetPackTraceEvent.packImportStart,
+        asset.name,
         time
     );
     events.add(event);
   }
 
-  void packLoadEnd(String name) {
+  void packImportEnd(Asset asset) {
     time.stop();
     var event = new AssetPackTraceEvent(
-        AssetPackTraceEvent.packLoadEnd,
-        name,
-        time
-    );
-    events.add(event);
-  }
-
-  void packLoadError(Asset asset, String errorLabel) {
-    var event = new AssetPackTraceEvent(
-        AssetPackTraceEvent.packLoadError,
-        "${asset.assetUrl} >> ${errorLabel}",
+        AssetPackTraceEvent.packImportEnd,
+        asset.name,
         time
     );
     events.add(event);
@@ -231,14 +230,8 @@ class AssetPackTrace {
   }
 
   String toTraceViewer() {
-    List<Map> lists = new List<Map>();
-    events.forEach((event) {
-      var eventMap = event.toTraceViewer();
-      eventMap['tid'] = 1;
-      eventMap['pid'] = 1;
-      lists.add(eventMap);
-    });
-    return JSON.stringify(lists);
+    var lists = events.map((event) => event.toTraceViewer());
+    return '{"traceEvents":${JSON.stringify(lists)}}';
   }
 }
 
@@ -249,8 +242,8 @@ class NullAssetPackTrace implements AssetPackTrace {
   final Stopwatch time = new Stopwatch();
   final List<AssetPackTraceEvent> events = new List<AssetPackTraceEvent>();
 
-  void packLoadStart(String name) {}
-  void packLoadEnd(String name) {}
+  void packImportStart(Asset asset) {}
+  void packImportEnd(Asset asset) {}
   void assetLoadStart(Asset asset) {}
   void assetLoadEnd(Asset asset) {}
   void assetLoadError(Asset asset, String errorLabel) {}
