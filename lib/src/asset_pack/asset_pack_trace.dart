@@ -67,12 +67,6 @@ class AssetPackTraceEvent {
     } else if (type == assetLoadEnd) {
       json['ph'] = 'E';
       json['name'] = 'load $label';
-    } else if (type == 'JsonParseStart') {
-      json['ph'] = 'B';
-      json['name'] = 'json $label';
-    } else if (type == 'JsonParseEnd') {
-      json['ph'] = 'E';
-      json['name'] = 'json $label';
     } else if (type == packImportEnd) {
       json['ph'] = 'E';
       json['name'] = 'pack $label';
@@ -131,89 +125,41 @@ class AssetPackTraceSummary {
 }
 
 class AssetPackTrace {
-  final Performance _perf = window.performance;
   final List<AssetPackTraceEvent> events = new List<AssetPackTraceEvent>();
 
-  int _now() => (_perf.now() * 1000).toInt();
+  void packImportStart(Asset asset) =>
+    assetEvent(asset, AssetPackTraceEvent.packImportStart, null);
 
-  void packImportStart(Asset asset) {
-    var event = new AssetPackTraceEvent(
-        AssetPackTraceEvent.packImportStart,
-        asset.name,
-        _now()
-    );
-    events.add(event);
-  }
+  void packImportEnd(Asset asset) =>
+    assetEvent(asset, AssetPackTraceEvent.packImportEnd, null);
 
-  void packImportEnd(Asset asset) {
-    var event = new AssetPackTraceEvent(
-        AssetPackTraceEvent.packImportEnd,
-        asset.name,
-        _now()
-    );
-    events.add(event);
-  }
+  void assetLoadStart(Asset asset) =>
+    assetEvent(asset, AssetPackTraceEvent.assetLoadStart, null);
 
-  void assetLoadStart(Asset asset) {
-    var event = new AssetPackTraceEvent(
-        AssetPackTraceEvent.assetLoadStart,
-        asset.assetUrl,
-        _now()
-    );
-    events.add(event);
-  }
+  void assetLoadEnd(Asset asset) =>
+    assetEvent(asset, AssetPackTraceEvent.assetLoadEnd, null);
 
-  void assetLoadEnd(Asset asset) {
-    var event = new AssetPackTraceEvent(
-        AssetPackTraceEvent.assetLoadEnd,
-        asset.assetUrl,
-        _now()
-    );
-    events.add(event);
-  }
+  void assetLoadError(Asset asset, String errorLabel) =>
+    assetEvent(asset, AssetPackTraceEvent.assetLoadError, errorLabel);
 
-  void assetLoadError(Asset asset, String errorLabel) {
-    var event = new AssetPackTraceEvent(
-        AssetPackTraceEvent.assetLoadError,
-        "${asset.assetUrl} >> ${errorLabel}",
-        _now()
-    );
-    events.add(event);
-  }
+  void assetImportStart(Asset asset) =>
+    assetEvent(asset, AssetPackTraceEvent.assetImportStart, null);
 
-  void assetImportStart(Asset asset) {
-    var event = new AssetPackTraceEvent(
-        AssetPackTraceEvent.assetImportStart,
-        asset.assetUrl,
-        _now()
-    );
-    events.add(event);
-  }
+  void assetImportEnd(Asset asset) =>
+    assetEvent(asset, AssetPackTraceEvent.assetImportEnd, null);
 
-  void assetImportEnd(Asset asset) {
-    var event = new AssetPackTraceEvent(
-        AssetPackTraceEvent.assetImportEnd,
-        asset.assetUrl,
-        _now()
-    );
-    events.add(event);
-  }
+  void assetImportError(Asset asset, String errorLabel) =>
+    assetEvent(asset, AssetPackTraceEvent.assetImportError, errorLabel);
 
-  void assetImportError(Asset asset, String errorLabel) {
-    var event = new AssetPackTraceEvent(
-        AssetPackTraceEvent.assetImportError,
-        "${asset.assetUrl} >> ${errorLabel}",
-        _now()
-    );
-    events.add(event);
-  }
-  void assetEvent(Asset asset, String type) {
-    var event = new AssetPackTraceEvent(type, asset.assetUrl, _now());
+  void assetEvent(Asset asset, String type, String msg) {
+    var label = (msg == null) ? asset.assetUrl : "${asset.assetUrl} >> ${msg}";
+    var now = (window.performance.now() * 1000).toInt();
+    var event = new AssetPackTraceEvent(type, asset.assetUrl, now);
     events.add(event);
   }
 
   dynamic toJson() {
-    return events;
+    return events.map((event) => event.toJson()).toList();
   }
 
   void dump() {
@@ -244,5 +190,5 @@ class NullAssetPackTrace extends AssetPackTrace {
   void assetImportStart(Asset asset) {}
   void assetImportEnd(Asset asset) {}
   void assetImportError(Asset asset, String errorLabel) {}
-  void assetEvent(Asset asset, String type) {}
+  void assetEvent(Asset asset, String type, String msg) {}
 }
