@@ -33,8 +33,7 @@ class AssetPackTraceEvent {
   final String type;
   final String label;
   final int microseconds;
-  AssetPackTraceEvent(this.type, this.label, Stopwatch sw) :
-      microseconds = sw.elapsedMicroseconds;
+  AssetPackTraceEvent(this.type, this.label, this.microseconds );
 
   dynamic toJson() {
     Map json = new Map();
@@ -132,27 +131,25 @@ class AssetPackTraceSummary {
 }
 
 class AssetPackTrace {
-  final Stopwatch time = new Stopwatch();
+  final Performance _perf = window.performance;
   final List<AssetPackTraceEvent> events = new List<AssetPackTraceEvent>();
 
+  int _now() => (_perf.now() * 1000).toInt();
+
   void packImportStart(Asset asset) {
-    events.clear();
-    time.reset();
-    time.start();
     var event = new AssetPackTraceEvent(
         AssetPackTraceEvent.packImportStart,
         asset.name,
-        time
+        _now()
     );
     events.add(event);
   }
 
   void packImportEnd(Asset asset) {
-    time.stop();
     var event = new AssetPackTraceEvent(
         AssetPackTraceEvent.packImportEnd,
         asset.name,
-        time
+        _now()
     );
     events.add(event);
   }
@@ -161,7 +158,7 @@ class AssetPackTrace {
     var event = new AssetPackTraceEvent(
         AssetPackTraceEvent.assetLoadStart,
         asset.assetUrl,
-        time
+        _now()
     );
     events.add(event);
   }
@@ -170,7 +167,7 @@ class AssetPackTrace {
     var event = new AssetPackTraceEvent(
         AssetPackTraceEvent.assetLoadEnd,
         asset.assetUrl,
-        time
+        _now()
     );
     events.add(event);
   }
@@ -179,7 +176,7 @@ class AssetPackTrace {
     var event = new AssetPackTraceEvent(
         AssetPackTraceEvent.assetLoadError,
         "${asset.assetUrl} >> ${errorLabel}",
-        time
+        _now()
     );
     events.add(event);
   }
@@ -188,7 +185,7 @@ class AssetPackTrace {
     var event = new AssetPackTraceEvent(
         AssetPackTraceEvent.assetImportStart,
         asset.assetUrl,
-        time
+        _now()
     );
     events.add(event);
   }
@@ -197,7 +194,7 @@ class AssetPackTrace {
     var event = new AssetPackTraceEvent(
         AssetPackTraceEvent.assetImportEnd,
         asset.assetUrl,
-        time
+        _now()
     );
     events.add(event);
   }
@@ -206,12 +203,12 @@ class AssetPackTrace {
     var event = new AssetPackTraceEvent(
         AssetPackTraceEvent.assetImportError,
         "${asset.assetUrl} >> ${errorLabel}",
-        time
+        _now()
     );
     events.add(event);
   }
   void assetEvent(Asset asset, String type) {
-    var event = new AssetPackTraceEvent(type, asset.assetUrl, time);
+    var event = new AssetPackTraceEvent(type, asset.assetUrl, _now());
     events.add(event);
   }
 
@@ -230,7 +227,7 @@ class AssetPackTrace {
   }
 
   String toTraceViewer() {
-    var lists = events.map((event) => event.toTraceViewer());
+    var lists = events.map((event) => event.toTraceViewer()).toList();
     return '{"traceEvents":${JSON.stringify(lists)}}';
   }
 }
@@ -238,10 +235,7 @@ class AssetPackTrace {
 /// An [AssetPackTrace] that doesn't trace anything.
 ///
 /// Used to turn off tracing.
-class NullAssetPackTrace implements AssetPackTrace {
-  final Stopwatch time = new Stopwatch();
-  final List<AssetPackTraceEvent> events = new List<AssetPackTraceEvent>();
-
+class NullAssetPackTrace extends AssetPackTrace {
   void packImportStart(Asset asset) {}
   void packImportEnd(Asset asset) {}
   void assetLoadStart(Asset asset) {}
@@ -251,7 +245,4 @@ class NullAssetPackTrace implements AssetPackTrace {
   void assetImportEnd(Asset asset) {}
   void assetImportError(Asset asset, String errorLabel) {}
   void assetEvent(Asset asset, String type) {}
-  dynamic toJson() { return {}; }
-  void dump() {}
-  String toTraceViewer() { return ''; }
 }

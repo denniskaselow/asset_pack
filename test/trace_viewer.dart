@@ -23,15 +23,17 @@ part of asset_pack_tests;
 class TraceViewer {
   static void generateTraceViewForPack() {
     AssetManager assetManager = new AssetManager(new AssetPackTrace());
-    Future<AssetPack> futurePack;
     test('manual test load trace view into "chrome://tracing/"', () {
-      futurePack = assetManager.loadPack('testpack', 'testpack.pack');
-      futurePack.then(expectAsync1((pack) {
-        expect(pack == null, false);
+      Future.wait([
+        assetManager.loadPack('testpack', 'testpack.pack'),
+        assetManager.loadPack('testpack2', 'testpackbadname.pack'),
+        assetManager.loadPack('brokenpack', 'brokenpack.pack')
+      ]).then(expectAsync1((packs) {
+        expect(packs.length, 3);
         var traceView = assetManager.tracer.toTraceViewer();
         print("""
           Manual test :
-          1. save the following json :
+          1. save the following json into a file:
              ${traceView}
           2. load in "chrome://tracing/"
         """);
