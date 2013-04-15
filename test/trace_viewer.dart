@@ -22,7 +22,8 @@ part of asset_pack_tests;
 
 class TraceViewer {
   static void generateTraceViewForPack() {
-    AssetManager assetManager = new AssetManager(new AssetPackTrace());
+    var tracer = new AssetPackTrace();
+    AssetManager assetManager = new AssetManager(tracer);
     test('manual test load trace view into "chrome://tracing/"', () {
       Future.wait([
         assetManager.loadPack('testpack', 'testpack.pack'),
@@ -30,13 +31,14 @@ class TraceViewer {
         assetManager.loadPack('brokenpack', 'brokenpack.pack')
       ]).then(expectAsync1((packs) {
         expect(packs.length, 3);
-        var traceView = assetManager.tracer.toTraceViewer();
+        var traceView = AssetPackTraceViewer.toJsonFullString(tracer.events);
         print("""
           Manual test :
           1. save the following json into a file:
              ${traceView}
           2. load in "chrome://tracing/"
         """);
+        tracer.events.clear();
       }));
     });
   }

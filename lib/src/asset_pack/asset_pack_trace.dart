@@ -45,46 +45,6 @@ class AssetPackTraceEvent {
   String toString() {
     return '${microseconds}, ${type}, ${label}';
   }
-
-  /**
-   * Convert event into a map (json) in the format loadable by chrome://tracing
-   *
-   * * see [Using Chrome://tracing to view your inline profiling data](http://www.altdevblogaday.com/2012/08/21/using-chrometracing-to-view-your-inline-profiling-data/)
-   * * see [TraceEventFormat](https://code.google.com/p/trace-viewer/wiki/TraceEventFormat)
-   */
-  dynamic toTraceViewer() {
-    Map json = new Map();
-    json['ts'] = microseconds;
-    if (type == 'AssetImportEnd') {
-      json['ph'] = 'E';
-      json['name'] = 'import $label';
-    } else if (type == assetImportStart) {
-      json['ph'] = 'B';
-      json['name'] = 'import $label';
-    } else if (type == assetLoadStart) {
-      json['ph'] = 'B';
-      json['name'] = 'load $label';
-    } else if (type == assetLoadEnd) {
-      json['ph'] = 'E';
-      json['name'] = 'load $label';
-    } else if (type == packImportEnd) {
-      json['ph'] = 'E';
-      json['name'] = 'pack $label';
-    } else if (type == packImportStart) {
-      json['ph'] = 'B';
-      json['name'] = 'pack $label';
-    } else if (type == assetLoadError || type == assetImportError) {
-      json['ph'] = 'I';
-      json['name'] = '${type} $label';
-    } else {
-      throw new ArgumentError('Unknown type $type');
-      assert(false);
-    }
-    json['cat'] = 'asset';
-    json['tid'] = 1;
-    json['pid'] = 1;
-    return json;
-  }
 }
 
 class AssetPackTraceLabelSummary {
@@ -121,6 +81,55 @@ class AssetPackTraceSummary {
     summaries.forEach((k, v) {
       v.dump();
     });
+  }
+}
+
+/**
+ * Convert event(s) into a json in the format loadable by chrome://tracing
+ *
+ * * see [Using Chrome://tracing to view your inline profiling data](http://www.altdevblogaday.com/2012/08/21/using-chrometracing-to-view-your-inline-profiling-data/)
+ * * see [TraceEventFormat](https://code.google.com/p/trace-viewer/wiki/TraceEventFormat)
+ */
+class AssetPackTraceViewer {
+
+  static String toJsonFullString(List<AssetPackTraceEvent> events) {
+    var lists = events.map(toJsonEntry).toList();
+    return '{"traceEvents":${JSON.stringify(lists)}}';
+  }
+
+  static dynamic toJsonEntry(AssetPackTraceEvent event) {
+    Map json = new Map();
+    json['ts'] = event.microseconds;
+    var type = event.type;
+    if (type == 'AssetImportEnd') {
+      json['ph'] = 'E';
+      json['name'] = 'import ${event.label}';
+    } else if (type == AssetPackTraceEvent.assetImportStart) {
+      json['ph'] = 'B';
+      json['name'] = 'import ${event.label}';
+    } else if (type == AssetPackTraceEvent.assetLoadStart) {
+      json['ph'] = 'B';
+      json['name'] = 'load ${event.label}';
+    } else if (type == AssetPackTraceEvent.assetLoadEnd) {
+      json['ph'] = 'E';
+      json['name'] = 'load ${event.label}';
+    } else if (type == AssetPackTraceEvent.packImportEnd) {
+      json['ph'] = 'E';
+      json['name'] = 'pack ${event.label}';
+    } else if (type == AssetPackTraceEvent.packImportStart) {
+      json['ph'] = 'B';
+      json['name'] = 'pack ${event.label}';
+    } else if (type == AssetPackTraceEvent.assetLoadError || type == AssetPackTraceEvent.assetImportError) {
+      json['ph'] = 'I';
+      json['name'] = '${event.type} ${event.label}';
+    } else {
+      throw new ArgumentError('Unknown type ${type}');
+      assert(false);
+    }
+    json['cat'] = 'asset';
+    json['tid'] = 1;
+    json['pid'] = 1;
+    return json;
   }
 }
 
@@ -172,10 +181,6 @@ class AssetPackTrace {
     summary.dump();
   }
 
-  String toTraceViewer() {
-    var lists = events.map((event) => event.toTraceViewer()).toList();
-    return '{"traceEvents":${JSON.stringify(lists)}}';
-  }
 }
 
 /// An [AssetPackTrace] that doesn't trace anything.
