@@ -37,20 +37,6 @@ class TraceViewer {
              ${traceView}
           2. load in "chrome://tracing/"
         """);
-//        var blob = new Blob([traceView], 'application/json');
-//        window.requestFileSystem(1024*1024).then((fs) =>
-//          fs.root.createFile('testpack.trace')
-//        )
-//        .then((f) {
-//          print('trace view to load in "chrome://tracing/" : ${f.fullPath}');
-//          return (f as FileEntry).createWriter();
-//        })
-//        .then(expectAsync1((fw) => fw.write(blob)))
-//        .catchError((err){
-//          print(err.stackTrace);
-//          expect(err, isNull);
-//        })
-//        ;
       }));
     });
   }
