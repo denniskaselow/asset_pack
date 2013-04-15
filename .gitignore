@@ -5,6 +5,7 @@ packages
 pubspec.lock
 *.sublime-workspace
 *.sublime-project
+*.dart.js*
 
 # Generated test packs
 test/testpack_copy
