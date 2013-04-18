@@ -97,7 +97,7 @@ class AssetManager {
 
   Future<Asset> _loadAndImport(Asset asset) {
     if (asset.loader == null || asset.importer == null) {
-      return new Future.immediate(asset);
+      return new Future.value(asset);
     }
     asset._status = 'Loading';
     return asset.loader.load(asset, tracer).then((payload) {

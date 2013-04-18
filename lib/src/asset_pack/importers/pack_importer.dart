@@ -36,7 +36,7 @@ class PackImporter extends AssetImporter {
       tracer.assetImportError(asset, "A pack asset was not available.");
       tracer.assetImportEnd(asset);
       tracer.packImportEnd(asset);
-      return new Future.immediate(asset);
+      return new Future.value(asset);
     }
     String url = asset.url;
     String baseUrl = url.substring(0, url.lastIndexOf('.'));
@@ -48,7 +48,7 @@ class PackImporter extends AssetImporter {
         tracer.assetImportError(asset, e.message);
         tracer.assetImportEnd(asset);
         tracer.packImportEnd(asset);
-        return new Future.immediate(asset);
+        return new Future.value(asset);
       }
     }
     AssetPack pack = asset.imported;
@@ -79,7 +79,7 @@ class PackImporter extends AssetImporter {
     return Future.wait(futureAssets).then((loaded) {
       tracer.assetImportEnd(asset);
       tracer.packImportEnd(asset);
-      return new Future.immediate(pack);
+      return new Future.value(pack);
     });
   }
 

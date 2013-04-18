@@ -34,7 +34,7 @@ class MapLoader extends AssetLoader {
         parsed = JSON.parse(map);
       } catch (e) {
         tracer.assetLoadError(asset, e.message);
-        return new Future.immediate(null);
+        return new Future.value(null);
       }
       Map<String, dynamic> loadedMap = {};
       List<Future> futures = [];

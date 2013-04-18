@@ -261,7 +261,7 @@ void main() {
   // Not a test but lets us cleanup after all the tests are complete
   tests.add(() {
     deleteDirectoryContents(copy);
-    return new Future.immediate(null);
+    return new Future.value(null);
   });
 
   runTest(tests, 0);

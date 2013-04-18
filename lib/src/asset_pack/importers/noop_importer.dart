@@ -29,7 +29,7 @@ class NoopImporter extends AssetImporter {
     tracer.assetImportStart(asset);
     try {
       asset.imported = payload;
-      return new Future.immediate(asset);
+      return new Future.value(asset);
     } finally {
       tracer.assetImportEnd(asset);
     }
