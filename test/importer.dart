@@ -21,20 +21,48 @@
 part of asset_pack_tests;
 
 class Importer {
-  static final AssetPackTrace trace = new AssetPackTrace();
+
+  static void expectImportTrace(AssetPackTrace tracer,
+                                {bool withError : false}) {
+    var es = tracer.events;
+    if (withError) {
+      expect(
+          es.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportError),
+          isNot(throws)
+      );
+    } else {
+      expect(
+          () => es.singleWhere(
+              (e) => e.type == AssetPackTraceEvent.assetImportError
+          ),
+          throws
+      );
+    }
+    expect(
+        es.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportStart),
+        isNot(throws)
+    );
+    expect(
+        es.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportEnd),
+        isNot(throws)
+    );
+  }
+
   static void textTest() {
     TextLoader textLoader = new TextLoader();
     test('text', () {
       Future loaded;
+      var tracer = new AssetPackTrace();
       var asset = new Asset(null, 'test', '', 'test.json',
                             'json', null, {}, null, {});
-      loaded = textLoader.load(asset);
+      loaded = textLoader.load(asset, tracer);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
         TextImporter importer = new TextImporter();
-        importer.import(text, asset).then((asset) {
+        importer.import(text, asset, tracer).then((asset) {
           String expected = '{"a":[1,2,3]}';
           expect(asset.imported.startsWith(expected), true);
+          expectImportTrace(tracer, withError : false);
         });
       }));
     });
@@ -44,27 +72,31 @@ class Importer {
     TextLoader textLoader = new TextLoader();
     test('map', () {
       Future loaded;
+      var tracer = new AssetPackTrace();
       var assetRequest = new Asset(null, 'map', '', 'map.json',
                                    'json', null, {}, null, {});
-      loaded = textLoader.load(assetRequest);
+      loaded = textLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
         JsonImporter importer = new JsonImporter();
-        importer.import(text, assetRequest).then((asset) {
+        importer.import(text, assetRequest, tracer).then((asset) {
           expect(asset.imported['a'], 'b');
+          expectImportTrace(tracer, withError : false);
         });
       }));
     });
     test('list', () {
       Future loaded;
+      var tracer = new AssetPackTrace();
       var assetRequest = new Asset(null, 'list', '', 'list.json',
                                    'json', null, {}, null, {});
-      loaded = textLoader.load(assetRequest);
+      loaded = textLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((String text) {
         expect(text == null, false);
         JsonImporter importer = new JsonImporter();
-        importer.import(text, assetRequest).then((asset) {
+        importer.import(text, assetRequest, tracer).then((asset) {
           expect(asset.imported.length, 5);
+          expectImportTrace(tracer, withError : false);
         });
       }));
     });

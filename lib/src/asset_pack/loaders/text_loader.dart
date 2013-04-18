@@ -21,20 +21,8 @@
 part of asset_pack;
 
 class TextLoader extends AssetLoader {
-  Future<dynamic> load(Asset asset) {
-    var completer = new Completer<dynamic>();
-    var httpRequest = new HttpRequest();
-    httpRequest.open('GET', asset.url);
-    httpRequest.responseType = 'text';
-    httpRequest.onLoad.listen((event) {
-      if (httpRequest.status == 200) {
-        completer.complete(httpRequest.responseText);
-      } else {
-        completer.complete(null);
-      }
-    });
-    httpRequest.send();
-    return completer.future;
+  Future<dynamic> load(Asset asset, AssetPackTrace tracer) {
+    return AssetLoader.httpLoad(asset, 'text', (x) =>  x.responseText, tracer);
   }
 
   void delete(dynamic arg) {

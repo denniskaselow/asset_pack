@@ -27,7 +27,7 @@ abstract class AssetImporter {
   /// Must initialize imported field in [asset].
   void initialize(Asset asset);
   /// Import [payload] and assign it to imported field in [asset].
-  Future<Asset> import(dynamic payload, Asset asset);
+  Future<Asset> import(dynamic payload, Asset asset, AssetPackTrace tracer);
   /// Delete [imported] object.
   void delete(dynamic imported);
 }

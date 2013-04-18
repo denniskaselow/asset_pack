@@ -25,14 +25,15 @@ class MapLoader extends AssetLoader {
 
   MapLoader(this._loader);
 
-  Future<Map<String, String>> load(Asset asset) {
+  Future<Map<String, String>> load(Asset asset, AssetPackTrace tracer) {
     TextLoader textLoader = new TextLoader();
-    Future<String> futureMap = textLoader.load(asset);
+    Future<String> futureMap = textLoader.load(asset, tracer);
     return futureMap.then((map) {
       Map parsed;
       try {
         parsed = JSON.parse(map);
       } catch (e) {
+        tracer.assetLoadError(asset, e.message);
         return new Future.immediate(null);
       }
       Map<String, dynamic> loadedMap = {};
@@ -40,7 +41,7 @@ class MapLoader extends AssetLoader {
       parsed.forEach((name, requestUrl) {
         Asset request = new Asset(null, name, asset.baseUrl, requestUrl,
                                   '', null, {}, null, {});
-        futures.add(_loader.load(request).then((payload) {
+        futures.add(_loader.load(request, tracer).then((payload) {
           loadedMap[name] = payload;
         }));
       });

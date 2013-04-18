@@ -30,6 +30,7 @@ part 'decoder.dart';
 part 'loader.dart';
 part 'importer.dart';
 part 'manager.dart';
+part 'trace_viewer.dart';
 
 main() {
   useHtmlEnhancedConfiguration();
@@ -37,4 +38,5 @@ main() {
   Loader.runTests();
   Importer.runTests();
   Manager.runTests();
+  TraceViewer.runTests();
 }

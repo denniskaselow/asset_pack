@@ -23,8 +23,49 @@ part of asset_pack;
 /// Interface of an [AssetLoader]. An asset loader is responsible
 /// for loading an object from a url pointing to a network or filesystem.
 abstract class AssetLoader {
+
+  static Future<dynamic> httpLoad(
+      Asset asset,
+      String responseType,
+      dynamic extractResponse(HttpRequest),
+      AssetPackTrace tracer ) {
+    tracer.assetLoadStart(asset);
+    var completer = new Completer<dynamic>();
+
+    var xhr = new HttpRequest();
+    xhr.open('GET', asset.url, async: true);
+    xhr.responseType = responseType;
+    xhr.onLoad.listen((e) {
+      // Note: file:// URIs have status of 0.
+      if ((xhr.status >= 200 && xhr.status < 300) ||
+          xhr.status == 0 || xhr.status == 304) {
+        tracer.assetLoadEnd(asset);
+        completer.complete(extractResponse(xhr));
+      } else {
+        tracer.assetLoadError(
+            asset,
+            "http status code rejected : ${xhr.status} : ${xhr.statusText}"
+        );
+        tracer.assetLoadEnd(asset);
+        completer.complete(null);
+      }
+    });
+
+    xhr.onError.listen((e) {
+      tracer.assetLoadError(
+          asset,
+          "http status code rejected : ${xhr.status} : ${xhr.statusText}"
+      );
+      tracer.assetLoadEnd(asset);
+      completer.complete(null);
+    });
+
+    xhr.send();
+    return completer.future;
+  }
+
   /// Fetch [asset] Url.
-  Future<dynamic> load(Asset asset);
+  Future<dynamic> load(Asset asset, AssetPackTrace tracer);
   /// Delete fetched [arg].
   void delete(dynamic arg);
 }

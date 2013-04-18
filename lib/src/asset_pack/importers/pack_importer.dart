@@ -29,8 +29,13 @@ class PackImporter extends AssetImporter {
     asset.imported._parent = asset.pack;
   }
 
-  Future<Asset> import(dynamic payload, Asset asset) {
+  Future<Asset> import(dynamic payload, Asset asset, AssetPackTrace tracer) {
+    tracer.packImportStart(asset);
+    tracer.assetImportStart(asset);
     if (payload == null) {
+      tracer.assetImportError(asset, "A pack asset was not available.");
+      tracer.assetImportEnd(asset);
+      tracer.packImportEnd(asset);
       return new Future.immediate(asset);
     }
     String url = asset.url;
@@ -39,7 +44,10 @@ class PackImporter extends AssetImporter {
     if (payload is String) {
       try {
         parsed = JSON.parse(payload);
-      } catch (_) {
+      } catch (e) {
+        tracer.assetImportError(asset, e.message);
+        tracer.assetImportEnd(asset);
+        tracer.packImportEnd(asset);
         return new Future.immediate(asset);
       }
     }
@@ -58,17 +66,19 @@ class PackImporter extends AssetImporter {
       }
 
       // Register asset.
-      Asset asset = pack.registerAsset(name, type, baseUrl, assetUrl,
+      Asset childAsset = pack.registerAsset(name, type, baseUrl, assetUrl,
                                        packFileAsset.loadArguments,
                                        packFileAsset.importArguments);
       // Mark the asset status.
-      var futureAsset = manager._loadAndImport(asset).then((_) {
+      var futureAsset = manager._loadAndImport(childAsset).then((_) {
         // Mark the asset status.
-        asset._status = 'Ok';
+        childAsset._status = 'Ok';
       });
       futureAssets.add(futureAsset);
     });
     return Future.wait(futureAssets).then((loaded) {
+      tracer.assetImportEnd(asset);
+      tracer.packImportEnd(asset);
       return new Future.immediate(pack);
     });
   }

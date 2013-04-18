@@ -18,26 +18,36 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-part of asset_pack;
+part of asset_pack_tests;
 
-class VideoLoader extends AssetLoader {
-  Future<dynamic> load(Asset asset, AssetPackTrace tracer) {
-    tracer.assetLoadStart(asset);
-    var completer = new Completer<dynamic>();
-    VideoElement video = new VideoElement();
-    video.onCanPlay.listen((event) {
-      tracer.assetLoadEnd(asset);
-      completer.complete(video);
+class TraceViewer {
+  static void generateTraceViewForPack() {
+    var tracer = new AssetPackTrace();
+    AssetManager assetManager = new AssetManager(tracer);
+    test('manual test load trace view into "chrome://tracing/"', () {
+      Future.wait([
+        assetManager.loadPack('testpack', 'testpack.pack'),
+        assetManager.loadPack('testpack2', 'testpackbadname.pack'),
+        assetManager.loadPack('brokenpack', 'brokenpack.pack')
+      ]).then(expectAsync1((packs) {
+        expect(packs.length, 3);
+        var traceView = AssetPackTraceViewer.toJsonFullString(tracer.events);
+        print("""
+          Manual test :
+          1. save the following json into a file:
+             ${traceView}
+          2. load in "chrome://tracing/"
+        """);
+        tracer.events.clear();
+      }));
     });
-    video.onError.listen((error) {
-      tracer.assetLoadError(asset, error.toString());
-      tracer.assetLoadEnd(asset);
-      completer.complete(null);
-    });
-    video.src = asset.url;
-    return completer.future;
   }
 
-  void delete(dynamic arg) {
+  static void runTests() {
+    group('traceview', () {
+      generateTraceViewForPack();
+    });
   }
 }
+
+

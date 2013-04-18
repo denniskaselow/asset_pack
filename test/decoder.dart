@@ -85,7 +85,7 @@ class Decoder {
       ArrayBufferLoader arrayBufferLoader = new ArrayBufferLoader();
       var assetRequest = new Asset(null, 'lenna', '', 'lenna.png', 'bin',
                                    null, {}, null, {});
-      loaded = arrayBufferLoader.load(assetRequest);
+      loaded = arrayBufferLoader.load(assetRequest, trace);
       loaded.then(expectAsync1((ArrayBuffer expectedBuffer) {
         // Check that the buffers are the same size
         int actualLength = actualBuffer.byteLength;
