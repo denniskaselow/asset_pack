@@ -203,14 +203,14 @@ class AssetPack {
     Asset asset = registerAsset(name, 'pack', '', url, {}, {});
     asset.imported._parent = this;
     return manager._loadAndImport(asset).then((_) =>
-        new Future.immediate(asset.imported));
+        new Future.value(asset.imported));
   }
 
   /// Load many packs, adding each one as a child pack.
   /// [['packName', 'packUrl'], ['packName2', 'packUrl2']]
   Future loadPacks(List<List<String>> packs) {
     if (packs == null) {
-      return new Future.immediate(null);
+      return new Future.value(null);
     }
     var futurePacks = new List<Future<AssetPack>>();
     packs.forEach((pack) {
