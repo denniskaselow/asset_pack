@@ -1,4 +1,9 @@
 Authors:
 
 John McCutchan <john@johnmccutchan.com>
-Daniel Rodríguez <seth.illgard@gmail.com>
+
+Contributors:
+
+Adam Singer github.com/financeCoding
+David Bernard github.com/davidB
+Don Olmstead github.com/donny-dont
