@@ -134,7 +134,9 @@ class AssetPackTraceViewer {
 }
 
 class AssetPackTrace {
-  final List<AssetPackTraceEvent> events = new List<AssetPackTraceEvent>();
+  final _streamCtrl = new StreamController<AssetPackTraceEvent>();
+
+  Stream<AssetPackTraceEvent> asStream() => _streamCtrl.stream;
 
   void packImportStart(Asset asset) =>
     assetEvent(asset, AssetPackTraceEvent.packImportStart, null);
@@ -164,21 +166,7 @@ class AssetPackTrace {
     var label = (msg == null) ? asset.assetUrl : "${asset.assetUrl} >> ${msg}";
     var now = (window.performance.now() * 1000).toInt();
     var event = new AssetPackTraceEvent(type, asset.assetUrl, now);
-    events.add(event);
-  }
-
-  dynamic toJson() {
-    return events.map((event) => event.toJson()).toList();
-  }
-
-  void dump() {
-    print('Raw Events:');
-    for (int i = 0; i < events.length; i++) {
-      print(events[i]);
-    }
-    print('Summary: ');
-    var summary = new AssetPackTraceSummary(events);
-    summary.dump();
+    _streamCtrl.add(event);
   }
 
 }
@@ -196,4 +184,25 @@ class NullAssetPackTrace extends AssetPackTrace {
   void assetImportEnd(Asset asset) {}
   void assetImportError(Asset asset, String errorLabel) {}
   void assetEvent(Asset asset, String type, String msg) {}
+}
+
+class AssetPackTraceEventAccumulator{
+  final List<AssetPackTraceEvent> events = new List<AssetPackTraceEvent>();
+
+  onEvent(AssetPackTraceEvent e) => events.add(e);
+
+  dynamic toJson() {
+    return events.map((event) => event.toJson()).toList();
+  }
+
+  void dump() {
+    print('Raw Events:');
+    for (int i = 0; i < events.length; i++) {
+      print(events[i]);
+    }
+    print('Summary: ');
+    var summary = new AssetPackTraceSummary(events);
+    summary.dump();
+  }
+
 }

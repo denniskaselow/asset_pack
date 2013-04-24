@@ -22,7 +22,7 @@ part of asset_pack_tests;
 
 class Importer {
 
-  static void expectImportTrace(AssetPackTrace tracer,
+  static void expectImportTrace(AssetPackTraceAccumulator tracer,
                                 {bool withError : false}) {
     var es = tracer.events;
     if (withError) {
@@ -52,7 +52,7 @@ class Importer {
     TextLoader textLoader = new TextLoader();
     test('text', () {
       Future loaded;
-      var tracer = new AssetPackTrace();
+      var tracer = new AssetPackTraceAccumulator();
       var asset = new Asset(null, 'test', '', 'test.json',
                             'json', null, {}, null, {});
       loaded = textLoader.load(asset, tracer);
@@ -72,7 +72,7 @@ class Importer {
     TextLoader textLoader = new TextLoader();
     test('map', () {
       Future loaded;
-      var tracer = new AssetPackTrace();
+      var tracer = new AssetPackTraceAccumulator();
       var assetRequest = new Asset(null, 'map', '', 'map.json',
                                    'json', null, {}, null, {});
       loaded = textLoader.load(assetRequest, tracer);
@@ -87,7 +87,7 @@ class Importer {
     });
     test('list', () {
       Future loaded;
-      var tracer = new AssetPackTrace();
+      var tracer = new AssetPackTraceAccumulator();
       var assetRequest = new Asset(null, 'list', '', 'list.json',
                                    'json', null, {}, null, {});
       loaded = textLoader.load(assetRequest, tracer);
