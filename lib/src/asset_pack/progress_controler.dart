@@ -71,7 +71,10 @@ class ProgressControler {
   var _current = 0;
   var _ratio = 0.0;
 
-  ProgressControler(Element view, {Ease this.ease : linear, this.displayBackward : true}) {
+  ProgressControler(Element view, {
+    Ease this.ease : linear,
+    this.displayBackward : true
+  }) {
     if (view is ProgressElement) {
       _pview = view;
     } else {

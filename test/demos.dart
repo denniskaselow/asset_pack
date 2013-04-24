@@ -54,14 +54,16 @@ demoWithFakeAssets() {
   new ProgressControler(barW).bind(stream);
   new EventsPrintControler(log).bind(stream);
 
+  var d1s = new Duration(seconds: 1);
+  var d2s = new Duration(seconds: 2);
   AssetManager assetManager = new AssetManager(tracer);
-  assetManager.loaders['fake'] = new FakeLoaderWait(new Duration(seconds: 2));
-  assetManager.importers['fake'] = new FakeImporterWait(new Duration(seconds: 1));
+  assetManager.loaders['fake'] = new FakeLoaderWait(d2s);
+  assetManager.importers['fake'] = new FakeImporterWait(d1s);
   var random = new Random();
   for(var i = 0; i < 5; i++) {
     var delay = random.nextInt(5000);
     new Timer(new Duration(milliseconds: delay), (){
-      assetManager.loadAndRegisterAsset('fake${i}', 'fake', '/fake${i}', null, null);
+      assetManager.loadAndRegisterAsset('fake${i}', 'fake', '/f${i}', null, null);
     });
   }
 }

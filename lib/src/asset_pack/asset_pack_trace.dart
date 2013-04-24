@@ -119,7 +119,8 @@ class AssetPackTraceViewer {
     } else if (type == AssetPackTraceEvent.packImportStart) {
       json['ph'] = 'B';
       json['name'] = 'pack ${event.label}';
-    } else if (type == AssetPackTraceEvent.assetLoadError || type == AssetPackTraceEvent.assetImportError) {
+    } else if (type == AssetPackTraceEvent.assetLoadError
+        || type == AssetPackTraceEvent.assetImportError) {
       json['ph'] = 'I';
       json['name'] = '${event.type} ${event.label}';
     } else {
@@ -186,7 +187,7 @@ class NullAssetPackTrace extends AssetPackTrace {
   void assetEvent(Asset asset, String type, String msg) {}
 }
 
-class AssetPackTraceEventAccumulator{
+class AssetPackTraceEventAccumulator {
   final List<AssetPackTraceEvent> events = new List<AssetPackTraceEvent>();
 
   onEvent(AssetPackTraceEvent e) => events.add(e);
