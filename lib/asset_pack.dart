@@ -22,6 +22,7 @@ library asset_pack;
 
 import 'dart:html';
 import 'dart:json' as JSON;
+import 'dart:typed_data';
 import 'dart:async';
 import 'asset_pack_file.dart';
 

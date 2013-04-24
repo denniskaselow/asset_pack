@@ -22,6 +22,7 @@ library asset_pack_tests;
 
 import 'dart:html';
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:unittest/unittest.dart';
 import 'package:unittest/html_enhanced_config.dart';
 import 'package:asset_pack/asset_pack.dart';

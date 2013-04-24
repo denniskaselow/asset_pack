@@ -83,7 +83,7 @@ class Loader {
       var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
                                    'bin', null, {}, null, {});
       loaded = arrayBufferLoader.load(assetRequest, tracer);
-      loaded.then(expectAsync1((ArrayBuffer arrayBuffer) {
+      loaded.then(expectAsync1((arrayBuffer) {
         expect(arrayBuffer, null);
         expectLoadTrace(tracer, withError : true);
       }));
@@ -94,9 +94,10 @@ class Loader {
       var assetRequest = new Asset(null, 'binarydata', '', 'binarydata.bin',
                                    'bin', null, {}, null, {});
       loaded = arrayBufferLoader.load(assetRequest, tracer);
-      loaded.then(expectAsync1((ArrayBuffer arrayBuffer) {
+      loaded.then(expectAsync1((arrayBuffer) {
+        print(arrayBuffer.runtimeType);
         expect(arrayBuffer == null, false);
-        expect(arrayBuffer.byteLength, 32);
+        expect(arrayBuffer.length, 32);
         expectLoadTrace(tracer, withError : false);
       }));
     });

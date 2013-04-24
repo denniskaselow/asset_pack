@@ -37,12 +37,12 @@ class Base64Decoder {
     _createDecodingTable();
   }
 
-  /// Decodes the [encoded] string into an [ArrayBuffer].
-  ArrayBuffer decode(String encoded) {
+  /// Decodes the [encoded] string into an [Uint8List].
+  Uint8List decode(String encoded) {
     assert(encoded.length % 4 == 0);
     // Create the buffer to store the decoded data into
     int decodedLength = _getDecodedBufferSize(encoded);
-    Uint8Array decoded = new Uint8Array(decodedLength);
+    Uint8List decoded = new Uint8List(decodedLength);
 
     int decodeIndex = 0;
     int encodeIndex = 0;
@@ -86,7 +86,7 @@ class Base64Decoder {
     }
 
     // Return the ArrayBuffer
-    return decoded.buffer;
+    return decoded;
   }
 
   /// Creates a table used to decode Base64 values.
