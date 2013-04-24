@@ -22,7 +22,7 @@ part of asset_pack_tests;
 
 class Loader {
 
-  static void expectLoadTrace(AssetPackTrace tracer, {bool withError : false}) {
+  static void expectLoadTrace(AssetPackTraceAccumulator tracer, {bool withError : false}) {
     var es = tracer.events;
     if (withError) {
       expect(
@@ -51,7 +51,7 @@ class Loader {
     ImageLoader imageLoader = new ImageLoader();
     test('404', () {
       Future loaded;
-      var tracer = new AssetPackTrace();
+      var tracer = new AssetPackTraceAccumulator();
       var asset = new Asset(null, 'notthere', '', 'notthere.png',
                             'png', null, {}, null, {});
       loaded = imageLoader.load(asset, tracer);
@@ -62,7 +62,7 @@ class Loader {
     });
     test('64x64 png', () {
       Future loaded;
-      var tracer = new AssetPackTrace();
+      var tracer = new AssetPackTraceAccumulator();
       var asset = new Asset(null, 'test', '', 'test.png', 'png',
                             null, {}, null, {});
       loaded = imageLoader.load(asset, tracer);
@@ -79,7 +79,7 @@ class Loader {
     ArrayBufferLoader arrayBufferLoader = new ArrayBufferLoader();
     test('404', () {
       Future loaded;
-      var tracer = new AssetPackTrace();
+      var tracer = new AssetPackTraceAccumulator();
       var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
                                    'bin', null, {}, null, {});
       loaded = arrayBufferLoader.load(assetRequest, tracer);
@@ -90,7 +90,7 @@ class Loader {
     });
     test('32 bytes', () {
       Future loaded;
-      var tracer = new AssetPackTrace();
+      var tracer = new AssetPackTraceAccumulator();
       var assetRequest = new Asset(null, 'binarydata', '', 'binarydata.bin',
                                    'bin', null, {}, null, {});
       loaded = arrayBufferLoader.load(assetRequest, tracer);
@@ -107,7 +107,7 @@ class Loader {
     BlobLoader blobLoader = new BlobLoader();
     test('404', () {
       Future loaded;
-      var tracer = new AssetPackTrace();
+      var tracer = new AssetPackTraceAccumulator();
       var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
                                    'bin', null, {}, null, {});
       loaded = blobLoader.load(assetRequest, tracer);
@@ -118,7 +118,7 @@ class Loader {
     });
     test('32 bytes', () {
       Future loaded;
-      var tracer = new AssetPackTrace();
+      var tracer = new AssetPackTraceAccumulator();
       var assetRequest = new Asset(null, 'binarydata', '', 'binarydata.bin',
                                    'bin', null, {}, null, {});
       loaded = blobLoader.load(assetRequest, tracer);
@@ -134,7 +134,7 @@ class Loader {
     TextLoader textLoader = new TextLoader();
     test('404', () {
       Future loaded;
-      var tracer = new AssetPackTrace();
+      var tracer = new AssetPackTraceAccumulator();
       var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
                                    'text', null, {}, null, {});
       loaded = textLoader.load(assetRequest, tracer);
@@ -145,7 +145,7 @@ class Loader {
     });
     test('test.json', () {
       Future loaded;
-      var tracer = new AssetPackTrace();
+      var tracer = new AssetPackTraceAccumulator();
       var assetRequest = new Asset(null, 'test', '', 'test.json',
                                    'json', null, {}, null, {});
       loaded = textLoader.load(assetRequest, tracer);
@@ -162,7 +162,7 @@ class Loader {
     VideoLoader videoLoader = new VideoLoader();
     test('404', () {
       Future loaded;
-      var tracer = new AssetPackTrace();
+      var tracer = new AssetPackTraceAccumulator();
       var assetRequest = new Asset(null, 'notthere', '', 'notthere.mp4',
                                    'mp4', null, {}, null, {});
       loaded = videoLoader.load(assetRequest, tracer);
@@ -173,7 +173,7 @@ class Loader {
     });
     test('webm', () {
       Future loaded;
-      var tracer = new AssetPackTrace();
+      var tracer = new AssetPackTraceAccumulator();
       var assetRequest = new Asset(null, 'test', '', 'big_buck_bunny.webm',
                                    'webm', null, {}, null, {});
       loaded = videoLoader.load(assetRequest, tracer);

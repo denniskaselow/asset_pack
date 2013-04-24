@@ -22,7 +22,7 @@ part of asset_pack_tests;
 
 class TraceViewer {
   static void generateTraceViewForPack() {
-    var tracer = new AssetPackTrace();
+    var tracer = new AssetPackTraceAccumulator();
     AssetManager assetManager = new AssetManager(tracer);
     test('manual test load trace view into "chrome://tracing/"', () {
       Future.wait([
