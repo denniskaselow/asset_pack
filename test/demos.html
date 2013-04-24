@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>AssetPack - Demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="//netdna.bootstrapcdn.com/bootswatch/2.3.1/simplex/bootstrap.min.css" rel="stylesheet">
+    <style>
+      pre {
+        height: 12em;
+        overflow-y: scroll;
+        border: 1px #DDDDDD solid;
+      }
+/* From http://www.useragentman.com/blog/2012/01/03/cross-browser-html5-progress-bars-in-depth/ */
+/* All HTML5 progress enabled browsers */
+progress.example3 {
+
+  /* Turns off styling - not usually needed, but good to know. */
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  /* gets rid of default border in Firefox and Opera. */
+  border: solid #cccccc 5px;
+  border-radius: 10px;
+  /* Dimensions */
+  width: 238px;
+  height: 45px;
+}
+
+/* Polyfill */
+progress.example3[role]:after {
+  background-image: none; /* removes default background from polyfill */
+}
+
+/*
+ * Background of the progress bar background
+ */
+
+/* Firefox and Polyfill */
+progress.example3 {
+  background: #cccccc !important; /* !important only needed in polyfill */
+}
+
+/* Chrome */
+progress.example3::-webkit-progress-bar {
+  background: #cccccc;
+}
+
+/*
+ * Background of the progress bar value
+ */
+
+/* Firefox */
+progress.example3::-moz-progress-bar {
+  border-radius: 5px;
+  background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(43,194,83) 37%,
+    rgb(84,240,84) 69%
+  );
+}
+
+/* Chrome */
+progress.example3::-webkit-progress-value {
+  border-radius: 5px;
+  background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0, rgb(43,194,83)),
+    color-stop(1, rgb(84,240,84))
+  );
+  background-image: -webkit-linear-gradient(
+    center bottom,
+    rgb(43,194,83) 37%,
+    rgb(84,240,84) 69%
+  );
+}
+
+/* Polyfill */
+progress.example3[aria-valuenow]:before {
+  border-radius: 5px;
+  background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(43,194,83) 37%,
+    rgb(84,240,84) 69%
+  );
+  background-image: -ms-linear-gradient(
+    center bottom,
+    rgb(43,194,83) 37%,
+    rgb(84,240,84) 69%
+  );
+  background-image: -o-linear-gradient(
+    center bottom,
+    rgb(43,194,83) 37%,
+    rgb(84,240,84) 69%
+  );
+
+}
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="span8">
+    <h1>Demos</h1>
+    <h2>Load Fake Assets</h2>
+    <p>fake assets (5)  x ( random delay (max 5s) + load (2s) + import (1s)) ~ 8s </p>
+    <h3>html5 progress element</h3>
+    <progress class="example3" id="assetProgressFakeAssets" max="1000" value="0">
+      <!--span id="progressFallback" data-bind="text : (progressCurrent() * 100 / progressMax()) + '%'"></span-->
+    </progress>
+    <h3>html div element (ala Bootstrap)</h3>
+    <div class="progress">
+      <div class="bar" id="assetProgressFakeAssetsOld" style="width: 0%;"></div>
+    </div>
+    <h3>logs</h3>
+    <pre id="assetLogFakeAssets"></pre>
+
+    <h2>Load AssetPack used for test</h2>
+    <progress id="assetProgressTestAssets" max="1000" value="0">
+      <!--span id="progressFallback" data-bind="text : (progressCurrent() * 100 / progressMax()) + '%'"></span-->
+    </progress>
+    <pre id="assetLogTestAssets"></pre>
+      </div>
+    </div>
+
+
+
+    <script type="application/dart" src="demos.dart"></script>
+    <script src="packages/browser/dart.js"></script>
+  </body>
+</html>
