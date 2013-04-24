@@ -32,7 +32,7 @@ class JsonImporter extends AssetImporter {
         try {
           var parsed = JSON.parse(payload);
           asset.imported = parsed;
-        } catch (e) {
+        } on FormatException catch (e) {
           tracer.assetImportError(asset, e.message);
         }
       } else {

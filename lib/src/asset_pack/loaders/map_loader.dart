@@ -32,7 +32,7 @@ class MapLoader extends AssetLoader {
       Map parsed;
       try {
         parsed = JSON.parse(map);
-      } catch (e) {
+      } on FormatException catch (e) {
         tracer.assetLoadError(asset, e.message);
         return new Future.value(null);
       }
