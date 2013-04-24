@@ -63,7 +63,9 @@ demoWithFakeAssets() {
   for(var i = 0; i < 5; i++) {
     var delay = random.nextInt(5000);
     new Timer(new Duration(milliseconds: delay), (){
-      assetManager.loadAndRegisterAsset('fake${i}', 'fake', '/f${i}', null, null);
+      assetManager.loadAndRegisterAsset(
+        'fake${i}', 'fake', '/f${i}', null, null
+      );
     });
   }
 }
