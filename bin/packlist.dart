@@ -3,12 +3,15 @@ import 'dart:json' as JSON;
 import 'package:asset_pack/asset_pack_file.dart';
 
 AssetPackFile openAssetPackFile(String path) {
-  File out = new File(path);
+  var out = FileSystemEntity.isDirectorySync(path)
+      ? new File('$path/_.pack')
+      : new File(path)
+      ;
   String contents;
   try {
     contents = out.readAsStringSync();
   } catch (_) {
-    print('Could not open existing asset pack file.');
+    print('Could not open existing asset pack file: ${out.path}');
     print('Creating new assset pack.');
     // Return empty asset pack file.
     return new AssetPackFile();
@@ -18,12 +21,12 @@ AssetPackFile openAssetPackFile(String path) {
     json = JSON.parse(contents);
   } catch (e) {
     print(e);
-    print('Could not parse existing asset pack file.');
+    print('Could not parse existing asset pack file: ${out.path}');
     print('Creating new assset pack.');
     // Return empty asset pack file.
     return new AssetPackFile();
   }
-  print('Loaded existing asset pack file.');
+  print('Loaded existing asset pack file: ${out.path}');
   return new AssetPackFile.fromJson(json);
 }
 
@@ -32,13 +35,12 @@ main() {
   Options options = new Options();
   String inPath;
   if (options.arguments.length == 0) {
-    inPath = '/Users/johnmccutchan/workspace/assetpack/test/testpack';
+    inPath = '${Directory.current.path}/test/testpack';
   } else {
     inPath = options.arguments[0];
   }
-  String outPath = '$inPath';
-  AssetPackFile packFile = openAssetPackFile(outPath);
-  List<AssetPackFileAsset> assets = packFile.assets.values;
+  AssetPackFile packFile = openAssetPackFile(inPath);
+  var assets = packFile.assets.values.toList();
   assets.sort((a, b) => Comparable.compare(a.name, b.name));
   assets.sort((a, b) => Comparable.compare(a.type, b.type));
   int count = 0;
