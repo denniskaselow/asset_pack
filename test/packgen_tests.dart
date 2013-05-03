@@ -185,7 +185,7 @@ void main() {
   // Directory.path does not give the full path unless the full path is
   // specified. There's also no way to get the full path so use the working
   // directory to get the full path because File.name has the full path.
-  Directory workingDirectory = new Directory.current();
+  Directory workingDirectory = Directory.current;
   Path currentPath = new Path(workingDirectory.path);
 
   Directory original = new Directory.fromPath(currentPath.join(new Path('test/testpack')));
