@@ -164,7 +164,7 @@ class AssetPackTrace {
     assetEvent(asset, AssetPackTraceEvent.assetImportError, errorLabel);
 
   void assetEvent(Asset asset, String type, String msg) {
-    var label = (msg == null) ? asset.assetUrl : "${asset.assetUrl} >> ${msg}";
+    var label = (msg == null) ? asset.url : "${asset.url} >> ${msg}";
     var now = (window.performance.now() * 1000).toInt();
     var event = new AssetPackTraceEvent(type, label, now);
     _streamCtrl.add(event);

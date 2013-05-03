@@ -53,7 +53,7 @@ class Importer {
     test('text', () {
       Future loaded;
       var tracer = new AssetPackTraceAccumulator();
-      var asset = new Asset(null, 'test', '', 'test.json',
+      var asset = new Asset(null, 'test', 'test.json',
                             'json', null, {}, null, {});
       loaded = textLoader.load(asset, tracer);
       loaded.then(expectAsync1((String text) {
@@ -73,7 +73,7 @@ class Importer {
     test('map', () {
       Future loaded;
       var tracer = new AssetPackTraceAccumulator();
-      var assetRequest = new Asset(null, 'map', '', 'map.json',
+      var assetRequest = new Asset(null, 'map', 'map.json',
                                    'json', null, {}, null, {});
       loaded = textLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((String text) {
@@ -88,7 +88,7 @@ class Importer {
     test('list', () {
       Future loaded;
       var tracer = new AssetPackTraceAccumulator();
-      var assetRequest = new Asset(null, 'list', '', 'list.json',
+      var assetRequest = new Asset(null, 'list', 'list.json',
                                    'json', null, {}, null, {});
       loaded = textLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((String text) {

@@ -52,7 +52,7 @@ class Loader {
     test('404', () {
       Future loaded;
       var tracer = new AssetPackTraceAccumulator();
-      var asset = new Asset(null, 'notthere', '', 'notthere.png',
+      var asset = new Asset(null, 'notthere', 'notthere.png',
                             'png', null, {}, null, {});
       loaded = imageLoader.load(asset, tracer);
       loaded.then(expectAsync1((ImageElement imageElement) {
@@ -63,7 +63,7 @@ class Loader {
     test('64x64 png', () {
       Future loaded;
       var tracer = new AssetPackTraceAccumulator();
-      var asset = new Asset(null, 'test', '', 'test.png', 'png',
+      var asset = new Asset(null, 'test', 'test.png', 'png',
                             null, {}, null, {});
       loaded = imageLoader.load(asset, tracer);
       loaded.then(expectAsync1((ImageElement imageElement) {
@@ -80,7 +80,7 @@ class Loader {
     test('404', () {
       Future loaded;
       var tracer = new AssetPackTraceAccumulator();
-      var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
+      var assetRequest = new Asset(null, 'notthere', 'notthere.bin',
                                    'bin', null, {}, null, {});
       loaded = arrayBufferLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((arrayBuffer) {
@@ -91,7 +91,7 @@ class Loader {
     test('32 bytes', () {
       Future loaded;
       var tracer = new AssetPackTraceAccumulator();
-      var assetRequest = new Asset(null, 'binarydata', '', 'binarydata.bin',
+      var assetRequest = new Asset(null, 'binarydata', 'binarydata.bin',
                                    'bin', null, {}, null, {});
       loaded = arrayBufferLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((arrayBuffer) {
@@ -108,7 +108,7 @@ class Loader {
     test('404', () {
       Future loaded;
       var tracer = new AssetPackTraceAccumulator();
-      var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
+      var assetRequest = new Asset(null, 'notthere', 'notthere.bin',
                                    'bin', null, {}, null, {});
       loaded = blobLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((Blob blob) {
@@ -119,7 +119,7 @@ class Loader {
     test('32 bytes', () {
       Future loaded;
       var tracer = new AssetPackTraceAccumulator();
-      var assetRequest = new Asset(null, 'binarydata', '', 'binarydata.bin',
+      var assetRequest = new Asset(null, 'binarydata', 'binarydata.bin',
                                    'bin', null, {}, null, {});
       loaded = blobLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((Blob blob) {
@@ -135,7 +135,7 @@ class Loader {
     test('404', () {
       Future loaded;
       var tracer = new AssetPackTraceAccumulator();
-      var assetRequest = new Asset(null, 'notthere', '', 'notthere.bin',
+      var assetRequest = new Asset(null, 'notthere', 'notthere.bin',
                                    'text', null, {}, null, {});
       loaded = textLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((String text) {
@@ -146,7 +146,7 @@ class Loader {
     test('test.json', () {
       Future loaded;
       var tracer = new AssetPackTraceAccumulator();
-      var assetRequest = new Asset(null, 'test', '', 'test.json',
+      var assetRequest = new Asset(null, 'test', 'test.json',
                                    'json', null, {}, null, {});
       loaded = textLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((String text) {
@@ -163,7 +163,7 @@ class Loader {
     test('404', () {
       Future loaded;
       var tracer = new AssetPackTraceAccumulator();
-      var assetRequest = new Asset(null, 'notthere', '', 'notthere.mp4',
+      var assetRequest = new Asset(null, 'notthere', 'notthere.mp4',
                                    'mp4', null, {}, null, {});
       loaded = videoLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((VideoElement videoElement) {
@@ -174,7 +174,7 @@ class Loader {
     test('webm', () {
       Future loaded;
       var tracer = new AssetPackTraceAccumulator();
-      var assetRequest = new Asset(null, 'test', '', 'big_buck_bunny.webm',
+      var assetRequest = new Asset(null, 'test', 'big_buck_bunny.webm',
                                    'webm', null, {}, null, {});
       loaded = videoLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((VideoElement videoElement) {

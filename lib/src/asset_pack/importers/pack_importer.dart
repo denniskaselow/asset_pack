@@ -38,8 +38,7 @@ class PackImporter extends AssetImporter {
       tracer.packImportEnd(asset);
       return new Future.value(asset);
     }
-    String url = asset.url;
-    String baseUrl = url.substring(0, url.lastIndexOf('.'));
+    var baseUri = new Uri(asset.url);
     var parsed;
     if (payload is String) {
       try {
@@ -55,7 +54,7 @@ class PackImporter extends AssetImporter {
     AssetPackFile packFile = new AssetPackFile.fromJson(parsed);
     List<Future<Asset>> futureAssets = new List<Future<Asset>>();
     packFile.assets.values.forEach((packFileAsset) {
-      String assetUrl = packFileAsset.url;
+      String url = baseUri.resolve(packFileAsset.url).toString();
       String name = packFileAsset.name;
       String type = packFileAsset.type;
 
@@ -66,7 +65,7 @@ class PackImporter extends AssetImporter {
       }
 
       // Register asset.
-      Asset childAsset = pack.registerAsset(name, type, baseUrl, assetUrl,
+      Asset childAsset = pack.registerAsset(name, type, url,
                                        packFileAsset.loadArguments,
                                        packFileAsset.importArguments);
       // Mark the asset status.

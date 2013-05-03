@@ -82,7 +82,7 @@ class Decoder {
       // Load the Lenna image into an arraybuffer
       Future loaded;
       ArrayBufferLoader arrayBufferLoader = new ArrayBufferLoader();
-      var assetRequest = new Asset(null, 'lenna', '', 'lenna.png', 'bin',
+      var assetRequest = new Asset(null, 'lenna', 'lenna.png', 'bin',
                                    null, {}, null, {});
       loaded = arrayBufferLoader.load(assetRequest, trace);
       loaded.then(expectAsync1((Uint8List expectedBuffer) {

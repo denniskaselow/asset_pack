@@ -25,6 +25,7 @@ import 'dart:json' as JSON;
 import 'dart:typed_data';
 import 'dart:async';
 import 'dart:math';
+import 'dart:uri';
 import 'asset_pack_file.dart';
 
 part 'src/asset_pack/asset_pack_trace.dart';
