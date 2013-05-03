@@ -37,8 +37,12 @@ class AssetPackFileAsset {
     Map assetMap = new Map();
     assetMap['url'] = url;
     assetMap['type'] = type;
-    assetMap['loadArguments'] = loadArguments;
-    assetMap['importArguments'] = importArguments;
+    if (loadArguments != null && !loadArguments.isEmpty) {
+      assetMap['loadArguments'] = loadArguments;
+    }
+    if (importArguments != null && !importArguments.isEmpty) {
+      assetMap['importArguments'] = importArguments;
+    }
     return assetMap;
   }
 
