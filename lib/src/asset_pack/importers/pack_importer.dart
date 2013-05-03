@@ -54,7 +54,7 @@ class PackImporter extends AssetImporter {
     AssetPack pack = asset.imported;
     AssetPackFile packFile = new AssetPackFile.fromJson(parsed);
     List<Future<Asset>> futureAssets = new List<Future<Asset>>();
-    packFile.assets.forEach((_, packFileAsset) {
+    packFile.assets.values.forEach((packFileAsset) {
       String assetUrl = packFileAsset.url;
       String name = packFileAsset.name;
       String type = packFileAsset.type;
