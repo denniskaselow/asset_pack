@@ -5,20 +5,22 @@ import 'package:unittest/unittest.dart';
 import 'package:asset_pack/asset_pack_file.dart';
 
 /// Signature for a packgen test.
-typedef Future PackgenTest();
+typedef Future PackgenTest(int n);
 typedef void PackgenTestStartup();
+
+debug(s) {
+  if (false) print(s);
+}
 
 //---------------------------------------------------------------------
 // Test callback
 //---------------------------------------------------------------------
 
-int completed = 0;
 Function finished;
 
 /// Dummy callback to trick unittest.
-void testComplete(name) {
-  completed++;
-  print('Test $completed $name completed');
+void testComplete(name, n) {
+  print('Test $n $name completed');
 }
 
 //---------------------------------------------------------------------
@@ -66,7 +68,7 @@ void copyDirectoryContents(Directory original, Directory copy) {
       // Determine the filename by looking at the last '/'. This works since
       // the traversal is not recursive
       String fullPath = originalFile.path.replaceAll('\\', '/');
-      String filename = fullPath.substring(fullPath.lastIndexOf('/') + 1);
+      String filename = fullPath.substring(fullPath.lastIndexOf('/'));
 
       // Create the new File
       String copyFilePath = '$copyPath/$filename';
@@ -108,74 +110,57 @@ void checkPackFile(AssetPackFile assetPack, Directory directory) {
 
       // Get the relative path
       // Make sure the path separator is '/'
-      String relativeFilePath = file.fullPathSync().substring(directoryPathLength);
+      String relativeFilePath = file.fullPathSync().substring(directoryPathLength + 1);
       relativeFilePath = relativeFilePath.replaceAll('\\', '/');
 
-      filePaths.add(relativeFilePath);
+      // ignore generated "directory/_.pack"
+      if (relativeFilePath != '_.pack') {
+        filePaths.add(relativeFilePath);
+      }
     }
   });
 
-  expect(assetPack.assets.length, filePaths.length);
+  expect(assetPack.assets.values.map((x) => x.url), unorderedEquals(filePaths));
 
   // Check that each individual file is contained in the pack
   assetPack.assets.values.forEach((value) {
-    expect(filePaths.contains(value.url), true);
+    expect(filePaths, contains(value.url));
   });
 }
 
 /// Compares the contents of two [AssetPackFile]s.
 void comparePackFiles(AssetPackFile actual, AssetPackFile expected) {
-  // Should have the same length
-  Map actualAssets = actual.assets;
-  Map expectedAssets = expected.assets;
-
-  expect(actualAssets.length, expectedAssets.length);
-
-  // Compare the individual keys
-  expectedAssets.keys.forEach((key) {
-    expect(actualAssets.containsKey(key), true);
-
-    // Compare the two JSON maps
-    Map actualAsset = actualAssets[key].toJson();
-    Map expectedAsset = expectedAssets[key].toJson();
-
-    expect(actualAsset, expectedAsset);
-  });
+  expect(actual.toJson(), equals(expected.toJson()));
 }
 
 /// Runs an individual test
-Future runPackgenTest(String name, Directory directory, dynamic onStartup, dynamic onTest) {
-  // Run the function to setup the enviornment
+PackgenTest newPackgenTest(String name, Directory directory, dynamic onStartup, dynamic onTest) => (n){
+  debug(">>>>>>>>>>>>>>>>>> ${name}");
+
+  // Run the function to setup the environment
   onStartup();
 
-  Completer completer = new Completer();
-  Process.start('dart', ['bin/packgen.dart', directory.path]).then((process) {
-    // Add a delay to give some time for file operations to complete
-    Timer delay = new Timer(new Duration(milliseconds:100), () {
-      test(name, () {
-        AssetPackFile generatedPackFile = openAssetPackFile('test/testpack_copy.pack');
-
-        onTest(generatedPackFile, directory);
-        completer.complete();
-      });
-    });
-  });
-
-  return completer.future;
-}
+  var cb = (ProcessResult r) {
+    debug("${name} : exit : ${r.exitCode}");
+    debug("${name} : out : ${r.stdout}");
+    debug("${name} : err : ${r.stderr}");
+    var generatedPackFile = openAssetPackFile('${directory.path}/_.pack');
+    onTest(generatedPackFile, directory);
+    testComplete(name, n + 1);
+    return n + 1;
+  };
+  return Process.run('dart', ['bin/packgen.dart', directory.path]).then(cb);
+};
 
 /// Runs the individual tests.
 ///
 /// Each test requires an asynchronous operation, this is the packgen process,
 /// to occur. And each test needs to be run in succession. This function is a
 /// hack to ensure this happens.
-void runTest(List<PackgenTest> tests, int index) {
-  if (index == tests.length) {
-    return;
-  }
-
-  tests[index]().then((_) {
-    runTest(tests, index + 1);
+void runTest(List<PackgenTest> tests) {
+  test('run sequence of operations',() {
+    var f = tests.fold(new Future.value(0), (acc, x) => acc.then(x));
+    f.then(expectAsync1((n) => expect(n, tests.length)));
   });
 }
 
@@ -185,7 +170,7 @@ void main() {
   // Directory.path does not give the full path unless the full path is
   // specified. There's also no way to get the full path so use the working
   // directory to get the full path because File.name has the full path.
-  Directory workingDirectory = new Directory.current();
+  Directory workingDirectory = Directory.current;
   Path currentPath = new Path(workingDirectory.path);
 
   Directory original = new Directory.fromPath(currentPath.join(new Path('test/testpack')));
@@ -202,8 +187,15 @@ void main() {
   List<PackgenTest> tests = new List<PackgenTest>();
   PackgenTestStartup setup;
 
-  tests.add(() => runPackgenTest('empty file', copy, () { }, checkPackFile));
-  tests.add(() => runPackgenTest('single file', copy, () { copyDirectoryContents(original, copy); }, checkPackFile));
+  Function clearCopy = () {
+    if (copy.existsSync()) {
+      copy.deleteSync(recursive: true);
+    }
+    copy.createRecursivelySync();
+  };
+
+  tests.add(newPackgenTest('empty file', copy, clearCopy, checkPackFile));
+  tests.add(newPackgenTest('single file', copy, () { copyDirectoryContents(original, copy); }, checkPackFile));
 
   // Add the subpack directory
   Function subpackCreate = () {
@@ -211,7 +203,7 @@ void main() {
     copyDirectoryContents(originalSubpack, copySubpack);
   };
 
-  tests.add(() => runPackgenTest('subpack', copy, subpackCreate, checkPackFile));
+  tests.add(newPackgenTest('subpack', copy, subpackCreate, checkPackFile));
 
   // Add the JSON directory
   Function jsonCreate = () {
@@ -219,7 +211,7 @@ void main() {
     copyDirectoryContents(originalJson, copyJson);
   };
 
-  tests.add(() => runPackgenTest('subpack + json', copy, jsonCreate, checkPackFile));
+  tests.add(newPackgenTest('subpack + json', copy, jsonCreate, checkPackFile));
 
   // Add the text directory
   Function textCreate = () {
@@ -235,34 +227,34 @@ void main() {
     comparePackFiles(assetPack, expected);
   };
 
-  tests.add(() => runPackgenTest('subpack + json + text', copy, textCreate, compareOutput));
+  tests.add(newPackgenTest('subpack + json + text', copy, textCreate, compareOutput));
 
   // Remove the test directory
   Function textDelete = () {
     deleteDirectoryContents(copyText);
   };
 
-  tests.add(() => runPackgenTest('subpack + json - text', copy, textDelete, checkPackFile));
+  tests.add(newPackgenTest('subpack + json - text', copy, textDelete, checkPackFile));
 
   // Remove the json directory
   Function jsonDelete = () {
     deleteDirectoryContents(copyJson);
   };
 
-  tests.add(() => runPackgenTest('subpack - json - text', copy, jsonDelete, checkPackFile));
+  tests.add(newPackgenTest('subpack - json - text', copy, jsonDelete, checkPackFile));
 
   // Remove the subpack directory
   Function subpackDelete = () {
     deleteDirectoryContents(copySubpack);
   };
 
-  tests.add(() => runPackgenTest('-subpack - json - text', copy, subpackDelete, checkPackFile));
+  tests.add(newPackgenTest('-subpack - json - text', copy, subpackDelete, checkPackFile));
 
   // Not a test but lets us cleanup after all the tests are complete
-  tests.add(() {
+  tests.add((n) {
     deleteDirectoryContents(copy);
-    return new Future.value(null);
+    return new Future.value(n+1);
   });
 
-  runTest(tests, 0);
+  runTest(tests);
 }

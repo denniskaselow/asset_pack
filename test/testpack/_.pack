@@ -1,0 +1,1 @@
+{"test":{"url":"json/test.json","type":"json"},"somemap":{"url":"subpack/somemap.json","type":""},"map":{"url":"json/map.json","type":"json"},"subpack":{"url":"subpack/_.pack","type":"pack"},"tests":{"url":"text/tests.txt","type":"text"},"list":{"url":"json/list.json","type":"json"}}
