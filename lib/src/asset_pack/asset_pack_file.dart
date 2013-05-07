@@ -32,14 +32,17 @@ class AssetPackFileAsset {
   /** Arguments passed to the importer */
   final Map<String, dynamic> importArguments;
 
-  /** Convert to JSON */
+  /** Convert to JSON (doesn't include the name)*/
   Map toJson() {
     Map assetMap = new Map();
-    assetMap['name'] = name;
     assetMap['url'] = url;
     assetMap['type'] = type;
-    assetMap['loadArguments'] = loadArguments;
-    assetMap['importArguments'] = importArguments;
+    if (loadArguments != null && !loadArguments.isEmpty) {
+      assetMap['loadArguments'] = loadArguments;
+    }
+    if (importArguments != null && !importArguments.isEmpty) {
+      assetMap['importArguments'] = importArguments;
+    }
     return assetMap;
   }
 
@@ -47,9 +50,8 @@ class AssetPackFileAsset {
   AssetPackFileAsset(this.name, this.url, this.type, this.loadArguments,
                      this.importArguments);
 
-  /** Construct a new instance from a Map */
-  static AssetPackFileAsset fromJson(Map map) {
-    String name = map['name'];
+  /** Construct a new instance from a [map] and a [name] */
+  static AssetPackFileAsset fromJson(String name, Map map) {
     String url = map['url'];
     String type = map['type'];
     Map loadArguments = map['loadArguments'];
@@ -168,7 +170,7 @@ class AssetPackFile {
       return;
     }
     json.forEach((k, v) {
-      AssetPackFileAsset packFileAsset = AssetPackFileAsset.fromJson(v);
+      AssetPackFileAsset packFileAsset = AssetPackFileAsset.fromJson(k, v);
       assets[k] = packFileAsset;
     });
   }

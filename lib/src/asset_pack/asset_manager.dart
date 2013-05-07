@@ -68,10 +68,10 @@ class AssetManager {
   Asset getAssetAtPath(String assetPath) => root.getAssetAtPath(assetPath);
 
   /// Forwarded to root. See [AssetPack] for method documentation.
-  Future<Asset> loadAndRegisterAsset(String name, String url, String type,
+  Future<Asset> loadAndRegisterAsset(String name, String type, String url,
                                      Map loaderArguments,
                                      Map importerArguments) {
-    return root.loadAndRegisterAsset(name, url, type, loaderArguments,
+    return root.loadAndRegisterAsset(name, type, url, loaderArguments,
                                      importerArguments);
   }
 
@@ -96,7 +96,12 @@ class AssetManager {
   }
 
   Future<Asset> _loadAndImport(Asset asset) {
-    if (asset.loader == null || asset.importer == null) {
+    if (asset.loader == null) {
+      tracer.assetLoadError(asset, 'no loader registered for ${asset.type}');
+      return new Future.value(asset);
+    }
+    if (asset.importer == null) {
+      tracer.assetLoadError(asset, 'no importer registered for ${asset.type}');
       return new Future.value(asset);
     }
     asset._status = 'Loading';

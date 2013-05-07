@@ -38,9 +38,7 @@ class Asset {
   final Map loaderArguments;
   final Map importerArguments;
 
-  final String baseUrl;
-  final String assetUrl;
-  String get url => '$baseUrl$assetUrl';
+  final String url;
 
   String _status = '';
   /// Status string.
@@ -59,7 +57,7 @@ class Asset {
   /// Is [imported] a pack file?
   bool get isPack => type == 'pack';
 
-  Asset(this.pack, this.name, this.baseUrl, this.assetUrl, this.type,
+  Asset(this.pack, this.name, this.url, this.type,
         this.loader, this.loaderArguments, this.importer,
         this.importerArguments);
 

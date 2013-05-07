@@ -38,8 +38,10 @@ class MapLoader extends AssetLoader {
       }
       Map<String, dynamic> loadedMap = {};
       List<Future> futures = [];
+      var baseUri = new Uri(asset.url);
       parsed.forEach((name, requestUrl) {
-        Asset request = new Asset(null, name, asset.baseUrl, requestUrl,
+        var url = baseUri.resolve(requestUrl).toString();
+        Asset request = new Asset(null, name, url,
                                   '', null, {}, null, {});
         futures.add(_loader.load(request, tracer).then((payload) {
           loadedMap[name] = payload;

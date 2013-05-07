@@ -77,7 +77,7 @@ class AssetPack {
   }
 
   /// Add asset to this pack.
-  Asset registerAsset(String name, String type, String baseUrl, String assetUrl,
+  Asset registerAsset(String name, String type, String url,
                       Map loaderArguments, Map importerArguments) {
     if (AssetPackFile.validAssetName(name) == false) {
       throw new ArgumentError('$name is an invalid name.');
@@ -89,7 +89,7 @@ class AssetPack {
     var loader = manager.loaders[type];
     var importer = manager.importers[type];
     // Create asset.
-    asset = new Asset(this, name, baseUrl, assetUrl, type, loader,
+    asset = new Asset(this, name, url, type, loader,
                       loaderArguments, importer, loaderArguments);
     if (importer != null) {
       importer.initialize(asset);
@@ -110,10 +110,7 @@ class AssetPack {
   Future<Asset> loadAndRegisterAsset(String name, String type, String url,
                                      Map loaderArguments,
                                      Map importerArguments) {
-    int splitPoint = url.lastIndexOf('/');
-    String baseUrl = url.substring(0, splitPoint);
-    String assetUrl = url.substring(splitPoint);
-    Asset asset = registerAsset(name, type, baseUrl, assetUrl, loaderArguments,
+    Asset asset = registerAsset(name, type, url, loaderArguments,
                                 importerArguments);
     return manager._loadAndImport(asset);
   }
@@ -178,7 +175,7 @@ class AssetPack {
 
   /// Add a child asset pack to this asset pack.
   AssetPack registerPack(String name, String url) {
-    Asset asset = registerAsset(name, 'pack', '', url, {}, {});
+    Asset asset = registerAsset(name, 'pack', url, {}, {});
     asset.imported._parent = this;
     return asset.imported;
   }
@@ -200,7 +197,7 @@ class AssetPack {
 
   /// Load the pack at [url] and add it as a child pack named [name].
   Future<AssetPack> loadPack(String name, String url) {
-    Asset asset = registerAsset(name, 'pack', '', url, {}, {});
+    Asset asset = registerAsset(name, 'pack', url, {}, {});
     asset.imported._parent = this;
     return manager._loadAndImport(asset).then((_) =>
         new Future.value(asset.imported));

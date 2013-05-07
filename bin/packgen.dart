@@ -117,12 +117,18 @@ AssetPackFile openAssetPackFile(String path) {
   return new AssetPackFile.fromJson(json);
 }
 
-void merge(AssetPackFile packFile, List<String> assetPaths, PackGenConfig configuration) {
+void merge(AssetPackFile packFile,
+           List<String> assetPaths,
+           PackGenConfig configuration
+           ) {
   assetPaths.forEach((assetPath) {
     Path path = new Path(assetPath);
     String name = path.filenameWithoutExtension;
     String url = assetPath;
 
+    if (name == '_') {
+      name = path.directoryPath.filenameWithoutExtension;
+    }
     if (packFile.assets.containsKey(name)) {
       print('Old asset pack already has $name');
       return;
@@ -137,15 +143,15 @@ void merge(AssetPackFile packFile, List<String> assetPaths, PackGenConfig config
     Map importArguments = configuration.getImportArguments(extension);
     Map loadArguments = configuration.getLoadArguments(extension);
 
-    print('Adding new asset $name ($url) (type=$type)');
-    packFile.assets[name] = new AssetPackFileAsset(name, url, type, importArguments, loadArguments);
+    print('Adding new asset $name ($url) (type=$type) $extension');
+    packFile.assets[name] = new AssetPackFileAsset(name, url, type,
+        importArguments, loadArguments);
   });
-  packFile.assets.forEach((k, v) {
-    if (assetPaths.contains(v.url)) {
-      return;
-    }
-    print('Removing asset $k which no longer exists.');
-    packFile.assets.remove(k);
+  packFile.assets.values.where((v) =>
+    !assetPaths.contains(v.url)
+  ).toList().forEach((v) {
+    print('Removing asset ${v.name} which no longer exists.');
+    packFile.assets.remove(v.name);
   });
 }
 
@@ -197,14 +203,14 @@ void main() {
 
   // If the path is not absolute create the absolute path
   if (path.isAbsolute == false) {
-    Directory working = new Directory.current();
+    Directory working = Directory.current;
     Path fullPath = new Path(working.path);
     path = fullPath.join(path);
   }
 
   path = path.canonicalize();
 
-  String packPathString = '${path}.pack';
+  String packPathString = '${path}/_.pack';
   print('Scanning $path for assets.');
   print('Adding assets to $packPathString');
   List<String> assetPaths = new List<String>();
@@ -232,8 +238,8 @@ void main() {
       // Workaround for pub symbolic links
       // Doesn't work on Windows as symbolic links don't switch the path.
       // \todo Maybe check for a packages directory?
-      if (filePathString.startsWith(pathString)) {
-        assetPaths.add(filePathString.substring(pathStringLength));
+      if (filePathString.startsWith(pathString) && filePathString != packPathString) {
+        assetPaths.add(filePathString.substring(pathStringLength+1));
       }
     }
   });

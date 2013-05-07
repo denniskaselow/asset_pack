@@ -22,7 +22,10 @@ library asset_pack;
 
 import 'dart:html';
 import 'dart:json' as JSON;
+import 'dart:typed_data';
 import 'dart:async';
+import 'dart:math';
+import 'dart:uri';
 import 'asset_pack_file.dart';
 
 part 'src/asset_pack/asset_pack_trace.dart';
@@ -42,3 +45,4 @@ part 'src/asset_pack/loaders/image_loader.dart';
 part 'src/asset_pack/loaders/map_loader.dart';
 part 'src/asset_pack/loaders/text_loader.dart';
 part 'src/asset_pack/loaders/video_loader.dart';
+part 'src/asset_pack/progress_controler.dart';

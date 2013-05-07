@@ -1,4 +1,4 @@
 {
-	"foo": "/test.png",
-	"error": "/notthere.jpg"
+	"foo": "test.png",
+	"error": "notthere.jpg"
 }
