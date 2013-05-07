@@ -44,7 +44,7 @@ class PackImporter extends AssetImporter {
     if (payload is String) {
       try {
         parsed = JSON.parse(payload);
-      } catch (e) {
+      } on FormatException catch (e) {
         tracer.assetImportError(asset, e.message);
         tracer.assetImportEnd(asset);
         tracer.packImportEnd(asset);
