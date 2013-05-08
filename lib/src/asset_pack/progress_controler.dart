@@ -48,8 +48,8 @@ typedef num Ease(double ratio, num change, num base);
  * * [ProgressElement.max] define the precision of the display (eg 100, 1000).
  * * [ProgressControler] modify only the [ProgressElement.value] via a
  *   function of [ProgressElement.max]
- *   OR [Element.style.width] if [view] is not a
- *   [ProgressElement].
+ *   OR [Element.style.width] if view parameter (constructor)
+ *   is not a [ProgressElement].
  *
  */
 class ProgressControler {
