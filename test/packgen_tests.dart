@@ -191,7 +191,7 @@ void main() {
     if (copy.existsSync()) {
       copy.deleteSync(recursive: true);
     }
-    copy.createRecursivelySync();
+    copy.createSync(recursive: true);
   };
 
   tests.add(newPackgenTest('empty file', copy, clearCopy, checkPackFile));

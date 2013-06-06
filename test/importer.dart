@@ -27,23 +27,20 @@ class Importer {
     var es = tracer.events;
     if (withError) {
       expect(
-          es.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportError),
+          es.singleWhere((e) => e.type == AssetPackTraceEvent.AssetImportError),
           isNot(throws)
       );
     } else {
       expect(
-          () => es.singleWhere(
-              (e) => e.type == AssetPackTraceEvent.assetImportError
-          ),
+          es.singleWhere((e) => e.type == AssetPackTraceEvent.AssetImportError),
           throws
       );
     }
     expect(
-        es.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportStart),
+        es.singleWhere((e) => e.type == AssetPackTraceEvent.AssetImportStart),
         isNot(throws)
     );
-    expect(
-        es.singleWhere((e) => e.type == AssetPackTraceEvent.assetImportEnd),
+    expect(es.singleWhere((e) => e.type == AssetPackTraceEvent.AssetImportEnd),
         isNot(throws)
     );
   }

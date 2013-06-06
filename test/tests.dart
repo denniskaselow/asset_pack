@@ -23,7 +23,6 @@ library asset_pack_tests;
 import 'dart:html';
 import 'dart:async';
 import 'dart:typed_data';
-import 'dart:uri';
 import 'package:unittest/unittest.dart';
 import 'package:unittest/html_enhanced_config.dart';
 import 'package:asset_pack/asset_pack.dart';
@@ -43,13 +42,4 @@ main() {
   Manager.runTests();
   TraceViewer.runTests();
   UriBehavior.runTests();
-}
-
-class AssetPackTraceAccumulator extends AssetPackTrace {
-  final accumulator = new AssetPackTraceEventAccumulator();
-  get events => accumulator.events;
-
-  AssetPackTraceAccumulator() {
-    asStream().listen(accumulator.onEvent);
-  }
 }

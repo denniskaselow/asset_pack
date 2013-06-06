@@ -30,73 +30,73 @@ class UriBehavior {
     group('uri behavior', () {
       test('test resolve absolute url http', () {
         expect(
-          new Uri('${b01}').resolve('http://foo/hello.txt').toString(),
+          Uri.parse('${b01}').resolve('http://foo/hello.txt').toString(),
           equals('http://foo/hello.txt')
         );
       });
       test('test resolve relative url', () {
         expect(
-          new Uri('${b01}').resolve('hello.txt').toString(),
+          Uri.parse('${b01}').resolve('hello.txt').toString(),
           equals('${b01}hello.txt')
         );
         expect(
-          new Uri('${b01}').resolve('f2/hello.txt').toString(),
+          Uri.parse('${b01}').resolve('f2/hello.txt').toString(),
           equals('${b01}f2/hello.txt')
         );
         expect(
-          new Uri('${b01index}').resolve('hello.txt').toString(),
+          Uri.parse('${b01index}').resolve('hello.txt').toString(),
           equals('${b01}hello.txt')
         );
         expect(
-          new Uri('${b01indexh}').resolve('hello.txt').toString(),
+          Uri.parse('${b01indexh}').resolve('hello.txt').toString(),
           equals('${b01}hello.txt')
         );
         expect(
-          new Uri('${b01indexq}').resolve('hello.txt').toString(),
+          Uri.parse('${b01indexq}').resolve('hello.txt').toString(),
           equals('${b01}hello.txt')
         );
       });
       test('test resolve absolute path', () {
         expect(
-          new Uri('${b01}').resolve('/hello.txt').toString(),
+          Uri.parse('${b01}').resolve('/hello.txt').toString(),
           equals('http://dummy/hello.txt')
         );
         expect(
-          new Uri('${b01}').resolve('/f2/hello.txt').toString(),
+          Uri.parse('${b01}').resolve('/f2/hello.txt').toString(),
           equals('http://dummy/f2/hello.txt')
         );
         expect(
-          new Uri('${b01index}').resolve('/hello.txt').toString(),
+          Uri.parse('${b01index}').resolve('/hello.txt').toString(),
           equals('http://dummy/hello.txt')
         );
         expect(
-          new Uri('${b01indexh}').resolve('/hello.txt').toString(),
+          Uri.parse('${b01indexh}').resolve('/hello.txt').toString(),
           equals('http://dummy/hello.txt')
         );
         expect(
-          new Uri('${b01indexq}').resolve('/hello.txt').toString(),
+          Uri.parse('${b01indexq}').resolve('/hello.txt').toString(),
           equals('http://dummy/hello.txt')
         );
       });
       test('test resolve sibling path', () {
         expect(
-          new Uri('${b01}').resolve('../hello.txt').toString(),
+          Uri.parse('${b01}').resolve('../hello.txt').toString(),
           equals('http://dummy/d0/hello.txt')
         );
         expect(
-          new Uri('${b01}').resolve('../f2/hello.txt').toString(),
+          Uri.parse('${b01}').resolve('../f2/hello.txt').toString(),
           equals('http://dummy/d0/f2/hello.txt')
         );
         expect(
-          new Uri('${b01index}').resolve('../hello.txt').toString(),
+          Uri.parse('${b01index}').resolve('../hello.txt').toString(),
           equals('http://dummy/d0/hello.txt')
         );
         expect(
-          new Uri('${b01indexh}').resolve('../hello.txt').toString(),
+          Uri.parse('${b01indexh}').resolve('../hello.txt').toString(),
           equals('http://dummy/d0/hello.txt')
         );
         expect(
-          new Uri('${b01indexq}').resolve('../hello.txt').toString(),
+          Uri.parse('${b01indexq}').resolve('../hello.txt').toString(),
           equals('http://dummy/d0/hello.txt')
         );
       });
