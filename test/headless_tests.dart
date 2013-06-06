@@ -24,19 +24,24 @@ library asset_pack_tests;
 
 import 'dart:html';
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:unittest/unittest.dart';
-import 'package:unittest/html_config.dart';
+import 'package:unittest/html_enhanced_config.dart';
 import 'package:asset_pack/asset_pack.dart';
 
 part 'decoder.dart';
 part 'loader.dart';
 part 'importer.dart';
 part 'manager.dart';
+part 'trace_viewer.dart';
+part 'uri_behavior.dart';
 
 main() {
-  useHtmlConfiguration();
+  useHtmlEnhancedConfiguration();
   Decoder.runTests();
   Loader.runTests();
   Importer.runTests();
   Manager.runTests();
+  TraceViewer.runTests();
+  UriBehavior.runTests();
 }

@@ -22,28 +22,26 @@ part of asset_pack_tests;
 
 class Loader {
 
-  static void expectLoadTrace(AssetPackTraceAccumulator tracer, {bool withError : false}) {
+  static void expectLoadTrace(AssetPackTraceAccumulator tracer,
+                              {bool withError : false}) {
     var es = tracer.events;
     if (withError) {
       expect(
-          es.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadError),
-          isNot(throws)
+          es.singleWhere((e) => e.type == AssetPackTraceEvent.AssetLoadError),
+          isNotNull
       );
     } else {
       expect(
-          () => es.singleWhere(
-              (e) => e.type == AssetPackTraceEvent.assetLoadError
-          ),
+          es.singleWhere((e) => e.type == AssetPackTraceEvent.AssetLoadError),
           throws
       );
     }
     expect(
-        es.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadStart),
-        isNot(throws)
+        es.singleWhere((e) => e.type == AssetPackTraceEvent.AssetLoadStart),
+        isNotNull
     );
-    expect(
-        es.singleWhere((e) => e.type == AssetPackTraceEvent.assetLoadEnd),
-        isNot(throws)
+    expect(es.singleWhere((e) => e.type == AssetPackTraceEvent.AssetLoadEnd),
+        isNotNull
     );
   }
 
@@ -95,7 +93,6 @@ class Loader {
                                    'bin', null, {}, null, {});
       loaded = arrayBufferLoader.load(assetRequest, tracer);
       loaded.then(expectAsync1((arrayBuffer) {
-        print(arrayBuffer.runtimeType);
         expect(arrayBuffer == null, false);
         expect(arrayBuffer.length, 32);
         expectLoadTrace(tracer, withError : false);

@@ -3,7 +3,6 @@ description: Asset Management Library for Dart Games
 version: 0.6.0
 authors:
 - John McCutchan <john@johnmccutchan.com>
-- Daniel Rodriguez <seth.illgard@gmail.com>
 description: Asset Management Library for Dart Games
 homepage: https://github.com/johnmccutchan/assetpack
 dev_dependencies:

@@ -43,12 +43,3 @@ main() {
   TraceViewer.runTests();
   UriBehavior.runTests();
 }
-
-class AssetPackTraceAccumulator extends AssetPackTrace {
-  final accumulator = new AssetPackTraceEventAccumulator();
-  get events => accumulator.events;
-
-  AssetPackTraceAccumulator() {
-    asStream().listen(accumulator.onEvent);
-  }
-}
