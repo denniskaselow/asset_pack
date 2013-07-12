@@ -135,7 +135,7 @@ class AssetPackTraceViewer {
 }
 
 class AssetPackTrace {
-  final _streamCtrl = new StreamController<AssetPackTraceEvent>();
+  final _streamCtrl = new StreamController<AssetPackTraceEvent>(sync: true);
 
   Stream<AssetPackTraceEvent> asStream() => _streamCtrl.stream;
 
