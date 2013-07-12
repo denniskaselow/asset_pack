@@ -32,7 +32,9 @@ class Loader {
       );
     } else {
       expect(
-          es.singleWhere((e) => e.type == AssetPackTraceEvent.AssetLoadError),
+          () => es.singleWhere(
+              (e) => e.type == AssetPackTraceEvent.AssetLoadError
+          ),
           throws
       );
     }
