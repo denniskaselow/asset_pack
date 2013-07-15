@@ -97,15 +97,10 @@ class ProgressControler {
   void onEvent(AssetPackTraceEvent event) {
     switch(event.type) {
       case AssetPackTraceEvent.PackImportStart:
-        _resetCountersIfEqual();
-        _total += 1;
-        break;
+      case AssetPackTraceEvent.AssetImportStart:
       case AssetPackTraceEvent.AssetLoadStart:
         _resetCountersIfEqual();
-        _total += 2; // load + import
-        break;
-      case AssetPackTraceEvent.AssetImportStart:
-        // ignore already include in load
+        _total += 1; // load + import
         break;
       case AssetPackTraceEvent.PackImportEnd:
       case AssetPackTraceEvent.AssetLoadEnd:
@@ -113,7 +108,7 @@ class ProgressControler {
         _current += 1;
         break;
     }
-    var n = _current/_total;
+    var n = (_total == 0) ? 0.0 : _current/_total;
     _ratio = (displayBackward) ? n : max(_ratio, n);
     if (_pview != null) {
       _pview.value = ease(_ratio, _pview.max, 0).toInt();
