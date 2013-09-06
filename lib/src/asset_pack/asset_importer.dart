@@ -21,7 +21,7 @@
 part of asset_pack;
 
 /// Interface of an [AssetImporter]. An asset importer is responsible for
-/// Initializing the [imported] field in [Asset] and importing an object
+/// Initializing the [Asset.imported] field and importing an object
 /// returned from a loader.
 abstract class AssetImporter {
   /// Must initialize imported field in [asset].

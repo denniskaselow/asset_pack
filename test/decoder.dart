@@ -120,7 +120,7 @@ class Decoder {
 
       Base64Decoder decoder = new Base64Decoder();
       Uint8List actualBuffer = decoder.decode(encoded);
-      Uint16List actual = new Uint16List.view(actualBuffer);
+      Uint16List actual = new Uint16List.view(actualBuffer.buffer);
 
       // Check that the buffers are the same size
       int actualLength = actual.length;
@@ -156,7 +156,7 @@ class Decoder {
 
       Base64Decoder decoder = new Base64Decoder();
       Uint8List actualBuffer = decoder.decode(encoded);
-      Float32List actual = new Float32List.view(actualBuffer);
+      Float32List actual = new Float32List.view(actualBuffer.buffer);
 
       // Check that the buffers are the same size
       int actualLength = actual.length;

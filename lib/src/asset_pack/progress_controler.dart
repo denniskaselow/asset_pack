@@ -48,8 +48,8 @@ typedef num Ease(double ratio, num change, num base);
  * * [ProgressElement.max] define the precision of the display (eg 100, 1000).
  * * [ProgressControler] modify only the [ProgressElement.value] via a
  *   function of [ProgressElement.max]
- *   OR [Element.style.width] if [view] is not a
- *   [ProgressElement].
+ *   OR [Element.style.width] if view parameter (constructor)
+ *   is not a [ProgressElement].
  *
  */
 class ProgressControler {
@@ -96,24 +96,19 @@ class ProgressControler {
 
   void onEvent(AssetPackTraceEvent event) {
     switch(event.type) {
-      case AssetPackTraceEvent.packImportStart:
+      case AssetPackTraceEvent.PackImportStart:
+      case AssetPackTraceEvent.AssetImportStart:
+      case AssetPackTraceEvent.AssetLoadStart:
         _resetCountersIfEqual();
-        _total += 1;
+        _total += 1; // load + import
         break;
-      case AssetPackTraceEvent.assetLoadStart:
-        _resetCountersIfEqual();
-        _total += 2; // load + import
-        break;
-      case AssetPackTraceEvent.assetImportStart:
-        // ignore already include in load
-        break;
-      case AssetPackTraceEvent.packImportEnd:
-      case AssetPackTraceEvent.assetLoadEnd:
-      case AssetPackTraceEvent.assetImportEnd:
+      case AssetPackTraceEvent.PackImportEnd:
+      case AssetPackTraceEvent.AssetLoadEnd:
+      case AssetPackTraceEvent.AssetImportEnd:
         _current += 1;
         break;
     }
-    var n = _current/_total;
+    var n = (_total == 0) ? 0.0 : _current/_total;
     _ratio = (displayBackward) ? n : max(_ratio, n);
     if (_pview != null) {
       _pview.value = ease(_ratio, _pview.max, 0).toInt();

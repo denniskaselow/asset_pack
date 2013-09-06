@@ -148,19 +148,8 @@ class AssetPackFile {
 
   /** Parse the packFile string into a list of pack file assets. */
   static List<AssetPackFileAsset> parse(String packFile) {
-    var assets = new List<AssetPackFileAsset>();
-    List<Map> parsed;
-    try {
-       parsed = JSON.parse(packFile);
-    } catch (_) {
-      return assets;
-    }
-
-    parsed.forEach((map) {
-      assets.add(AssetPackFileAsset.fromJson(map));
-    });
-
-    return assets;
+    var parsed = JSON.parse(packFile);
+    return new AssetPackFile.fromJson(parsed).assets.values.toList();
   }
 
   AssetPackFile();
