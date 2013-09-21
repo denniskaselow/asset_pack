@@ -31,7 +31,7 @@ class MapLoader extends AssetLoader {
     return futureMap.then((map) {
       Map parsed;
       try {
-        parsed = JSON.parse(map);
+        parsed = JSON.decode(map);
       } on FormatException catch (e) {
         tracer.assetLoadError(asset, e.message);
         return new Future.value(null);

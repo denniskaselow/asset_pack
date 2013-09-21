@@ -42,7 +42,7 @@ class PackImporter extends AssetImporter {
     var parsed;
     if (payload is String) {
       try {
-        parsed = JSON.parse(payload);
+        parsed = JSON.decode(payload);
       } on FormatException catch (e) {
         tracer.assetImportError(asset, e.message);
         tracer.assetImportEnd(asset);

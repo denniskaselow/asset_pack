@@ -94,7 +94,7 @@ class AssetPackTraceViewer {
 
   static String toJsonFullString(List<AssetPackTraceEvent> events) {
     var lists = events.map(toJsonEntry).toList();
-    return '{"traceEvents":${JSON.stringify(lists)}}';
+    return '{"traceEvents":${JSON.encode(lists)}}';
   }
 
   static dynamic toJsonEntry(AssetPackTraceEvent event) {
