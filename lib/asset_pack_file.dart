@@ -20,6 +20,6 @@
 
 library asset_pack_file;
 
-import 'dart:json' as JSON;
+import 'dart:convert';
 
 part 'src/asset_pack/asset_pack_file.dart';

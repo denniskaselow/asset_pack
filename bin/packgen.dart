@@ -5,11 +5,11 @@ import 'package:asset_pack/asset_pack_file.dart';
 /// Configuration file for generating .pack files
 class PackGenConfig {
   /// Serialization name for type
-  const String _typeName = 'type';
+  static const String _typeName = 'type';
   /// Serialization name for import arguments
-  const String _importArgumentsName = 'importArguments';
+  static const String _importArgumentsName = 'importArguments';
   /// Serialization name for load arguments
-  const String _loadArgumentsName = 'loadArguments';
+  static const String _loadArgumentsName = 'loadArguments';
 
   Map _values;
 
