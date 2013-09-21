@@ -32,7 +32,9 @@ class Loader {
       );
     } else {
       expect(
-          es.singleWhere((e) => e.type == AssetPackTraceEvent.AssetLoadError),
+          () => es.singleWhere(
+              (e) => e.type == AssetPackTraceEvent.AssetLoadError
+          ),
           throws
       );
     }
@@ -54,7 +56,7 @@ class Loader {
                             'png', null, {}, null, {});
       loaded = imageLoader.load(asset, tracer);
       loaded.then(expectAsync1((ImageElement imageElement) {
-        expect(imageElement, null);
+        expect(imageElement, isNull);
         expectLoadTrace(tracer, withError : true);
       }));
     });
@@ -65,7 +67,7 @@ class Loader {
                             null, {}, null, {});
       loaded = imageLoader.load(asset, tracer);
       loaded.then(expectAsync1((ImageElement imageElement) {
-        expect(imageElement == null, false);
+        expect(imageElement, isNotNull);
         expect(imageElement.width, 64);
         expect(imageElement.height, 64);
         expectLoadTrace(tracer, withError : false);

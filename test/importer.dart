@@ -32,7 +32,9 @@ class Importer {
       );
     } else {
       expect(
-          es.singleWhere((e) => e.type == AssetPackTraceEvent.AssetImportError),
+          () => es.singleWhere(
+              (e) => e.type == AssetPackTraceEvent.AssetImportError
+          ),
           throws
       );
     }
