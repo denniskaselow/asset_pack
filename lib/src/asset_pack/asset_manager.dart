@@ -36,11 +36,13 @@ class AssetManager {
     importers['pack'] = new PackImporter(this);
     importers['textmap'] = new NoopImporter();
     importers['imagemap'] = new NoopImporter();
+    importers['image'] = new NoopImporter();
     loaders['textmap'] = new MapLoader(new TextLoader());
     loaders['imagemap'] = new MapLoader(new ImageLoader());
     loaders['json'] = new TextLoader();
     loaders['text'] = loaders['json'];
     loaders['pack'] = loaders['json'];
+    loaders['image'] = new ImageLoader();
   }
 
   void _supportedTypeCheck(String type) {
