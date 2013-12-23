@@ -135,6 +135,7 @@ class AssetPackTraceViewer {
 }
 
 class AssetPackTrace {
+  final _stopwatch = new Stopwatch()..start();
   final _streamCtrl = new StreamController<AssetPackTraceEvent>(sync: true);
 
   Stream<AssetPackTraceEvent> asStream() => _streamCtrl.stream;
@@ -165,7 +166,7 @@ class AssetPackTrace {
 
   void assetEvent(Asset asset, String type, String msg) {
     var label = (msg == null) ? asset.url : "${asset.url} >> ${msg}";
-    var now = (window.performance.now() * 1000).toInt();
+    var now = _stopwatch.elapsedMicroseconds;
     var event = new AssetPackTraceEvent(type, label, now);
     _streamCtrl.add(event);
   }
