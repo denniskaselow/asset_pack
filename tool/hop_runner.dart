@@ -5,7 +5,7 @@ import 'package:hop/hop_tasks.dart';
 
 //import '../test/test_dump_render_tree.dart' as test_dump_render_tree;
 
-void main() {
+void main(List<String> args) {
 
   //
   // Analyzer
@@ -26,5 +26,5 @@ void main() {
   addTask('docs', createDartDocTask(['lib/asset_pack.dart',
                                      'lib/asset_pack_file.dart'], linkApi: true));
 
-  runHop();
+  runHop(args);
 }
