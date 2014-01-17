@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:json' as Json;
+import 'dart:convert';
+import 'package:path/path.dart' as path;
 import 'package:unittest/unittest.dart';
 import 'package:asset_pack/asset_pack_file.dart';
 
@@ -39,7 +40,7 @@ AssetPackFile openAssetPackFile(String path) {
   }
   var json;
   try {
-    json = Json.parse(contents);
+    json = JSON.decode(contents);
   } catch (e) {
     // Return empty asset pack file.
     return new AssetPackFile();
@@ -171,17 +172,23 @@ void main() {
   // specified. There's also no way to get the full path so use the working
   // directory to get the full path because File.name has the full path.
   Directory workingDirectory = Directory.current;
-  Path currentPath = new Path(workingDirectory.path);
+  String currentPath = workingDirectory.path;
 
-  Directory original = new Directory.fromPath(currentPath.join(new Path('test/testpack')));
-  Directory originalSubpack = new Directory.fromPath(currentPath.join(new Path('test/testpack/subpack')));
-  Directory originalJson = new Directory.fromPath(currentPath.join(new Path('test/testpack/json')));
-  Directory originalText = new Directory.fromPath(currentPath.join(new Path('test/testpack/text')));
+  Directory original = new Directory(path.join(currentPath, 'test/testpack'));
+  Directory originalSubpack =
+      new Directory(path.join(currentPath, 'test/testpack/subpack'));
+  Directory originalJson =
+      new Directory(path.join(currentPath, 'test/testpack/json'));
+  Directory originalText =
+      new Directory(path.join(currentPath, 'test/testpack/text'));
 
-  Directory copy = new Directory.fromPath(currentPath.join(new Path('test/testpack_copy')));
-  Directory copySubpack = new Directory.fromPath(currentPath.join(new Path('test/testpack_copy/subpack')));
-  Directory copyJson = new Directory.fromPath(currentPath.join(new Path('test/testpack_copy/json')));
-  Directory copyText = new Directory.fromPath(currentPath.join(new Path('test/testpack_copy/text')));
+  Directory copy = new Directory(path.join(currentPath, 'test/testpack_copy'));
+  Directory copySubpack =
+      new Directory(path.join(currentPath, 'test/testpack_copy/subpack'));
+  Directory copyJson =
+      new Directory(path.join(currentPath, 'test/testpack_copy/json'));
+  Directory copyText =
+      new Directory(path.join(currentPath, 'test/testpack_copy/text'));
   copy.createSync();
 
   List<PackgenTest> tests = new List<PackgenTest>();
@@ -195,7 +202,8 @@ void main() {
   };
 
   tests.add(newPackgenTest('empty file', copy, clearCopy, checkPackFile));
-  tests.add(newPackgenTest('single file', copy, () { copyDirectoryContents(original, copy); }, checkPackFile));
+  tests.add(newPackgenTest('single file', copy, () {
+    copyDirectoryContents(original, copy); }, checkPackFile));
 
   // Add the subpack directory
   Function subpackCreate = () {

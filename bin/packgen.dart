@@ -1,5 +1,6 @@
 import 'dart:io';
-import 'dart:json' as JSON;
+import 'dart:convert';
+import 'package:path/path.dart' as path;
 import 'package:asset_pack/asset_pack_file.dart';
 
 /// Configuration file for generating .pack files
@@ -42,9 +43,9 @@ class PackGenConfig {
   }
 
   /// Loads a configuration data from a file at the given [path].
-  PackGenConfig.fromPath(Path path) {
+  PackGenConfig.fromPath(String path) {
     // Read the file
-    File configFile = new File.fromPath(path);
+    File configFile = new File(path);
     String contents;
 
     try {
@@ -55,7 +56,7 @@ class PackGenConfig {
 
     // Parse it as JSON
     try {
-      _values = JSON.parse(contents);
+      _values = JSON.decode(contents);
     } catch (_) {
       print('Could not parse config file.');
       _values = new Map();
@@ -94,7 +95,7 @@ class PackGenConfig {
 }
 
 AssetPackFile openAssetPackFile(String path) {
-  File out = new File.fromPath(new Path(path));
+  File out = new File(path);
   String contents;
   try {
     contents = out.readAsStringSync();
@@ -106,7 +107,7 @@ AssetPackFile openAssetPackFile(String path) {
   }
   var json;
   try {
-    json = JSON.parse(contents);
+    json = JSON.decode(contents);
   } catch (_) {
     print('Could not parse existing asset pack file.');
     print('Creating new assset pack.');
@@ -122,12 +123,11 @@ void merge(AssetPackFile packFile,
            PackGenConfig configuration
            ) {
   assetPaths.forEach((assetPath) {
-    Path path = new Path(assetPath);
-    String name = path.filenameWithoutExtension;
+    String name = path.basenameWithoutExtension(assetPath);
     String url = assetPath;
 
     if (name == '_') {
-      name = path.directoryPath.filenameWithoutExtension;
+      name = path.basenameWithoutExtension(path.dirname(assetPath));
     }
     if (packFile.assets.containsKey(name)) {
       print('Old asset pack already has $name');
@@ -138,7 +138,7 @@ void merge(AssetPackFile packFile,
       return;
     }
 
-    String extension = path.extension;
+    String extension = path.extension(assetPath);
     String type = configuration.getType(extension);
     Map importArguments = configuration.getImportArguments(extension);
     Map loadArguments = configuration.getLoadArguments(extension);
@@ -156,7 +156,7 @@ void merge(AssetPackFile packFile,
 }
 
 void output(AssetPackFile packFile, String path) {
-  File out = new File.fromPath(new Path(path));
+  File out = new File(path);
   RandomAccessFile raf;
   try {
     raf = out.openSync(mode: FileMode.WRITE);
@@ -191,7 +191,7 @@ void main() {
     pathString = options.arguments[0];
 
     if (options.arguments.length == 2) {
-      configuration = new PackGenConfig.fromPath(new Path(options.arguments[1]));
+      configuration = new PackGenConfig.fromPath(options.arguments[1]);
     } else {
       configuration = new PackGenConfig();
     }
@@ -199,23 +199,25 @@ void main() {
 
   // Always have a / at the end of the path.
   pathString = '$pathString\/';
-  Path path = new Path(pathString).directoryPath;
+  String dirString = path.dirname(pathString);
 
   // If the path is not absolute create the absolute path
-  if (path.isAbsolute == false) {
+  if (path.isAbsolute(dirString) == false) {
     Directory working = Directory.current;
-    Path fullPath = new Path(working.path);
-    path = fullPath.join(path);
+    String fullPath = working.path;
+    dirString = path.join(fullPath, dirString);
   }
 
-  path = path.canonicalize();
+  dirString = path.normalize(dirString);
 
-  String packPathString = '${path}/_.pack';
-  print('Scanning $path for assets.');
+  String packPathString = '${dirString}/_.pack';
+  print('Scanning $dirString for assets.');
   print('Adding assets to $packPathString');
   List<String> assetPaths = new List<String>();
-  Directory dir = new Directory.fromPath(path);
-  pathString = path.toString();
+  pathString = dirString;
+
+  Directory dir = new Directory(dirString);
+
 
   // On Windows the path string is prefixed with a '/' but the results
   // of File.fullPathSync are not prefixed with that. To do the

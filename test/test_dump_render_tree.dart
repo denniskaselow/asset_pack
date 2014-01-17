@@ -8,7 +8,7 @@ void main() {
 }
 
 void testCore(Configuration config) {
-  configure(config);
+  //configure(config);
   groupSep = ' - ';
   testRun();
 }

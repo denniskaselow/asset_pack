@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:json' as JSON;
+import 'dart:convert';
 import 'package:asset_pack/asset_pack_file.dart';
 
 AssetPackFile openAssetPackFile(String path) {
@@ -18,7 +18,7 @@ AssetPackFile openAssetPackFile(String path) {
   }
   var json;
   try {
-    json = JSON.parse(contents);
+    json = JSON.decode(contents);
   } catch (e) {
     print(e);
     print('Could not parse existing asset pack file: ${out.path}');

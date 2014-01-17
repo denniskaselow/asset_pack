@@ -148,7 +148,7 @@ class AssetPackFile {
 
   /** Parse the packFile string into a list of pack file assets. */
   static List<AssetPackFileAsset> parse(String packFile) {
-    var parsed = JSON.parse(packFile);
+    var parsed = JSON.decode(packFile);
     return new AssetPackFile.fromJson(parsed).assets.values.toList();
   }
 
