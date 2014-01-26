@@ -90,7 +90,7 @@ class AssetPack {
     var importer = manager.importers[type];
     // Create asset.
     asset = new Asset(this, name, url, type, loader,
-                      loaderArguments, importer, loaderArguments);
+                      loaderArguments, importer, importerArguments);
     if (importer != null) {
       importer.initialize(asset);
     }
