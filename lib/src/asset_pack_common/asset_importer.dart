@@ -18,7 +18,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-part of asset_pack;
+part of asset_pack_common;
 
 /// Interface of an [AssetImporter]. An asset importer is responsible for
 /// Initializing the [Asset.imported] field and importing an object

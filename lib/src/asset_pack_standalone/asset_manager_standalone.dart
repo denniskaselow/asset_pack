@@ -18,8 +18,16 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-library asset_pack_file;
+part of asset_pack_standalone;
 
-import 'dart:convert';
-
-part 'src/asset_pack/asset_pack_file.dart';
+class AssetManagerStandalone extends AssetManager {
+  AssetManagerStandalone([tracer0])
+      : super(tracer0) {
+    loaders['textmap'] = new MapLoader(new TextLoader());
+    loaders['imagemap'] = new MapLoader(new ImageLoader());
+    loaders['json'] = new TextLoader();
+    loaders['text'] = loaders['json'];
+    loaders['pack'] = loaders['json'];
+    loaders['image'] = new ImageLoader();
+  }
+}

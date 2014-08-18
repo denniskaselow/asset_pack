@@ -18,14 +18,26 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-part of asset_pack;
+part of asset_pack_browser;
 
-class TextLoader extends AssetLoader {
+class VideoLoader extends AssetLoaderBrowser {
   Future<dynamic> load(Asset asset, AssetPackTrace tracer) {
-    return AssetLoader.httpLoad(asset, 'text', (x) =>  x.responseText, tracer);
+    tracer.assetLoadStart(asset);
+    var completer = new Completer<dynamic>();
+    VideoElement video = new VideoElement();
+    video.onCanPlay.listen((event) {
+      tracer.assetLoadEnd(asset);
+      completer.complete(video);
+    });
+    video.onError.listen((error) {
+      tracer.assetLoadError(asset, error.toString());
+      tracer.assetLoadEnd(asset);
+      completer.complete(null);
+    });
+    video.src = asset.url;
+    return completer.future;
   }
 
   void delete(dynamic arg) {
-
   }
 }

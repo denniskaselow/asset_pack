@@ -18,23 +18,15 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-part of asset_pack;
+part of asset_pack_browser;
 
-class TextImporter extends AssetImporter {
-  void initialize(Asset asset) {
-    asset.imported = '';
-  }
-  Future<Asset> import(dynamic payload, Asset asset, AssetPackTrace tracer) {
-    tracer.assetImportStart(asset);
-    if (payload is String) {
-      asset.imported = payload;
-    } else {
-      tracer.assetImportError(asset, "A text asset was not a String.");
-    }
-    tracer.assetImportEnd(asset);
-    return new Future.value(asset);
+class TextLoader extends AssetLoaderBrowser {
+  Future<dynamic> load(Asset asset, AssetPackTrace tracer) {
+    return AssetLoaderBrowser
+        .httpLoad(asset, 'text', (x) =>  x.responseText, tracer);
   }
 
-  void delete(dynamic imported) {
+  void delete(dynamic arg) {
+
   }
 }

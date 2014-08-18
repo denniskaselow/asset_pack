@@ -18,32 +18,14 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-part of asset_pack;
+/// asset_pack library based on dart:io.
+library asset_pack_standalone;
 
-class JsonImporter extends AssetImporter {
-  void initialize(Asset asset) {
-    asset.imported = {};
-  }
+import 'dart:io';
+import 'dart:math';
+import 'dart:async';
+import 'dart:convert';
+import 'package:asset_pack/asset_pack_common.dart';
+export 'package:asset_pack/asset_pack_common.dart';
 
-  Future<Asset> import(dynamic payload, Asset asset, AssetPackTrace tracer) {
-    tracer.assetImportStart(asset);
-    try {
-      if (payload is String) {
-        try {
-          var parsed = JSON.decode(payload);
-          asset.imported = parsed;
-        } on FormatException catch (e) {
-          tracer.assetImportError(asset, e.message);
-        }
-      } else {
-        tracer.assetImportError(asset, "A text asset was not a String.");
-      }
-      return new Future.value(asset);
-    } finally {
-      tracer.assetImportEnd(asset);
-    }
-  }
-
-  void delete(dynamic imported) {
-  }
-}
+part 'src/asset_pack_standalone/asset_manager_standalone.dart';

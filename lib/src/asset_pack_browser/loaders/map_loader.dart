@@ -18,9 +18,9 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-part of asset_pack;
+part of asset_pack_browser;
 
-class MapLoader extends AssetLoader {
+class MapLoader extends AssetLoaderBrowser {
   AssetLoader _loader;
 
   MapLoader(this._loader);

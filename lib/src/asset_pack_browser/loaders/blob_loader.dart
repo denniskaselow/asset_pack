@@ -18,11 +18,12 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-part of asset_pack;
+part of asset_pack_browser;
 
-class BlobLoader extends AssetLoader {
+class BlobLoader extends AssetLoaderBrowser {
   Future<dynamic> load(Asset asset, AssetPackTrace tracer) {
-    return AssetLoader.httpLoad(asset, 'blob', (x) =>  x.response, tracer);
+    return AssetLoaderBrowser
+        .httpLoad(asset, 'blob', (x) =>  x.response, tracer);
   }
 
   void delete(dynamic arg) {

@@ -18,24 +18,17 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-part of asset_pack;
+part of asset_pack_browser;
 
-class ImageLoader extends AssetLoader {
+class ArrayBufferLoader extends AssetLoaderBrowser {
+
   Future<dynamic> load(Asset asset, AssetPackTrace tracer) {
-    tracer.assetLoadStart(asset);
-    var completer = new Completer<dynamic>();
-    ImageElement image = new ImageElement();
-    image.onLoad.listen((event) {
-      tracer.assetLoadEnd(asset);
-      completer.complete(image);
-    });
-    image.onError.listen((event) {
-      tracer.assetLoadError(asset, "${event.runtimeType} : ${event.type}");
-      tracer.assetLoadEnd(asset);
-      completer.complete(null);
-    });
-    image.src = asset.url;
-    return completer.future;
+    return AssetLoaderBrowser.httpLoad(
+        asset,
+        'arraybuffer',
+        (x) =>  x.response,
+        tracer
+    );
   }
 
   void delete(dynamic arg) {
