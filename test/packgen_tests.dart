@@ -111,7 +111,7 @@ void checkPackFile(AssetPackFile assetPack, Directory directory) {
 
       // Get the relative path
       // Make sure the path separator is '/'
-      String relativeFilePath = file.fullPathSync().substring(directoryPathLength + 1);
+      String relativeFilePath = file.absolute.path.substring(directoryPathLength + 1);
       relativeFilePath = relativeFilePath.replaceAll('\\', '/');
 
       // ignore generated "directory/_.pack"
@@ -161,7 +161,7 @@ PackgenTest newPackgenTest(String name, Directory directory, dynamic onStartup, 
 void runTest(List<PackgenTest> tests) {
   test('run sequence of operations',() {
     var f = tests.fold(new Future.value(0), (acc, x) => acc.then(x));
-    f.then(expectAsync1((n) => expect(n, tests.length)));
+    f.then(expectAsync((n) => expect(n, tests.length)));
   });
 }
 

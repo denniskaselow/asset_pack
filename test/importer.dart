@@ -55,7 +55,7 @@ class Importer {
       var asset = new Asset(null, 'test', 'test.json',
                             'json', null, {}, null, {});
       loaded = textLoader.load(asset, tracer);
-      loaded.then(expectAsync1((String text) {
+      loaded.then(expectAsync((String text) {
         expect(text == null, false);
         TextImporter importer = new TextImporter();
         importer.import(text, asset, tracer).then((asset) {
@@ -75,7 +75,7 @@ class Importer {
       var assetRequest = new Asset(null, 'map', 'map.json',
                                    'json', null, {}, null, {});
       loaded = textLoader.load(assetRequest, tracer);
-      loaded.then(expectAsync1((String text) {
+      loaded.then(expectAsync((String text) {
         expect(text == null, false);
         JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest, tracer).then((asset) {
@@ -90,7 +90,7 @@ class Importer {
       var assetRequest = new Asset(null, 'list', 'list.json',
                                    'json', null, {}, null, {});
       loaded = textLoader.load(assetRequest, tracer);
-      loaded.then(expectAsync1((String text) {
+      loaded.then(expectAsync((String text) {
         expect(text == null, false);
         JsonImporter importer = new JsonImporter();
         importer.import(text, assetRequest, tracer).then((asset) {

@@ -166,7 +166,7 @@ void output(AssetPackFile packFile, String path) {
   }
   String serialized;
   try {
-    serialized = JSON.stringify(packFile);
+    serialized = JSON.encode(packFile);
   } catch (_) {
     print('Could not serialize pack file into JSON');
     return;
@@ -176,22 +176,21 @@ void output(AssetPackFile packFile, String path) {
   raf.closeSync();
 }
 
-void main() {
-  Options options = new Options();
+void main(String arguments) {
   String pathString;
   PackGenConfig configuration;
 
   // There are some workarounds required for running on Windows
   bool isWindows = Platform.operatingSystem == 'windows';
 
-  if (options.arguments.length == 0) {
+  if (arguments.length == 0) {
     print('Usage: dart packgen.dart <path> [config].');
     return;
   } else {
-    pathString = options.arguments[0];
+    pathString = arguments[0];
 
-    if (options.arguments.length == 2) {
-      configuration = new PackGenConfig.fromPath(options.arguments[1]);
+    if (arguments.length == 2) {
+      configuration = new PackGenConfig.fromPath(arguments[1]);
     } else {
       configuration = new PackGenConfig();
     }
@@ -229,7 +228,7 @@ void main() {
   int pathStringLength = pathString.length;
   dir.listSync(recursive:true).forEach((listing) {
     if (listing is File) {
-      String filePathString = listing.fullPathSync();
+      String filePathString = listing.absolute.path;
 
       // On Windows File.fullPathSync returns a string with '\' as the
       // path separator. Modify to use '/'
