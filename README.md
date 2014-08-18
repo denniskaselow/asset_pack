@@ -113,7 +113,7 @@ reference other asset packs.
 
 ## API ##
 
-[Reference Manual](http://www.dartgamedevs.org/packages/assetpack/asset_pack.thml)
+[Reference Manual](http://www.dartdocs.org/documentation/asset_pack/latest/index.html#asset_pack)
 
 ## Samples ##
 
