@@ -18,11 +18,11 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-part of asset_pack_browser;
+part of asset_pack_standalone;
 
-class TextLoader extends AssetLoaderBrowser {
+class TextLoader extends AssetLoader {
   Future<dynamic> load(Asset asset, AssetPackTrace tracer) {
-    return AssetLoaderBrowser.httpLoadText(asset, tracer);
+    return AssetLoaderStandalone.loadText(asset, tracer);
   }
 
   void delete(dynamic arg) {

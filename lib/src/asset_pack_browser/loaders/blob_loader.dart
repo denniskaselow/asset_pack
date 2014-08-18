@@ -22,8 +22,7 @@ part of asset_pack_browser;
 
 class BlobLoader extends AssetLoaderBrowser {
   Future<dynamic> load(Asset asset, AssetPackTrace tracer) {
-    return AssetLoaderBrowser
-        .httpLoad(asset, 'blob', (x) =>  x.response, tracer);
+    return AssetLoaderBrowser.httpLoadBlob(asset, tracer);
   }
 
   void delete(dynamic arg) {

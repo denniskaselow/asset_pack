@@ -24,10 +24,8 @@ class AssetManagerStandalone extends AssetManager {
   AssetManagerStandalone([tracer0])
       : super(tracer0) {
     loaders['textmap'] = new MapLoader(new TextLoader());
-    loaders['imagemap'] = new MapLoader(new ImageLoader());
     loaders['json'] = new TextLoader();
     loaders['text'] = loaders['json'];
     loaders['pack'] = loaders['json'];
-    loaders['image'] = new ImageLoader();
   }
 }

@@ -22,10 +22,12 @@
 library asset_pack_standalone;
 
 import 'dart:io';
-import 'dart:math';
 import 'dart:async';
 import 'dart:convert';
 import 'package:asset_pack/asset_pack_common.dart';
 export 'package:asset_pack/asset_pack_common.dart';
 
 part 'src/asset_pack_standalone/asset_manager_standalone.dart';
+part 'src/asset_pack_standalone/asset_loader_standalone.dart';
+part 'src/asset_pack_standalone/loaders/map_loader.dart';
+part 'src/asset_pack_standalone/loaders/text_loader.dart';

@@ -27,7 +27,7 @@ abstract class AssetLoaderBrowser extends AssetLoader {
       Asset asset,
       String responseType,
       dynamic extractResponse(HttpRequest),
-      AssetPackTrace tracer ) {
+      AssetPackTrace tracer) {
     tracer.assetLoadStart(asset);
     var completer = new Completer<dynamic>();
 
@@ -61,5 +61,18 @@ abstract class AssetLoaderBrowser extends AssetLoader {
 
     xhr.send();
     return completer.future;
+  }
+
+  static Future<String> httpLoadText(Asset asset, AssetPackTrace tracer) {
+    return httpLoad(asset, 'text', (x) =>  x.responseText, tracer);
+  }
+
+  static Future<dynamic> httpLoadArrayBuffer(Asset asset,
+      AssetPackTrace tracer) {
+    return httpLoad(asset, 'arraybuffer', (x) =>  x.response, tracer);
+  }
+
+  static Future<Blob> httpLoadBlob(Asset asset, AssetPackTrace tracer) {
+    return httpLoad(asset, 'blob', (x) =>  x.response, tracer);
   }
 }
