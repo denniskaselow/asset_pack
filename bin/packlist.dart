@@ -30,14 +30,13 @@ AssetPackFile openAssetPackFile(String path) {
   return new AssetPackFile.fromJson(json);
 }
 
-main() {
+main(List<String> arguments) {
   bool verbose = true;
-  Options options = new Options();
   String inPath;
-  if (options.arguments.length == 0) {
+  if (arguments.length == 0) {
     inPath = '${Directory.current.path}/test/testpack';
   } else {
-    inPath = options.arguments[0];
+    inPath = arguments[0];
   }
   AssetPackFile packFile = openAssetPackFile(inPath);
   var assets = packFile.assets.values.toList();

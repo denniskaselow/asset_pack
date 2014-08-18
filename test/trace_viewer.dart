@@ -29,7 +29,7 @@ class TraceViewer {
         assetManager.loadPack('testpack', 'testpack.pack'),
         assetManager.loadPack('testpack2', 'testpackbadname.pack'),
         assetManager.loadPack('brokenpack', 'brokenpack.pack')
-      ]).then(expectAsync1((packs) {
+      ]).then(expectAsync((packs) {
         expect(packs.length, 3);
         var traceView = AssetPackTraceViewer.toJsonFullString(tracer.events);
         print("""

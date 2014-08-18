@@ -26,7 +26,7 @@ class Manager {
     Future<AssetPack> futurePack;
     test('success.', () {
       futurePack = assetManager.loadPack('testpack', 'testpack/_.pack');
-      futurePack.then(expectAsync1((pack) {
+      futurePack.then(expectAsync((pack) {
         expect(pack == null, false);
         expect(pack.length, 5);
         expect(pack['subpack'].length, 1);
@@ -52,21 +52,21 @@ class Manager {
         expect(pack.type('map')  , 'json');
         expect(pack.type('test') , 'json');
         expect(pack.type('tests'), 'text');
-        test('duplicate pack', () {
-          expect(() => assetManager.loadPack('testpack', 'testpack/_.pack'),
-                                             throws);
-        });
       }));
+    });
+    test('duplicate pack', () {
+      expect(() => assetManager.loadPack('testpack', 'testpack/_.pack'),
+                                         throws);
     });
     test('failure', () {
       futurePack = assetManager.loadPack('testpack2', 'testpackbadname.pack');
-      futurePack.then(expectAsync1((pack) {
+      futurePack.then(expectAsync((pack) {
         expect(pack.length, 0);
       }));
     });
     test('badpack', () {
       futurePack = assetManager.loadPack('brokenpack', 'brokenpack.pack');
-      futurePack.then(expectAsync1((pack) {
+      futurePack.then(expectAsync((pack) {
         expect(pack.length, 0);
       }));
     });
@@ -78,7 +78,7 @@ class Manager {
       AssetManager assetManager = new AssetManagerBrowser(trace);
       Future<AssetPack> futurePack;
       futurePack = assetManager.loadPack('testpack', 'testpack/_.pack');
-      futurePack.then(expectAsync1((pack) {
+      futurePack.then(expectAsync((pack) {
         expect(assetManager.root.assets.length, 1);
         expect(assetManager['testpack'] == null, false);
         expect(assetManager['testpack'].parent, assetManager.root);
@@ -98,14 +98,14 @@ class Manager {
       AssetManager assetManager = new AssetManagerBrowser(trace);
       Future<AssetPack> futurePack;
       futurePack = assetManager.loadPack('testpack', 'testpack/_.pack');
-      futurePack.then(expectAsync1((pack) {
+      futurePack.then(expectAsync((pack) {
         expect(assetManager.root.assets.length, 1);
         expect(assetManager['testpack'] == null, false);
         assetManager.deregisterPack('testpack');
         expect(pack.length, 0);
         expect(() => assetManager.getAssetAtPath('testpack'), throws);
         futurePack = assetManager.loadPack('testpack', 'testpack/_.pack');
-        futurePack.then(expectAsync1((pack) {
+        futurePack.then(expectAsync((pack) {
           //expect(pack.assets.length, 5);
           expect(assetManager.root.assets.length, 1);
           expect(assetManager['testpack'], pack);
@@ -171,7 +171,7 @@ class Manager {
           {},
           {});
 
-      load.then(expectAsync1((asset) {
+      load.then(expectAsync((asset) {
         // Test the asset itself
         expect(asset.pack, assetManager.root);
         expect(asset.status, 'OK');
@@ -198,7 +198,7 @@ class Manager {
     AssetPackTrace trace = new AssetPackTrace();
     AssetManager assetManager = new AssetManagerBrowser(trace);
     var futurePack = assetManager.loadPack('assets', 'text_map_pack/_.pack');
-    futurePack.then(expectAsync1((_) {
+    futurePack.then(expectAsync((_) {
       expect(assetManager['assets'], _);
       expect(assetManager['assets'].length, 1);
       expect(assetManager['assets'].type('textmap'), 'textmap');
@@ -216,7 +216,7 @@ class Manager {
         assetManager.root.loadAndRegisterAsset('textmap', 'textmap',
                                                'text_map_pack/textmap.tmap',
                                                {}, {});
-    futureAsset.then(expectAsync1((asset) {
+    futureAsset.then(expectAsync((asset) {
       Map textmap = asset.imported;
       expect(textmap['foo'], isNotNull);
       expect(textmap['foo'].startsWith("crab"), true);
@@ -230,7 +230,7 @@ class Manager {
     AssetPackTrace trace = new AssetPackTrace();
     AssetManager assetManager = new AssetManagerBrowser(trace);
     var futurePack = assetManager.loadPack('assets', 'image_map_pack/_.pack');
-    futurePack.then(expectAsync1((_) {
+    futurePack.then(expectAsync((_) {
       expect(assetManager['assets'], _);
       expect(assetManager['assets'].length, 1);
       expect(assetManager['assets'].type('imagemap'), 'imagemap');
@@ -248,7 +248,7 @@ class Manager {
         assetManager.root.loadAndRegisterAsset('imagemap', 'imagemap',
                                                'image_map_pack/imagemap.imap',
                                                {}, {});
-    futureAsset.then(expectAsync1((asset) {
+    futureAsset.then(expectAsync((asset) {
       Map imagemap = asset.imported;
       //expect(textmap['foo'], isNotNull);
       expect(imagemap['error'], isNull);

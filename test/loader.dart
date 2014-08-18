@@ -55,7 +55,7 @@ class Loader {
       var asset = new Asset(null, 'notthere', 'notthere.png',
                             'png', null, {}, null, {});
       loaded = imageLoader.load(asset, tracer);
-      loaded.then(expectAsync1((ImageElement imageElement) {
+      loaded.then(expectAsync((ImageElement imageElement) {
         expect(imageElement, isNull);
         expectLoadTrace(tracer, withError : true);
       }));
@@ -66,7 +66,7 @@ class Loader {
       var asset = new Asset(null, 'test', 'test.png', 'png',
                             null, {}, null, {});
       loaded = imageLoader.load(asset, tracer);
-      loaded.then(expectAsync1((ImageElement imageElement) {
+      loaded.then(expectAsync((ImageElement imageElement) {
         expect(imageElement, isNotNull);
         expect(imageElement.width, 64);
         expect(imageElement.height, 64);
@@ -83,7 +83,7 @@ class Loader {
       var assetRequest = new Asset(null, 'notthere', 'notthere.bin',
                                    'bin', null, {}, null, {});
       loaded = arrayBufferLoader.load(assetRequest, tracer);
-      loaded.then(expectAsync1((arrayBuffer) {
+      loaded.then(expectAsync((arrayBuffer) {
         expect(arrayBuffer, null);
         expectLoadTrace(tracer, withError : true);
       }));
@@ -94,9 +94,9 @@ class Loader {
       var assetRequest = new Asset(null, 'binarydata', 'binarydata.bin',
                                    'bin', null, {}, null, {});
       loaded = arrayBufferLoader.load(assetRequest, tracer);
-      loaded.then(expectAsync1((arrayBuffer) {
+      loaded.then(expectAsync((ByteBuffer arrayBuffer) {
         expect(arrayBuffer == null, false);
-        expect(arrayBuffer.length, 32);
+        expect(arrayBuffer.lengthInBytes, 32);
         expectLoadTrace(tracer, withError : false);
       }));
     });
@@ -110,7 +110,7 @@ class Loader {
       var assetRequest = new Asset(null, 'notthere', 'notthere.bin',
                                    'bin', null, {}, null, {});
       loaded = blobLoader.load(assetRequest, tracer);
-      loaded.then(expectAsync1((Blob blob) {
+      loaded.then(expectAsync((Blob blob) {
         expect(blob, null);
         expectLoadTrace(tracer, withError : true);
       }));
@@ -121,7 +121,7 @@ class Loader {
       var assetRequest = new Asset(null, 'binarydata', 'binarydata.bin',
                                    'bin', null, {}, null, {});
       loaded = blobLoader.load(assetRequest, tracer);
-      loaded.then(expectAsync1((Blob blob) {
+      loaded.then(expectAsync((Blob blob) {
         expect(blob == null, false);
         expect(blob.size, 32);
         expectLoadTrace(tracer, withError : false);
@@ -137,7 +137,7 @@ class Loader {
       var assetRequest = new Asset(null, 'notthere', 'notthere.bin',
                                    'text', null, {}, null, {});
       loaded = textLoader.load(assetRequest, tracer);
-      loaded.then(expectAsync1((String text) {
+      loaded.then(expectAsync((String text) {
         expect(text, null);
         expectLoadTrace(tracer, withError : true);
       }));
@@ -148,7 +148,7 @@ class Loader {
       var assetRequest = new Asset(null, 'test', 'test.json',
                                    'json', null, {}, null, {});
       loaded = textLoader.load(assetRequest, tracer);
-      loaded.then(expectAsync1((String text) {
+      loaded.then(expectAsync((String text) {
         expect(text == null, false);
         String expected = '{"a":[1,2,3]}';
         expect(text.startsWith(expected), true);
@@ -165,7 +165,7 @@ class Loader {
       var assetRequest = new Asset(null, 'notthere', 'notthere.mp4',
                                    'mp4', null, {}, null, {});
       loaded = videoLoader.load(assetRequest, tracer);
-      loaded.then(expectAsync1((VideoElement videoElement) {
+      loaded.then(expectAsync((VideoElement videoElement) {
         expect(videoElement, null);
         expectLoadTrace(tracer, withError : true);
       }));
@@ -176,7 +176,7 @@ class Loader {
       var assetRequest = new Asset(null, 'test', 'big_buck_bunny.webm',
                                    'webm', null, {}, null, {});
       loaded = videoLoader.load(assetRequest, tracer);
-      loaded.then(expectAsync1((VideoElement videoElement) {
+      loaded.then(expectAsync((VideoElement videoElement) {
         expect(videoElement == null, false);
         expect(videoElement.videoWidth, 640);
         expect(videoElement.videoHeight, 360);
