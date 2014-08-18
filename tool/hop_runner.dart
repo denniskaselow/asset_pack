@@ -20,11 +20,5 @@ void main(List<String> args) {
   //
   //addTask('headless_test', createUnitTestTask(test_dump_render_tree.testCore));
 
-  //
-  // Doc generation
-  //
-  addTask('docs', createDartDocTask(['lib/asset_pack.dart',
-                                     'lib/asset_pack_file.dart'], linkApi: true));
-
   runHop(args);
 }
