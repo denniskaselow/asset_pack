@@ -180,8 +180,8 @@ main() {
   // Register asset 'foo' and load it's contents from 'foo.txt'.
   // The asset type is 'text' and there are no arguments for the loader
   // or importer.
-  Future<Asset> futureAsset = testPack.loadAndRegisterAsset('foo', 'foo.txt',
-                                                            'text', {}, {})
+  Future<Asset> futureAsset = testPack.loadAndRegisterAsset('foo', 'text',
+                                                            'foo.txt', {}, {});
   futureAsset.then((asset) {
     // Print the contents of foo.txt.
     print(asset.imported);
